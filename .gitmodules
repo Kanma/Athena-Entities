@@ -1,0 +1,3 @@
+[submodule "dependencies/Athena-Math"]
+	path = dependencies/Athena-Math
+	url = git://github.com/Kanma/Athena-Math.git
