@@ -1,0 +1,67 @@
+********************************************************************************
+*                                                                              *
+*                               Athena-Entities                                *
+*                    http://github.com/Kanma/Athena-Entities                   *
+*                                                                              *
+********************************************************************************
+
+
+---------------------------------------
+- Summary
+---------------------------------------
+
+Athena-Entities is the one of the modules of the Athena Game Framework, in the
+form of a library written in C++.
+
+It provides the basis of a system in which:
+  1) everything is an 'entity'
+  2) entities are grouped by 'scenes'
+  3) entities can be arranged hierarchically, which means:
+       - an entity can have several children entities
+       - an entity can have a parent entity
+  4) entities are defined by their 'components'
+  5) each entity has a 'transforms' component (representing its position in the
+     3D space relative to its parent, if any)
+  6) each entity can also optionally have some:
+       - visual components
+       - physical components
+       - audio components
+       - debugging-purposes components
+       - user-defined type of components
+  7) each entity maintains a list of the 'signals' it emits, allowing other
+     entities (or any software part) to be notified when something happens
+  8) the entities can be animated
+
+
+This module only provides the basis of the system. Concrete implementations of
+the different kind of components are in the following modules:
+
+  - visual & debug components -> Athena-Graphics
+  - physical components -> Athena-Physics
+  - audio components -> Athena-Audio
+  
+The use of those modules is optional, you can choose to implement your own
+components instead, or to leave out one kind of component.
+
+
+---------------------------------------
+- License
+---------------------------------------
+
+Athena-Entities is is made available under the MIT License. The text of the license
+is in the file 'LICENSE'.
+
+Under the MIT License you may use Athena-Entities for any purpose you wish, without
+warranty, and modify it if you require, subject to one condition:
+
+   "The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software."
+
+In practice this means that whenever you distribute your application, whether as
+binary or as source code, you must include somewhere in your distribution the
+text in the file 'LICENSE'. This might be in the printed documentation, as a
+file on delivered media, or even on the credits / acknowledgements of the
+runtime application itself; any of those would satisfy the requirement.
+
+Even if the license doesn't require it, please consider to contribute your
+modifications back to the community.
