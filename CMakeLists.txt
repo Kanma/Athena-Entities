@@ -25,6 +25,6 @@ endif()
 
 # Subdirectories to process
 add_subdirectory(dependencies)
-#add_subdirectory(include)
-#add_subdirectory(src)
+add_subdirectory(include)
+add_subdirectory(src)
 add_subdirectory(unittests)

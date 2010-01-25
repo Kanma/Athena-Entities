@@ -7,12 +7,13 @@ include_directories(${ATHENA_ENTITIES_SOURCE_DIR}/include
 
 # List the source files
 file(GLOB SRCS main.cpp
+               test_ComponentsList.cpp
 )
 
 # Create and link the executable
 add_executable(UnitTests-Athena-Entities ${SRCS})
 
-set(LIBS UnitTest++)
+set(LIBS UnitTest++ Athena-Entities)
 
 if (ATHENA_ENTITIES_STATIC)
     list(APPEND LIBS Athena-Core Athena-Math)
