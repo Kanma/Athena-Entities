@@ -27,6 +27,7 @@ namespace Athena
         class ComponentsManager;
         class Entity;
         class Scene;
+        class ScenesManager;
     }
 }
 

@@ -1,5 +1,6 @@
 #include <UnitTest++.h>
 #include <Athena-Entities/ComponentsList.h>
+#include <Athena-Entities/Entity.h>
 #include "environments/EntitiesTestEnvironment.h"
 
 
@@ -20,20 +21,20 @@ SUITE(ComponentsListTests)
 	}
 
 
-    // TEST_FIXTURE(EntitiesTestEnvironment, EntityAssignment)
-    // {
-    //  CComponentsList* pList = new CComponentsList();
-    // 
-    //  CHECK(!pList->getEntity());
-    // 
-    //  CEntity* pEntity = pScene->create("test");
-    //  pList->_setEntity(pEntity);
-    // 
-    //  CHECK_EQUAL(pEntity, pList->getEntity());
-    // 
-    //  delete pList;
-    //  pScene->destroy(pEntity);
-    // }
+    TEST_FIXTURE(EntitiesTestEnvironment, EntityAssignment)
+    {
+        ComponentsList* pList = new ComponentsList();
+
+        CHECK(!pList->getEntity());
+
+        Entity* pEntity = pScene->create("test");
+        pList->_setEntity(pEntity);
+
+        CHECK_EQUAL(pEntity, pList->getEntity());
+
+        delete pList;
+        pScene->destroy(pEntity);
+    }
 
 
 	TEST_FIXTURE(EntitiesTestEnvironment, AddComponent)
@@ -56,19 +57,19 @@ SUITE(ComponentsListTests)
 	}
 
 
-    // TEST_FIXTURE(EntitiesTestEnvironment, MemberComponentIDContainsEntityName)
-    // {
-    //  CComponentsList* pList = new CComponentsList();
-    // 
-    //  CEntity* pEntity = pScene->create("test");
-    //  pList->_setEntity(pEntity);
-    // 
-    //  CComponent* pComponent = new CComponent("Component", pList);
-    // 
-    //  CHECK_EQUAL(pEntity->getName(), pComponent->getID().strEntity);
-    // 
-    //  delete pList;
-    //  
-    //  pScene->destroy(pEntity);
-    // }
+    TEST_FIXTURE(EntitiesTestEnvironment, MemberComponentIDContainsEntityName)
+    {
+        ComponentsList* pList = new ComponentsList();
+
+        Entity* pEntity = pScene->create("test");
+        pList->_setEntity(pEntity);
+
+        Component* pComponent = new Component("Component", pList);
+
+        CHECK_EQUAL(pEntity->getName(), pComponent->getID().strEntity);
+
+        delete pList;
+
+        pScene->destroy(pEntity);
+    }
 }

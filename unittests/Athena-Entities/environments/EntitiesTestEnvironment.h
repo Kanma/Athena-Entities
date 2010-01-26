@@ -2,31 +2,31 @@
 #define _ENTITIESTESTENVIRONMENT_H_
 
 #include <Athena-Entities/ComponentsManager.h>
-//#include <Athena-Core/Log/LogManager.h>
+#include <Athena-Entities/ScenesManager.h>
+#include <Athena-Entities/Scene.h>
 
 
 struct EntitiesTestEnvironment
 {
-//	Athena::Entities::CScene* pScene;
+	Athena::Entities::Scene* pScene;
     Athena::Entities::ComponentsManager* pComponentsManager;
+    Athena::Entities::ScenesManager* pScenesManager;
 
 	EntitiesTestEnvironment()
-//	: pScene(0)
+	: pScene(0)
 	{
-        // new Athena::Log::CLogManager();
-        // new Athena::Entities::CScenesManager();
+        pScenesManager = new Athena::Entities::ScenesManager();
         pComponentsManager = new Athena::Entities::ComponentsManager();
          
-        // pScene = new Athena::Entities::CScene("default");
+        pScene = new Athena::Entities::Scene("default");
 	}
 
 	~EntitiesTestEnvironment()
 	{
-        // delete pScene;
-        // 
+        delete pScene;
+         
         delete pComponentsManager;
-        // delete Athena::pScenesManager;
-        // delete Athena::pLogManager;
+        delete pScenesManager;
 	}
 };
 

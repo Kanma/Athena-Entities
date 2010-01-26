@@ -6,7 +6,7 @@
 
 #include <Athena-Entities/Component.h>
 #include <Athena-Entities/ComponentsList.h>
-//#include <Athena-Entities/Entity.h>
+#include <Athena-Entities/Entity.h>
 //#include <Athena-Entities/Transforms.h>
 #include <Athena-Entities/Signals.h>
 #include <Athena-Core/Signals/SignalsList.h>
@@ -35,8 +35,8 @@ Component::Component(const std::string& strName, ComponentsList* pList)
 	assert(!strName.empty() && "Invalid name");
 	assert(pList && "Invalid list");
 
-    // if (pList->getEntity())
-    //  m_id.strEntity = pList->getEntity()->getName();
+    if (pList->getEntity())
+        m_id.strEntity = pList->getEntity()->getName();
 
 	pList->_addComponent(this);
 }

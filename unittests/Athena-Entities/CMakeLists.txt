@@ -9,6 +9,9 @@ include_directories(${ATHENA_ENTITIES_SOURCE_DIR}/include
 file(GLOB SRCS main.cpp
                test_ComponentsList.cpp
                test_ComponentsManager.cpp
+               test_Entity.cpp
+               test_Scene.cpp
+               test_ScenesManager.cpp
 )
 
 # Create and link the executable

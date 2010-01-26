@@ -2,6 +2,9 @@
 set(SRCS Component.cpp
          ComponentsList.cpp
          ComponentsManager.cpp
+         Entity.cpp
+         Scene.cpp
+         ScenesManager.cpp
 )
 
 # Precompiler definitions

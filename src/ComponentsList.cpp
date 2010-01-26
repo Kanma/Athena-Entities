@@ -7,7 +7,7 @@
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Entities/Component.h>
 #include <Athena-Entities/ComponentsManager.h>
-//#include <Athena-Entities/Entity.h>
+#include <Athena-Entities/Entity.h>
 
 
 using namespace Athena;
@@ -94,14 +94,14 @@ Component* ComponentsList::getComponent(const tComponentID& id) const
 		return 0;
 
 	// Test if the component belongs to the entity owning this list
-    // if (m_pEntity && (id.strEntity != m_pEntity->getName()))
-    // {
-    //  // Ask the parent entity for the component (if the component is a transforms one)
-    //  if ((id.type == COMP_TRANSFORMS) && m_pEntity->getParent())
-    //      return m_pEntity->getParent()->getComponent(id);
-    //  else
-    //      return 0;
-    // }
+    if (m_pEntity && (id.strEntity != m_pEntity->getName()))
+    {
+        // Ask the parent entity for the component (if the component is a transforms one)
+        if ((id.type == COMP_TRANSFORMS) && m_pEntity->getParent())
+            return m_pEntity->getParent()->getComponent(id);
+        else
+            return 0;
+    }
 
 	// Search the component
 	tComponentsList::const_iterator iter, iterEnd;
