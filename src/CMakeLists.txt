@@ -1,6 +1,7 @@
 # List the source files
 set(SRCS Component.cpp
          ComponentsList.cpp
+         ComponentsManager.cpp
 )
 
 # Precompiler definitions

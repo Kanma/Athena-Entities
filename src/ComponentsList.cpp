@@ -6,7 +6,7 @@
 
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Entities/Component.h>
-//#include <Athena-Entities/ComponentsManager.h>
+#include <Athena-Entities/ComponentsManager.h>
 //#include <Athena-Entities/Entity.h>
 
 
@@ -48,7 +48,9 @@ bool ComponentsList::_addComponent(Component* pComponent)
 
 void ComponentsList::removeComponent(Component* pComponent, bool bDestroy)
 {
+    // Assertions
 	assert(pComponent);
+    assert(ComponentsManager::getSingletonPtr());
 
 	tComponentsList::iterator iter, iterEnd;
 
@@ -58,8 +60,8 @@ void ComponentsList::removeComponent(Component* pComponent, bool bDestroy)
 		{
 			m_components.erase(iter);
 
-            // if (bDestroy)
-            //  pComponentsManager->destroy(pComponent);
+            if (bDestroy)
+                ComponentsManager::getSingletonPtr()->destroy(pComponent);
 
 			break;
 		}
