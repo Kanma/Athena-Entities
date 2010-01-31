@@ -5,6 +5,7 @@ set(SRCS Component.cpp
          Entity.cpp
          Scene.cpp
          ScenesManager.cpp
+         Transforms.cpp
 )
 
 # Precompiler definitions

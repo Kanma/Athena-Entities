@@ -28,6 +28,7 @@ namespace Athena
         class Entity;
         class Scene;
         class ScenesManager;
+        class Transforms;
     }
 }
 

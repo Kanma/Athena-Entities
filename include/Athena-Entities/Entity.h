@@ -202,11 +202,11 @@ public:
 
 
 	//_____ Management of the transforms __________
-// public:
-//  inline Transforms* getTransforms()
-//  {
-//      return m_pTransforms;
-//  }
+public:
+    inline Transforms* getTransforms()
+    {
+        return m_pTransforms;
+    }
 
 
 	//_____ Management of the animations __________
@@ -228,7 +228,7 @@ protected:
 	ComponentsList					m_components;		///< The list of components
 	Signals::SignalsList			m_signals;			///< The signals list
     // Animation::AnimationsMixer*  m_pAnimationsMixer; ///< The animations mixer
-    // Transforms*                  m_pTransforms;      ///< The transforms
+    Transforms*                     m_pTransforms;      ///< The transforms
 
 	// Parent/children relations
 	Entity*							m_pParent;			///< Parent of this entity

@@ -74,20 +74,20 @@ public:
 	inline ComponentsList* getList() const { return m_pList; }
 
 
-//  //_____ Management of the origin of the transformations __________
-// public:
-//  void setTransformsOrigin(CTransforms* pTransforms);
-//  void setTransformsOrigin(const tComponentID& id);
-// 
-//  CTransforms* getTransformsOrigin() const
-//  {
-//      return m_pTransformsOrigin;
-//  }
-// 
-// 
-//  //_____ Slots __________
-// protected:
-//  void onTransformsOriginDestroyed(Utils::CVariant* pValue);
+    //_____ Management of the origin of the transformations __________
+public:
+    void setTransformsOrigin(Transforms* pTransforms);
+    void setTransformsOrigin(const tComponentID& id);
+
+    Transforms* getTransformsOrigin() const
+    {
+        return m_pTransformsOrigin;
+    }
+
+
+    //_____ Slots __________
+protected:
+    void onTransformsOriginDestroyed(Utils::Variant* pValue);
 
 
 	//_____ Management of the signals list __________
@@ -158,7 +158,7 @@ public:
 protected:
 	tComponentID			m_id;					///< ID of the component
 	ComponentsList*		    m_pList;				///< The list containing that component
-//	CTransforms*			m_pTransformsOrigin;	///< The transforms origin
+	Transforms*			    m_pTransformsOrigin;	///< The transforms origin
 	Signals::SignalsList	m_signals;				///< The signals list
 };
 

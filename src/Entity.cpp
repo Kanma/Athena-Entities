@@ -7,7 +7,7 @@
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Scene.h>
 //#include "Athena_Entities_Animation_CAnimationsMixer.h"
-//#include "Athena_Entities_CTransforms.h"
+#include <Athena-Entities/Transforms.h>
 #include <Athena-Entities/Signals.h>
 #include <Athena-Core/Log/LogManager.h>
 
@@ -28,8 +28,9 @@ static const char*	__CONTEXT__	= "Entity";
 /***************************** CONSTRUCTION / DESTRUCTION *******************************/
 
 Entity::Entity(const std::string& strName, Scene* pScene, Entity* pParent)
-: m_strName(strName), m_pScene(pScene), m_pParent(0), m_bEnabled(true)//,
-//  m_pAnimationsMixer(0), m_pTransforms(0)
+: m_strName(strName), m_pScene(pScene), m_pParent(0), m_bEnabled(true),
+//  m_pAnimationsMixer(0),
+  m_pTransforms(0)
 {
 	// Assertions
 	assert(!strName.empty() && "Invalid name");
@@ -38,7 +39,7 @@ Entity::Entity(const std::string& strName, Scene* pScene, Entity* pParent)
 	// Initializations
 	m_components._setEntity(this);
 
-//	m_pTransforms = new CTransforms("Transforms", &m_components);
+	m_pTransforms = new Transforms("Transforms", &m_components);
 
 	// If a parent was specified, ask it to add this entity in its children's list
 	if (pParent)
@@ -100,7 +101,7 @@ void Entity::addChild(Entity* pChild)
 	m_children.push_back(pChild);
 	pChild->m_pParent = this;
 
-//	pChild->getTransforms()->setTransformsOrigin(m_pTransforms);
+	pChild->getTransforms()->setTransformsOrigin(m_pTransforms);
 }
 
 //-----------------------------------------------------------------------
@@ -119,7 +120,7 @@ void Entity::removeChild(Entity* pChild)
 		if (*iter == pChild)
 		{
 			(*iter)->m_pParent = 0;
-//			(*iter)->getTransforms()->setTransformsOrigin(0);
+			(*iter)->getTransforms()->setTransformsOrigin(0);
 			m_children.erase(iter);
 			return;
 		}

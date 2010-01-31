@@ -7,7 +7,7 @@
 #include <Athena-Entities/ComponentsManager.h>
 #include <Athena-Entities/Component.h>
 #include <Athena-Entities/ComponentsList.h>
-//#include <Athena-Entities/Transforms.h>
+#include <Athena-Entities/Transforms.h>
 #include <Athena-Core/Log/LogManager.h>
 
 #if ATHENA_ENTITIES_SCRIPTING
@@ -48,10 +48,10 @@ ComponentsManager::ComponentsManager()
 	ATHENA_LOG_EVENT("Creation");
 
 	// Register the base type of all the components
-	registerType(Component::TYPE,					(ComponentCreationMethod*) &Component::create);
+	registerType(Component::TYPE, (ComponentCreationMethod*) &Component::create);
 
 	// Register the types of uncategorized components known by the engine
-	//registerType(Transforms::TYPE,					(ComponentCreationMethod*) &Transforms::create);
+	registerType(Transforms::TYPE, (ComponentCreationMethod*) &Transforms::create);
 }
 
 //-----------------------------------------------------------------------

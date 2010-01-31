@@ -12,6 +12,7 @@ file(GLOB SRCS main.cpp
                test_Entity.cpp
                test_Scene.cpp
                test_ScenesManager.cpp
+               test_Transforms.cpp
 )
 
 # Create and link the executable

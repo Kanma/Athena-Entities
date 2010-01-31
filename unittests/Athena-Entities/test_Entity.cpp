@@ -1,6 +1,7 @@
 #include <UnitTest++.h>
 #include <Athena-Entities/ScenesManager.h>
 #include <Athena-Entities/Entity.h>
+#include <Athena-Entities/Transforms.h>
 #include "environments/EntitiesTestEnvironment.h"
 
 
@@ -15,23 +16,23 @@ SUITE(EntityTests)
 		CHECK_EQUAL("test", pEntity->getName());
 		CHECK(pEntity->getComponentsList());
 		CHECK(pEntity->getSignalsList());
-        // CHECK(pEntity->getTransforms());
+        CHECK(pEntity->getTransforms());
 		pScene->destroy(pEntity);
 	}
 
 
-    // TEST_FIXTURE(EntitiesTestEnvironment, AddTransforms)
-    // {
-    //  Entity* pEntity = pScene->create("test");
-    // 
-    //  CHECK(pEntity->getTransforms());
-    // 
-    //  Transforms* pTransforms = new Transforms("T2", pEntity->getComponentsList());
-    // 
-    //  CHECK_EQUAL(pTransforms->getTransformsOrigin(), pEntity->getTransforms());
-    // 
-    //  pScene->destroy(pEntity);
-    // }
+    TEST_FIXTURE(EntitiesTestEnvironment, AddTransforms)
+    {
+        Entity* pEntity = pScene->create("test");
+
+        CHECK(pEntity->getTransforms());
+
+        Transforms* pTransforms = new Transforms("T2", pEntity->getComponentsList());
+
+        CHECK_EQUAL(pTransforms->getTransformsOrigin(), pEntity->getTransforms());
+
+        pScene->destroy(pEntity);
+    }
 
 
 	TEST_FIXTURE(EntitiesTestEnvironment, CreationWithParent)
@@ -51,9 +52,9 @@ SUITE(EntityTests)
 		iter = pChild->getChildrenIterator();
 		CHECK(!iter.hasMoreElements());
 
-        // CHECK(pParent->getTransforms());
-        // CHECK(pChild->getTransforms());
-        // CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransformsOrigin());
+        CHECK(pParent->getTransforms());
+        CHECK(pChild->getTransforms());
+        CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransformsOrigin());
 
 		pScene->destroy(pChild);
 		pScene->destroy(pParent);
@@ -79,9 +80,9 @@ SUITE(EntityTests)
 		CHECK(iter.getNext() == pChild);
 		CHECK(!iter.hasMoreElements());
 
-        // CHECK(pParent->getTransforms());
-        // CHECK(pChild->getTransforms());
-        // CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransformsOrigin());
+        CHECK(pParent->getTransforms());
+        CHECK(pChild->getTransforms());
+        CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransformsOrigin());
 
 		pScene->destroy(pChild);
 		pScene->destroy(pParent);
@@ -101,9 +102,9 @@ SUITE(EntityTests)
 		CHECK(!pChild->getParent());
 		CHECK_EQUAL(0, pParent->getNbChildren());
 
-        // CHECK(pParent->getTransforms());
-        // CHECK(pChild->getTransforms());
-        // CHECK(!pChild->getTransforms()->getTransformsOrigin());
+        CHECK(pParent->getTransforms());
+        CHECK(pChild->getTransforms());
+        CHECK(!pChild->getTransforms()->getTransformsOrigin());
 
 		pScene->destroy(pChild);
 		pScene->destroy(pParent);
