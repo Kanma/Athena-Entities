@@ -2,6 +2,9 @@
 	@author	Philip Abbet
 
 	Implementation of the class 'Athena::Entities::Transforms'
+
+    @note   This is based on the 'Ogre::SceneNode' class from
+            <a href="http://www.ogre3d.org/">Ogre3D</a>.
 */
 
 #include <Athena-Entities/Transforms.h>

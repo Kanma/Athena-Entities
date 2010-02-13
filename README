@@ -45,6 +45,18 @@ components instead, or to leave out one kind of component.
 
 
 ---------------------------------------
+- Credits
+---------------------------------------
+
+The class 'Athena::Entities::Transforms' of this module is based on the
+'Ogre::SceneNode' class of OGRE 1.7 (Object-Oriented Graphics Rendering Engine),
+a scene-oriented and flexible 3D engine, released under the MIT License. OGRE is
+the 3D engine used by the Athena Game Framework.
+
+The license of OGRE is contained in the file 'docs/LICENSE-OGRE'. 
+
+
+---------------------------------------
 - License
 ---------------------------------------
 
