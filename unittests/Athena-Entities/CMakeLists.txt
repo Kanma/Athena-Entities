@@ -7,6 +7,7 @@ include_directories(${ATHENA_ENTITIES_SOURCE_DIR}/include
 
 # List the source files
 file(GLOB SRCS main.cpp
+               test_Animation.cpp
                test_ComponentsList.cpp
                test_ComponentsManager.cpp
                test_Entity.cpp

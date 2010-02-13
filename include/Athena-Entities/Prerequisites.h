@@ -22,7 +22,10 @@ namespace Athena
 	//------------------------------------------------------------------------------------
     namespace Entities
     {
+        class Animation;
+        class AnimationsMixer;
         class Component;
+        class ComponentAnimation;
         class ComponentsList;
         class ComponentsManager;
         class Entity;
