@@ -28,7 +28,7 @@ namespace Entities {
 ///   - a parent entity
 ///   - some children
 ///   - some components
-///   - some animations (through an AnimationsMixer, @see Animation::CAnimationsMixer)
+///   - some animations (through an Animations Mixer, @see AnimationsMixer)
 //---------------------------------------------------------------------------------------
 class ATHENA_SYMBOL Entity
 {
@@ -203,6 +203,9 @@ public:
 
 	//_____ Management of the transforms __________
 public:
+    //------------------------------------------------------------------------------------
+    /// @brief	Returns the transforms of the entity
+    //------------------------------------------------------------------------------------
     inline Transforms* getTransforms()
     {
         return m_pTransforms;
@@ -210,29 +213,37 @@ public:
 
 
 	//_____ Management of the animations __________
-// public:
-//  Animation::AnimationsMixer* createAnimationsMixer();
-// 
-//  inline Animation::CAnimationsMixer* getAnimationsMixer()
-//  {
-//      return m_pAnimationsMixer;
-//  }
+public:
+    //------------------------------------------------------------------------------------
+    /// @brief	Adds an Animations Mixer to the entity
+    ///
+    /// The entity isn't animated if an Animations Mixer wasn't created
+    //------------------------------------------------------------------------------------
+    AnimationsMixer* createAnimationsMixer();
+
+    //------------------------------------------------------------------------------------
+    /// @brief	Returns the Animations Mixer of the entity
+    //------------------------------------------------------------------------------------
+    inline AnimationsMixer* getAnimationsMixer()
+    {
+        return m_pAnimationsMixer;
+    }
 
 
 	//_____ Attributes __________
 protected:
-	std::string						m_strName;			///< Name
-	Scene*							m_pScene;			///< The scene managing the entity
-	bool							m_bEnabled;			///< Indicates if the entity is enabled
-														///  used by this entity
-	ComponentsList					m_components;		///< The list of components
-	Signals::SignalsList			m_signals;			///< The signals list
-    // Animation::AnimationsMixer*  m_pAnimationsMixer; ///< The animations mixer
-    Transforms*                     m_pTransforms;      ///< The transforms
+	std::string				m_strName;			///< Name
+	Scene*					m_pScene;			///< The scene managing the entity
+	bool					m_bEnabled;			///< Indicates if the entity is enabled
+												///  used by this entity
+	ComponentsList			m_components;		///< The list of components
+	Signals::SignalsList	m_signals;			///< The signals list
+    AnimationsMixer*        m_pAnimationsMixer; ///< The animations mixer
+    Transforms*             m_pTransforms;      ///< The transforms
 
 	// Parent/children relations
-	Entity*							m_pParent;			///< Parent of this entity
-	tEntitiesList					m_children;			///< Children of the entity
+	Entity*					m_pParent;			///< Parent of this entity
+	tEntitiesList			m_children;			///< Children of the entity
 };
 
 }

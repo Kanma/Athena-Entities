@@ -6,7 +6,7 @@
 
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Scene.h>
-//#include "Athena_Entities_Animation_CAnimationsMixer.h"
+#include <Athena-Entities/AnimationsMixer.h>
 #include <Athena-Entities/Transforms.h>
 #include <Athena-Entities/Signals.h>
 #include <Athena-Core/Log/LogManager.h>
@@ -29,8 +29,7 @@ static const char*	__CONTEXT__	= "Entity";
 
 Entity::Entity(const std::string& strName, Scene* pScene, Entity* pParent)
 : m_strName(strName), m_pScene(pScene), m_pParent(0), m_bEnabled(true),
-//  m_pAnimationsMixer(0),
-  m_pTransforms(0)
+  m_pAnimationsMixer(0), m_pTransforms(0)
 {
 	// Assertions
 	assert(!strName.empty() && "Invalid name");
@@ -50,11 +49,12 @@ Entity::Entity(const std::string& strName, Scene* pScene, Entity* pParent)
 
 Entity::~Entity()
 {
-    // if (m_pAnimationsMixer)
-    // {
-    //  delete m_pAnimationsMixer;
-    //  m_pAnimationsMixer = 0;
-    // }
+    // Destroy te animations mixer
+    if (m_pAnimationsMixer)
+    {
+        delete m_pAnimationsMixer;
+        m_pAnimationsMixer = 0;
+    }
 
 	// Destroy all the children of this entity
 	destroyAllChildren();
@@ -70,7 +70,7 @@ Entity::~Entity()
 }
 
 
-/****************************** MANAGEMENT OF THE ENTITY *******************************/
+/****************************** MANAGEMENT OF THE ENTITY ********************************/
 
 void Entity::enable(bool bEnabled)
 {
@@ -86,7 +86,7 @@ void Entity::enable(bool bEnabled)
 }
 
 
-/********************* MANAGEMENT OF THE PARENT/CHILDREN RELATION **********************/
+/********************* MANAGEMENT OF THE PARENT/CHILDREN RELATION ***********************/
 
 void Entity::addChild(Entity* pChild)
 {
@@ -137,13 +137,12 @@ void Entity::destroyAllChildren()
 }
 
 
-/***************************** MANAGEMENT OF THE ANIMATIONS ****************************/
+/***************************** MANAGEMENT OF THE ANIMATIONS *****************************/
 
-// CAnimationsMixer* CEntity::createAnimationsMixer()
-// {
-//  if (!m_pAnimationsMixer)
-//      m_pAnimationsMixer = new CAnimationsMixer();
-// 
-//  return m_pAnimationsMixer;
-// }
-// 
+AnimationsMixer* Entity::createAnimationsMixer()
+{
+    if (!m_pAnimationsMixer)
+        m_pAnimationsMixer = new AnimationsMixer();
+
+    return m_pAnimationsMixer;
+}

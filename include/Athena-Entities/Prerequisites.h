@@ -32,6 +32,8 @@ namespace Athena
         class Scene;
         class ScenesManager;
         class Transforms;
+        
+        typedef unsigned int tAnimation;
     }
 }
 

@@ -1,5 +1,6 @@
 # List the source files
 set(SRCS Animation.cpp
+         AnimationsMixer.cpp
          Component.cpp
          ComponentsList.cpp
          ComponentsManager.cpp
