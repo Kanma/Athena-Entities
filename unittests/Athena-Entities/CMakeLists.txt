@@ -1,9 +1,6 @@
 # Setup the search paths
-include_directories(${ATHENA_ENTITIES_SOURCE_DIR}/include
-                    ${ATHENA_CORE_SOURCE_DIR}/include
-                    ${ATHENA_MATH_SOURCE_DIR}/include
-                    ${ATHENA_BINARY_DIR}/include
-                    ${UNITTEST_CPP_SOURCE_DIR}/include)
+xmake_include_directories(ATHENA_ENTITIES)
+xmake_include_directories(UNITTEST_CPP)
 
 # List the source files
 file(GLOB SRCS main.cpp
@@ -19,13 +16,8 @@ file(GLOB SRCS main.cpp
 # Create and link the executable
 add_executable(UnitTests-Athena-Entities ${SRCS})
 
-set(LIBS UnitTest++ Athena-Entities)
-
-if (ATHENA_ENTITIES_STATIC)
-    list(APPEND LIBS Athena-Core Athena-Math)
-endif()
-
-target_link_libraries(UnitTests-Athena-Entities ${LIBS})
+xmake_target_link_libraries(UnitTests-Athena-Entities UNITTEST_CPP)
+xmake_target_link_libraries(UnitTests-Athena-Entities ATHENA_ENTITIES)
 
 # Run the unit tests
 get_property(PATH TARGET UnitTests-Athena-Entities PROPERTY RUNTIME_OUTPUT_DIRECTORY)

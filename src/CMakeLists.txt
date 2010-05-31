@@ -14,15 +14,12 @@ set(SRCS Animation.cpp
 add_definitions(-DATHENA_EXPORTS)
 
 # List the include paths
-include_directories(${ATHENA_ENTITIES_SOURCE_DIR}/include
-                    ${ATHENA_CORE_SOURCE_DIR}/include
-                    ${ATHENA_MATH_SOURCE_DIR}/include
-                    ${ATHENA_BINARY_DIR}/include)
+xmake_include_directories(ATHENA_ENTITIES)
 
 # Declaration of the library
 if (NOT ATHENA_ENTITIES_STATIC)
     add_library(Athena-Entities SHARED ${SRCS} ${PLATFORM_SRCS})
-    target_link_libraries(Athena-Entities Athena-Core Athena-Math)
+    xmake_target_link_libraries(Athena-Entities ATHENA_CORE)
 else()
     add_library(Athena-Entities STATIC ${SRCS} ${PLATFORM_SRCS})
 endif()
