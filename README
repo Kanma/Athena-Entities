@@ -10,8 +10,8 @@
 - Summary
 ---------------------------------------
 
-Athena-Entities is the one of the modules of the Athena Game Framework, in the
-form of a library written in C++.
+Athena-Entities is one of the modules of the Athena Game Framework, in the form
+of a library written in C++.
 
 It provides the basis of a system in which:
   1) everything is an 'entity'
