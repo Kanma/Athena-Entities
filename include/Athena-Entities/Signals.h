@@ -28,7 +28,7 @@ enum tSignals
 	// Components                               
 	SIGNAL_COMPONENT_TRANSFORMS_CHANGED,		        ///< Fired when the transforms of a component have changed
 	SIGNAL_COMPONENT_DESTROYED,					        ///< Fired when a component is destroyed
-	SIGNAL_COMPONENT_TRANSFORMS_ORIGIN_CHANGED,	        ///< Fired when the transforms origin of a component has changed
+	SIGNAL_COMPONENT_PARENT_TRANSFORMS_CHANGED,	        ///< Fired when the parent transforms component of a component has changed
 };
 
 }

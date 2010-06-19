@@ -96,12 +96,12 @@ void Entity::addChild(Entity* pChild)
 	// If the child has already a parent, detach it first
 	if (pChild->m_pParent)
 		pChild->m_pParent->removeChild(pChild);
+
+	pChild->getTransforms()->_setParentTransforms(m_pTransforms);
 		
 	// Add it to the list of this entity
 	m_children.push_back(pChild);
 	pChild->m_pParent = this;
-
-	pChild->getTransforms()->setTransformsOrigin(m_pTransforms);
 }
 
 //-----------------------------------------------------------------------
@@ -119,8 +119,8 @@ void Entity::removeChild(Entity* pChild)
 	{
 		if (*iter == pChild)
 		{
+			(*iter)->getTransforms()->_setParentTransforms(0);
 			(*iter)->m_pParent = 0;
-			(*iter)->getTransforms()->setTransformsOrigin(0);
 			m_children.erase(iter);
 			return;
 		}

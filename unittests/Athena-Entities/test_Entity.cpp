@@ -29,7 +29,8 @@ SUITE(EntityTests)
 
         Transforms* pTransforms = new Transforms("T2", pEntity->getComponentsList());
 
-        CHECK_EQUAL(pTransforms->getTransformsOrigin(), pEntity->getTransforms());
+        CHECK_EQUAL(pTransforms->getTransforms(), pEntity->getTransforms());
+        CHECK(!pTransforms->getTransformsOrigin());
 
         pScene->destroy(pEntity);
     }
@@ -54,7 +55,8 @@ SUITE(EntityTests)
 
         CHECK(pParent->getTransforms());
         CHECK(pChild->getTransforms());
-        CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransformsOrigin());
+        CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransforms());
+        CHECK(!pChild->getTransforms()->getTransformsOrigin());
 
 		pScene->destroy(pChild);
 		pScene->destroy(pParent);
@@ -82,7 +84,8 @@ SUITE(EntityTests)
 
         CHECK(pParent->getTransforms());
         CHECK(pChild->getTransforms());
-        CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransformsOrigin());
+        CHECK_EQUAL(pParent->getTransforms(), pChild->getTransforms()->getTransforms());
+        CHECK(!pChild->getTransforms()->getTransformsOrigin());
 
 		pScene->destroy(pChild);
 		pScene->destroy(pParent);
@@ -104,7 +107,7 @@ SUITE(EntityTests)
 
         CHECK(pParent->getTransforms());
         CHECK(pChild->getTransforms());
-        CHECK(!pChild->getTransforms()->getTransformsOrigin());
+        CHECK(!pChild->getTransforms()->getTransforms());
 
 		pScene->destroy(pChild);
 		pScene->destroy(pParent);

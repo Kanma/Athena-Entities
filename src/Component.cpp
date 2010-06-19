@@ -67,6 +67,35 @@ Component* Component::create(const std::string& strName, ComponentsList* pList)
 }
 
 
+/*************************************** METHODS ***************************************/
+
+Transforms* Component::getTransforms() const
+{
+    // Assertions
+    assert(m_pList);
+
+    // If we have a transforms origin, return it
+    if (m_pTransformsOrigin)
+        return m_pTransformsOrigin;
+
+    // If we are part to an entity
+    Entity* pEntity = m_pList->getEntity();
+    if (pEntity)
+    {
+        // If we aren't its transforms component, return it
+        if (pEntity->getTransforms() != this)
+            return pEntity->getTransforms();
+        
+        // If our entity has a parent, return its transforms
+        if (pEntity->getParent())
+            return pEntity->getParent()->getTransforms();
+    }
+
+    // No transform component affect this one
+    return 0;
+}
+
+
 /******************* MANAGEMENT OF THE ORIGIN OF THE TRANSFORMATIONS *******************/
 
 void Component::setTransformsOrigin(Transforms* pTransforms)
@@ -74,34 +103,50 @@ void Component::setTransformsOrigin(Transforms* pTransforms)
     // Assertions
     assert(m_pList);
 
-    // Unregister to the signals of the previous origin
-    if (m_pTransformsOrigin)
+    // Unregister to the signals of the current transforms
+    Transforms* pCurrentTransforms = getTransforms();
+    if (pCurrentTransforms)
     {
-        SignalsList* pSignals = m_pTransformsOrigin->getSignalsList();
+        SignalsList* pSignals = pCurrentTransforms->getSignalsList();
         pSignals->disconnect(SIGNAL_COMPONENT_DESTROYED, this, &Component::onTransformsOriginDestroyed);
     }
 
-    // Register to the signals of the new origin
-    if (pTransforms)
+    // Determine the new transforms
+    Transforms* pNewTransforms = pTransforms;
+    if (!pNewTransforms)
+    {
+        Entity* pEntity = m_pList->getEntity();
+        if (pEntity)
+        {
+            if (pEntity->getTransforms() != this)
+                pNewTransforms = pEntity->getTransforms();
+            else if (pEntity->getParent())
+                pNewTransforms = pEntity->getParent()->getTransforms();
+        }
+    }
+            
+    // Register to the signals of the new transforms
+    if (pNewTransforms)
     {
         SignalsList* pSignals = pTransforms->getSignalsList();
         pSignals->connect(SIGNAL_COMPONENT_DESTROYED, this, &Component::onTransformsOriginDestroyed);
     }
 
     // Fire a signal about the change of origin
-    if (pTransforms)
-        m_signals.fire(SIGNAL_COMPONENT_TRANSFORMS_ORIGIN_CHANGED, new Variant(pTransforms->getID().toString()));
+    if (pNewTransforms)
+        m_signals.fire(SIGNAL_COMPONENT_PARENT_TRANSFORMS_CHANGED, new Variant(pNewTransforms->getID().toString()));
     else
-        m_signals.fire(SIGNAL_COMPONENT_TRANSFORMS_ORIGIN_CHANGED, new Variant(tComponentID(COMP_NONE).toString()));
+        m_signals.fire(SIGNAL_COMPONENT_PARENT_TRANSFORMS_CHANGED, new Variant(tComponentID(COMP_NONE).toString()));
 
     // Stores a reference to the new origin
     m_pTransformsOrigin = pTransforms;
 
     // Fire a 'transforms changed' signal
-    if (pTransforms)
-        pTransforms->getSignalsList()->fire(SIGNAL_COMPONENT_TRANSFORMS_CHANGED);
+    if (pNewTransforms)
+        pNewTransforms->getSignalsList()->fire(SIGNAL_COMPONENT_TRANSFORMS_CHANGED);
 }
 
+//-----------------------------------------------------------------------
 
 void Component::setTransformsOrigin(const tComponentID& id)
 {
@@ -135,9 +180,9 @@ Utils::PropertiesList* Component::getProperties() const
 
 	// Transforms origin
     if (m_pTransformsOrigin)
-        pProperties->set("transforms", new Variant(m_pTransformsOrigin->getID().toString()));
+        pProperties->set("transforms-origin", new Variant(m_pTransformsOrigin->getID().toString()));
     else
-		pProperties->set("transforms", new Variant(tComponentID(COMP_NONE).toString()));
+		pProperties->set("transforms-origin", new Variant(tComponentID(COMP_NONE).toString()));
 
 	// Returns the list
 	return pProperties;
@@ -170,8 +215,8 @@ bool Component::setProperty(const std::string& strName, Utils::Variant* pValue)
 	// Declarations
 	bool bUsed = true;
 
-	// Origin
-    if (strName == "transforms")
+	// Transforms origin
+    if (strName == "transforms-origin")
     {
         tComponentID id(pValue->toString());
 

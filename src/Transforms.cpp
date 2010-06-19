@@ -36,18 +36,21 @@ Transforms::Transforms(const std::string& strName, ComponentsList* pList)
 	m_id.type = COMP_TRANSFORMS;
 
 	// Signals handling
-	m_signals.connect(SIGNAL_COMPONENT_TRANSFORMS_ORIGIN_CHANGED, this, &Transforms::onTransformsOriginChanged);
+	m_signals.connect(SIGNAL_COMPONENT_PARENT_TRANSFORMS_CHANGED, this, &Transforms::onParentTransformsChanged);
 
-	// Use the transforms of the entity as our origin by default (if any)
-	if (m_pList->getEntity() && m_pList->getEntity()->getTransforms())
-		setTransformsOrigin(m_pList->getEntity()->getTransforms());
+	// Register to the signals of the parent transforms
+    Transforms* pParentTransforms = getTransforms();
+	if (pParentTransforms)
+	{
+		SignalsList* pSignals = pParentTransforms->getSignalsList();
+		pSignals->connect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
+	}
 }
 
 //-----------------------------------------------------------------------
 
 Transforms::~Transforms()
 {
-	setTransformsOrigin(0);
 }
 
 //-----------------------------------------------------------------------
@@ -98,12 +101,15 @@ void Transforms::translate(const Vector3& d, tTransformSpace relativeTo)
 		break;
 
 	case TS_WORLD:
-		// Position is relative to parent so transform upwards
-		if (m_pTransformsOrigin)
-			m_position += (m_pTransformsOrigin->getWorldOrientation().Inverse() * d) / m_pTransformsOrigin->getWorldScale();
-		else
-			m_position += d;
-		break;
+		{
+    		// Position is relative to parent so transform upwards
+            Transforms* pParent = getTransforms();
+    		if (pParent)
+    			m_position += (pParent->getWorldOrientation().Inverse() * d) / pParent->getWorldScale();
+    		else
+    			m_position += d;
+    		break;
+		}
 	}
 
 	needUpdate();
@@ -140,6 +146,9 @@ void Transforms::setDirection(const Vector3& vec, tTransformSpace relativeTo,
 	// The direction we want the local direction point to
 	Vector3 targetDir = vec.normalisedCopy();
 
+    // Retrieve the parent transforms of this component
+    Transforms* pParentTransforms = getTransforms();
+
 	// Transform target direction to world space
 	switch (relativeTo)
 	{
@@ -148,8 +157,8 @@ void Transforms::setDirection(const Vector3& vec, tTransformSpace relativeTo,
 		break;
 
 	case TS_PARENT:
-		if (m_bInheritOrientation && m_pTransformsOrigin)
-			targetDir = m_pTransformsOrigin->getWorldOrientation() * targetDir;
+		if (m_bInheritOrientation && pParentTransforms)
+			targetDir = pParentTransforms->getWorldOrientation() * targetDir;
 		break;
 
 	case TS_WORLD:
@@ -179,8 +188,8 @@ void Transforms::setDirection(const Vector3& vec, tTransformSpace relativeTo,
 	}
 
 	// Set target orientation, transformed to parent space
-	if (m_pTransformsOrigin && m_bInheritOrientation)
-		setOrientation(m_pTransformsOrigin->getWorldOrientation().UnitInverse() * targetOrientation);
+	if (pParentTransforms && m_bInheritOrientation)
+		setOrientation(pParentTransforms->getWorldOrientation().UnitInverse() * targetOrientation);
 	else
 		setOrientation(targetOrientation);
 }
@@ -373,14 +382,16 @@ void Transforms::update()
 	if (!m_bDirty)
 		return;
 
-	if (m_pTransformsOrigin)
+    Transforms* pParent = getTransforms();
+	if (pParent)
 	{
 		// Update orientation
-		const Quaternion& parentOrientation = m_pTransformsOrigin->getWorldOrientation();
+		const Quaternion& parentOrientation = pParent->getWorldOrientation();
 		if (m_bInheritOrientation)
 		{
 			// Combine orientation with that of parent
 			m_fullOrientation = parentOrientation * m_orientation;
+            m_fullOrientation.normalise();
 		}
 		else
 		{
@@ -389,7 +400,7 @@ void Transforms::update()
 		}
 
 		// Update scale
-		const Vector3& parentScale = m_pTransformsOrigin->getWorldScale();
+		const Vector3& parentScale = pParent->getWorldScale();
 		if (m_bInheritScale)
 		{
 			// Scale own position by parent scale, NB just combine
@@ -406,7 +417,7 @@ void Transforms::update()
 		m_fullPosition = parentOrientation * (parentScale * m_position);
 
 		// Add altered position vector to parents
-		m_fullPosition += m_pTransformsOrigin->getWorldPosition();
+		m_fullPosition += pParent->getWorldPosition();
 	}
 	else
 	{
@@ -419,25 +430,47 @@ void Transforms::update()
 	m_bDirty = false;
 }
 
+//-----------------------------------------------------------------------
+
+void Transforms::_setParentTransforms(Transforms* pParentTransforms)
+{
+	assert(m_pList);
+	assert(m_pList->getEntity());
+    assert((pParentTransforms && !m_pList->getEntity()->getParent()) ||
+           (!pParentTransforms && m_pList->getEntity()->getParent()));
+
+    if (pParentTransforms)
+    {
+		SignalsList* pSignals = pParentTransforms->getSignalsList();
+		pSignals->connect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
+    }
+    else
+    {
+		SignalsList* pSignals = m_pList->getEntity()->getParent()->getTransforms()->getSignalsList();
+		pSignals->disconnect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
+    }
+}
+
 
 /**************************************** SLOTS *****************************************/
 
-void Transforms::onTransformsOriginChanged(Utils::Variant* pValue)
+void Transforms::onParentTransformsChanged(Utils::Variant* pValue)
 {
 	// Assertions
 	assert(m_pList);
 	assert(pValue);
 
-	// Unregister to the signals of the previous origin
-	if (m_pTransformsOrigin)
+	// Unregister to the signals of the previous transforms
+    Transforms* pPreviousTransforms = getTransforms();
+	if (pPreviousTransforms)
 	{
-		SignalsList* pSignals = m_pTransformsOrigin->getSignalsList();
+		SignalsList* pSignals = pPreviousTransforms->getSignalsList();
 		pSignals->disconnect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
 	}
 
 	Transforms* pTransforms = Transforms::cast(m_pList->getComponent(tComponentID(pValue->toString())));
 
-	// Register to the signals of the new origin
+	// Register to the signals of the new transforms
 	if (pTransforms)
 	{
 		SignalsList* pSignals = pTransforms->getSignalsList();

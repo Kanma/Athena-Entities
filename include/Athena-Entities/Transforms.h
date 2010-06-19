@@ -32,6 +32,9 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 class ATHENA_SYMBOL Transforms: public Component
 {
+    friend class Entity;
+    
+
 	//_____ Internal types __________
 public:
 	//------------------------------------------------------------------------------------
@@ -373,18 +376,19 @@ public:
 protected:
 	void needUpdate();
 	void update();
+    void _setParentTransforms(Transforms* pParentTransforms);
 
 
 	//_____ Slots __________
 protected:
     //------------------------------------------------------------------------------------
-    /// @brief	Called when the transforms origin of the component is changed
+    /// @brief	Called when the parent transforms of the component is changed
     ///
-    /// @param	pValue	 Contains the ID of the new transforms origin
+    /// @param	pValue	 Contains the ID of the new parent transforms
     ///
-    /// @remark	When this method is called, the previous origin is still available
+    /// @remark	When this method is called, the previous transforms are still available
     //------------------------------------------------------------------------------------
-	void onTransformsOriginChanged(Utils::Variant* pValue);
+	void onParentTransformsChanged(Utils::Variant* pValue);
 
     //------------------------------------------------------------------------------------
     /// @brief	Called when the transforms to apply to the component have changed

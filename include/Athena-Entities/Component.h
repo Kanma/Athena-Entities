@@ -19,6 +19,11 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 /// @brief	Base class for all the components of an entity
 ///
+/// By default, a component is affected by the transforms of its entity
+/// (see Entity::getTransforms()). Other transforms components can be added to an entity,
+/// in order to offset another of its components. To use another transforms component than
+/// the default one, call Component::setTransformsOrigin().
+///
 /// @remark	Components are kept in lists (see ComponentsList)
 //----------------------------------------------------------------------------------------
 class ATHENA_SYMBOL Component: public Utils::Describable
@@ -55,31 +60,43 @@ public:
 	//-----------------------------------------------------------------------------------
 	virtual const std::string getType() const { return TYPE; }
 
-
 	//-----------------------------------------------------------------------------------
 	/// @brief	Returns the id of the component
 	//-----------------------------------------------------------------------------------
 	tComponentID getID() const { return m_id; }
-
 
 	//-----------------------------------------------------------------------------------
 	/// @brief	Returns the name of the component
 	//-----------------------------------------------------------------------------------
 	inline const std::string& getName() const { return m_id.strName; }
 
-
 	//-----------------------------------------------------------------------------------
 	/// @brief	Returns the list of which the component is a member
 	//-----------------------------------------------------------------------------------
 	inline ComponentsList* getList() const { return m_pList; }
 
+	//-----------------------------------------------------------------------------------
+	/// @brief	Returns the Transforms component affecting this one
+	//-----------------------------------------------------------------------------------
+    Transforms* getTransforms() const;
+
 
     //_____ Management of the origin of the transformations __________
 public:
+	//-----------------------------------------------------------------------------------
+	/// @brief	Sets the Transforms origin of this component
+	//-----------------------------------------------------------------------------------
     void setTransformsOrigin(Transforms* pTransforms);
+
+	//-----------------------------------------------------------------------------------
+	/// @brief	Sets the Transforms origin of this component
+	//-----------------------------------------------------------------------------------
     void setTransformsOrigin(const tComponentID& id);
 
-    Transforms* getTransformsOrigin() const
+	//-----------------------------------------------------------------------------------
+	/// @brief	Returns the Transforms origin of this component
+	//-----------------------------------------------------------------------------------
+    inline Transforms* getTransformsOrigin() const
     {
         return m_pTransformsOrigin;
     }
@@ -87,6 +104,9 @@ public:
 
     //_____ Slots __________
 protected:
+	//-----------------------------------------------------------------------------------
+	/// @brief	Called when the Transforms origin of this component is destroyed
+	//-----------------------------------------------------------------------------------
     void onTransformsOriginDestroyed(Utils::Variant* pValue);
 
 
