@@ -8,6 +8,7 @@
 #include <Athena-Entities/Component.h>
 #include <Athena-Entities/ComponentsManager.h>
 #include <Athena-Entities/Entity.h>
+#include <Athena-Entities/Scene.h>
 
 
 using namespace Athena;
@@ -87,29 +88,34 @@ void ComponentsList::removeAllComponents(bool bDestroy)
 
 //-----------------------------------------------------------------------
 
-Component* ComponentsList::getComponent(const tComponentID& id) const
+Component* ComponentsList::getComponent(const tComponentID& id, bool bInAllScene) const
 {
-	// Check that if an entity owns this list, the component ID specify the entity name
-	if (id.strEntity.empty() && m_pEntity)
-		return 0;
-
-	// Test if the component belongs to the entity owning this list
-    if (m_pEntity && (id.strEntity != m_pEntity->getName()))
+    // Test if the component ID correspond to this list (no entity name, or specifying the
+    // name of the entity owning this list)
+    if (id.strEntity.empty() || (m_pEntity && (id.strEntity == m_pEntity->getName())))
     {
-        // Ask the parent entity for the component (if the component is a transforms one)
-        if ((id.type == COMP_TRANSFORMS) && m_pEntity->getParent())
-            return m_pEntity->getParent()->getComponent(id);
-        else
-            return 0;
+    	tComponentsList::const_iterator iter, iterEnd;
+    	for (iter = m_components.begin(), iterEnd = m_components.end(); iter != iterEnd; ++iter)
+    	{
+    		if ((*iter)->getID() == id)
+    			return *iter;
+    	}
+    }
+    
+    // Otherwise search in the scene
+    else if (bInAllScene)
+    {
+        Scene* pScene = m_pScene;
+        if (!pScene && m_pEntity)
+            pScene = m_pEntity->getScene();
+        
+        if (pScene)
+        {
+            Entity* pEntity = pScene->getEntity(id.strEntity);
+            if (pEntity)
+                return pEntity->getComponent(id);
+        }
     }
 
-	// Search the component
-	tComponentsList::const_iterator iter, iterEnd;
-	for (iter = m_components.begin(), iterEnd = m_components.end(); iter != iterEnd; ++iter)
-	{
-		if ((*iter)->getID() == id)
-			return *iter;
-	}
-
-	return 0;
+    return 0;
 }

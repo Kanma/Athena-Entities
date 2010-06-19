@@ -113,14 +113,15 @@ public:
     //------------------------------------------------------------------------------------
     /// @brief	Returns one of the components
     ///
-    /// @param	id	ID of the component
-    /// @return		The component
+    /// @param	id	        ID of the component
+    /// @param	bInAllScene Indicates if the component must be searched in all the scene
+    /// @return		        The component
     ///
     ///	@remark	If the component doesn't belongs to the entity owning the list (if any), and
     ///			it is a transforms component, the parent entity (if any) is asked for the
     ///			component.
     //------------------------------------------------------------------------------------
-	Component* getComponent(const tComponentID& id) const;
+	Component* getComponent(const tComponentID& id, bool bInAllScene = false) const;
 
     //------------------------------------------------------------------------------------
 	/// @brief	Returns one of the components
