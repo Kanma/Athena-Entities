@@ -82,8 +82,56 @@ void ComponentsList::removeComponent(const tComponentID& id, bool bDestroy)
 
 void ComponentsList::removeAllComponents(bool bDestroy)
 {
+    // If the components must not be destroyed, no special care is needed
+    if (!bDestroy)
+    {
+    	while (!m_components.empty())
+    		removeComponent(m_components.front(), bDestroy);
+    
+        return;
+    }
+
+    // We need to be carefull here: the transforms components must be removed
+    // last, and the transforms component of the entity owning the list (if any)
+    // must be the last one removed
+    
+    destroyAllComponentsOfType(COMP_OTHER);
+    destroyAllComponentsOfType(COMP_DEBUG);
+    destroyAllComponentsOfType(COMP_PHYSICAL);
+    destroyAllComponentsOfType(COMP_AUDIO);
+    destroyAllComponentsOfType(COMP_VISUAL);
+    
+    // Destroy the thransforms components (the first in the list is the one of
+    // the entity)
 	while (!m_components.empty())
-		removeComponent(m_components.front(), bDestroy);
+		removeComponent(m_components.back(), bDestroy);
+}
+
+//-----------------------------------------------------------------------
+
+void ComponentsList::destroyAllComponentsOfType(tComponentType type)
+{
+    // Assertions
+    assert(ComponentsManager::getSingletonPtr());
+
+    // Declarations
+	tComponentsList::const_iterator iter, iterEnd;
+    tComponentsList originalList = m_components;
+    tComponentsList deleteList;
+    
+    // Split the list of components in two
+    m_components.clear();
+	for (iter = originalList.begin(), iterEnd = originalList.end(); iter != iterEnd; ++iter)
+	{
+		if ((*iter)->getID().type == type)
+			deleteList.push_back(*iter);
+	    else
+			m_components.push_back(*iter);
+	}
+	
+	// Delete the components of the given type
+	for (iter = deleteList.begin(), iterEnd = deleteList.end(); iter != iterEnd; ++iter)
+        ComponentsManager::getSingletonPtr()->destroy(*iter);
 }
 
 //-----------------------------------------------------------------------

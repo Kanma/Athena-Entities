@@ -436,18 +436,19 @@ void Transforms::_setParentTransforms(Transforms* pParentTransforms)
 {
 	assert(m_pList);
 	assert(m_pList->getEntity());
-    assert((pParentTransforms && !m_pList->getEntity()->getParent()) ||
-           (!pParentTransforms && m_pList->getEntity()->getParent()));
 
-    if (pParentTransforms)
+    if (getTransforms())
     {
-		SignalsList* pSignals = pParentTransforms->getSignalsList();
-		pSignals->connect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
+	    SignalsList* pSignals = getTransforms()->getSignalsList();
+	    pSignals->disconnect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
     }
-    else
+    
+    setTransforms(pParentTransforms);
+
+    if (getTransforms())
     {
-		SignalsList* pSignals = m_pList->getEntity()->getParent()->getTransforms()->getSignalsList();
-		pSignals->disconnect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
+	    SignalsList* pSignals = getTransforms()->getSignalsList();
+	    pSignals->connect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
     }
 }
 

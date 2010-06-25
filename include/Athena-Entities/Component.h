@@ -22,7 +22,7 @@ namespace Entities {
 /// By default, a component is affected by the transforms of its entity
 /// (see Entity::getTransforms()). Other transforms components can be added to an entity,
 /// in order to offset another of its components. To use another transforms component than
-/// the default one, call Component::setTransformsOrigin().
+/// the default one, call Component::setTransforms().
 ///
 /// @remark	Components are kept in lists (see ComponentsList)
 //----------------------------------------------------------------------------------------
@@ -75,39 +75,38 @@ public:
 	//-----------------------------------------------------------------------------------
 	inline ComponentsList* getList() const { return m_pList; }
 
-	//-----------------------------------------------------------------------------------
-	/// @brief	Returns the Transforms component affecting this one
-	//-----------------------------------------------------------------------------------
-    Transforms* getTransforms() const;
 
-
-    //_____ Management of the origin of the transformations __________
+    //_____ Management of the transformations __________
 public:
 	//-----------------------------------------------------------------------------------
-	/// @brief	Sets the Transforms origin of this component
+	/// @brief	Sets the Transforms of this component
 	//-----------------------------------------------------------------------------------
-    void setTransformsOrigin(Transforms* pTransforms);
+    void setTransforms(Transforms* pTransforms);
 
 	//-----------------------------------------------------------------------------------
-	/// @brief	Sets the Transforms origin of this component
+	/// @brief	Sets the Transforms of this component
 	//-----------------------------------------------------------------------------------
-    void setTransformsOrigin(const tComponentID& id);
+    void setTransforms(const tComponentID& id);
 
 	//-----------------------------------------------------------------------------------
-	/// @brief	Returns the Transforms origin of this component
+	/// @brief	Returns the Transforms of this component
 	//-----------------------------------------------------------------------------------
-    inline Transforms* getTransformsOrigin() const
+    inline Transforms* getTransforms() const
     {
-        return m_pTransformsOrigin;
+        return m_pTransforms;
     }
 
+protected:
+    void _connectToParentTransformsSignals();
+    void _disconnectFromParentTransformsSignals();
+    
 
     //_____ Slots __________
 protected:
 	//-----------------------------------------------------------------------------------
-	/// @brief	Called when the Transforms origin of this component is destroyed
+	/// @brief	Called when the parent Transforms of this component is destroyed
 	//-----------------------------------------------------------------------------------
-    void onTransformsOriginDestroyed(Utils::Variant* pValue);
+    void onParentTransformsDestroyed(Utils::Variant* pValue);
 
 
 	//_____ Management of the signals list __________
@@ -171,15 +170,15 @@ public:
 
 	//_____ Constants __________
 public:
-	static const std::string	TYPE;				///< Type of component
+	static const std::string	TYPE;		///< Type of component
 
 
 	//_____ Attributes __________
 protected:
-	tComponentID			m_id;					///< ID of the component
-	ComponentsList*		    m_pList;				///< The list containing that component
-	Transforms*			    m_pTransformsOrigin;	///< The transforms origin
-	Signals::SignalsList	m_signals;				///< The signals list
+	tComponentID			m_id;			///< ID of the component
+	ComponentsList*		    m_pList;		///< The list containing that component
+	Transforms*			    m_pTransforms;	///< The transforms origin
+	Signals::SignalsList	m_signals;		///< The signals list
 };
 
 }

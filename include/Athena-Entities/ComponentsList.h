@@ -152,6 +152,10 @@ public:
 	}
 
 
+private:
+    void destroyAllComponentsOfType(tComponentType type);
+    
+
 	//_____ Attributes __________
 private:
 	Entity*		    m_pEntity;		///< The entity associated with this list

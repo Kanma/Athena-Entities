@@ -50,13 +50,13 @@ SUITE(TransformsComponentCreationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		CHECK(!pTransforms1->getTransformsOrigin());
-		CHECK(!pTransforms2->getTransformsOrigin());
+		CHECK(!pTransforms1->getTransforms());
+		CHECK(!pTransforms2->getTransforms());
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
-		CHECK(!pTransforms1->getTransformsOrigin());
-		CHECK_EQUAL(pTransforms1, pTransforms2->getTransformsOrigin());
+		CHECK(!pTransforms1->getTransforms());
+		CHECK_EQUAL(pTransforms1, pTransforms2->getTransforms());
 	}
 }
 
@@ -86,7 +86,7 @@ SUITE(TransformsComponentPositionTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -110,7 +110,7 @@ SUITE(TransformsComponentPositionTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -135,7 +135,7 @@ SUITE(TransformsComponentPositionTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -179,7 +179,7 @@ SUITE(TransformsComponentOrientationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -251,7 +251,7 @@ SUITE(TransformsComponentOrientationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -275,7 +275,7 @@ SUITE(TransformsComponentOrientationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -299,7 +299,7 @@ SUITE(TransformsComponentOrientationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -342,7 +342,7 @@ SUITE(TransformsComponentScaleTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::UNIT_SCALE.positionEquals(pTransforms1->getScale()));
 		CHECK(Vector3::UNIT_SCALE.positionEquals(pTransforms1->getWorldScale()));
@@ -417,7 +417,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -441,7 +441,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -465,7 +465,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -489,7 +489,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -515,7 +515,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -541,7 +541,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -567,7 +567,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -593,7 +593,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -619,7 +619,7 @@ SUITE(TransformsComponentTranslationTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getPosition()));
 		CHECK(Vector3::ZERO.positionEquals(pTransforms1->getWorldPosition()));
@@ -696,7 +696,7 @@ SUITE(TransformsComponentRotationsTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -720,7 +720,7 @@ SUITE(TransformsComponentRotationsTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -744,7 +744,7 @@ SUITE(TransformsComponentRotationsTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -768,7 +768,7 @@ SUITE(TransformsComponentRotationsTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -792,7 +792,7 @@ SUITE(TransformsComponentRotationsTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -816,7 +816,7 @@ SUITE(TransformsComponentRotationsTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getOrientation(), Degree(0.1f)));
 		CHECK(Quaternion::IDENTITY.equals(pTransforms1->getWorldOrientation(), Degree(0.1f)));
@@ -859,7 +859,7 @@ SUITE(TransformsComponentScalingTests)
 		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
 		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
 
-		pTransforms2->setTransformsOrigin(pTransforms1);
+		pTransforms2->setTransforms(pTransforms1);
 
 		CHECK(Vector3::UNIT_SCALE.positionEquals(pTransforms1->getScale()));
 		CHECK(Vector3::UNIT_SCALE.positionEquals(pTransforms1->getWorldScale()));
