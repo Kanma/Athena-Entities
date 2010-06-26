@@ -43,7 +43,7 @@ SUITE(TransformsComponentCreationTests)
 	}
 
 
-	TEST_FIXTURE(EntitiesTestEnvironment, UseTransformsOrigin)
+	TEST_FIXTURE(EntitiesTestEnvironment, UseParentTransforms)
 	{
 		ComponentsList list;
 
@@ -54,9 +54,24 @@ SUITE(TransformsComponentCreationTests)
 		CHECK(!pTransforms2->getTransforms());
 
 		pTransforms2->setTransforms(pTransforms1);
-
+		
 		CHECK(!pTransforms1->getTransforms());
 		CHECK_EQUAL(pTransforms1, pTransforms2->getTransforms());
+	}
+
+
+	TEST_FIXTURE(EntitiesTestEnvironment, RemoveParentTransforms)
+	{
+		ComponentsList list;
+
+		Transforms* pTransforms1 = new Transforms("Transforms1", &list);
+		Transforms* pTransforms2 = new Transforms("Transforms2", &list);
+
+		pTransforms2->setTransforms(pTransforms1);
+		pTransforms2->removeTransforms();
+		
+		CHECK(!pTransforms1->getTransforms());
+		CHECK(!pTransforms2->getTransforms());
 	}
 }
 

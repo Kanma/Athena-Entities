@@ -35,16 +35,7 @@ Transforms::Transforms(const std::string& strName, ComponentsList* pList)
 {
 	m_id.type = COMP_TRANSFORMS;
 
-	// Signals handling
-	m_signals.connect(SIGNAL_COMPONENT_PARENT_TRANSFORMS_CHANGED, this, &Transforms::onParentTransformsChanged);
-
-	// Register to the signals of the parent transforms
-    Transforms* pParentTransforms = getTransforms();
-	if (pParentTransforms)
-	{
-		SignalsList* pSignals = pParentTransforms->getSignalsList();
-		pSignals->connect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
-	}
+	setTransforms(0);
 }
 
 //-----------------------------------------------------------------------
@@ -370,9 +361,7 @@ Vector3 Transforms::getWorldScale()
 
 void Transforms::needUpdate()
 {
-	m_bDirty = true;
-
-	m_signals.fire(SIGNAL_COMPONENT_TRANSFORMS_CHANGED);
+	onTransformsChanged();
 }
 
 //-----------------------------------------------------------------------
@@ -430,60 +419,20 @@ void Transforms::update()
 	m_bDirty = false;
 }
 
-//-----------------------------------------------------------------------
-
-void Transforms::_setParentTransforms(Transforms* pParentTransforms)
-{
-	assert(m_pList);
-	assert(m_pList->getEntity());
-
-    if (getTransforms())
-    {
-	    SignalsList* pSignals = getTransforms()->getSignalsList();
-	    pSignals->disconnect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
-    }
-    
-    setTransforms(pParentTransforms);
-
-    if (getTransforms())
-    {
-	    SignalsList* pSignals = getTransforms()->getSignalsList();
-	    pSignals->connect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
-    }
-}
-
 
 /**************************************** SLOTS *****************************************/
 
-void Transforms::onParentTransformsChanged(Utils::Variant* pValue)
+void Transforms::onTransformsChanged()
 {
-	// Assertions
-	assert(m_pList);
-	assert(pValue);
+	assert(getSignalsList());
+	
+	m_bDirty = true;
+		
+	// Call the base class implementation
+	Component::onTransformsChanged();
 
-	// Unregister to the signals of the previous transforms
-    Transforms* pPreviousTransforms = getTransforms();
-	if (pPreviousTransforms)
-	{
-		SignalsList* pSignals = pPreviousTransforms->getSignalsList();
-		pSignals->disconnect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
-	}
-
-	Transforms* pTransforms = Transforms::cast(m_pList->getComponent(tComponentID(pValue->toString())));
-
-	// Register to the signals of the new transforms
-	if (pTransforms)
-	{
-		SignalsList* pSignals = pTransforms->getSignalsList();
-		pSignals->connect(SIGNAL_COMPONENT_TRANSFORMS_CHANGED, this, &Transforms::onTransformsChanged);
-	}
-}
-
-//-----------------------------------------------------------------------
-
-void Transforms::onTransformsChanged(Utils::Variant* pValue)
-{
-	needUpdate();
+	// Fire a 'transforms changed' signal
+    getSignalsList()->fire(INTERNAL_SIGNAL_TRANSFORMS_CHANGED);
 }
 
 

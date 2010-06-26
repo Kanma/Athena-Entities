@@ -29,24 +29,14 @@ const std::string Component::TYPE = "Athena/Component";
 /***************************** CONSTRUCTION / DESTRUCTION *******************************/
 
 Component::Component(const std::string& strName, ComponentsList* pList)
-: m_id(COMP_OTHER, strName), m_pList(pList), m_pTransforms(0)  
+: m_id(COMP_OTHER, strName), m_pList(pList), m_pTransforms(0)
 {
 	// Assertions
 	assert(!strName.empty() && "Invalid name");
 	assert(pList && "Invalid list");
 
-    if (pList->getEntity())
-    {
-        m_id.strEntity = pList->getEntity()->getName();
-
-        if (pList->getEntity()->getTransforms())
-            m_pTransforms = pList->getEntity()->getTransforms();
-        else if (pList->getEntity()->getParent())
-            m_pTransforms = pList->getEntity()->getParent()->getTransforms();
-        
-        if (m_pTransforms)
-            _connectToParentTransformsSignals();
-    }
+	if (m_pList->getEntity())
+		m_id.strEntity = m_pList->getEntity()->getName();
 
 	pList->_addComponent(this);
 }
@@ -80,7 +70,7 @@ Component* Component::create(const std::string& strName, ComponentsList* pList)
 }
 
 
-/******************* MANAGEMENT OF THE ORIGIN OF THE TRANSFORMATIONS *******************/
+/*************************** MANAGEMENT OF THE TRANSFORMATIONS **************************/
 
 void Component::setTransforms(Transforms* pTransforms)
 {
@@ -105,25 +95,17 @@ void Component::setTransforms(Transforms* pTransforms)
         }
     }
     
-    // Register to the signals of the new transforms
-    if (pNewTransforms)
-    {
-        SignalsList* pSignals = pNewTransforms->getSignalsList();
-        pSignals->connect(SIGNAL_COMPONENT_DESTROYED, this, &Component::onParentTransformsDestroyed);
-    }
-
-    // Fire a signal about the change of origin
-    if (pNewTransforms)
-        m_signals.fire(SIGNAL_COMPONENT_PARENT_TRANSFORMS_CHANGED, new Variant(pNewTransforms->getID().toString()));
-    else
-        m_signals.fire(SIGNAL_COMPONENT_PARENT_TRANSFORMS_CHANGED, new Variant(tComponentID(COMP_NONE).toString()));
-
-    // Stores a reference to the new origin
+    // Stores a reference to the new transforms
     m_pTransforms = pNewTransforms;
 
-    // Fire a 'transforms changed' signal
-    if (pNewTransforms)
-        pNewTransforms->getSignalsList()->fire(SIGNAL_COMPONENT_TRANSFORMS_CHANGED);
+    if (m_pTransforms)
+	{
+    	// Register to the signals of the new transforms
+		_connectToParentTransformsSignals();
+
+		// Do whatever we must do when our transforms change
+		onTransformsChanged();
+	}
 }
 
 //-----------------------------------------------------------------------
@@ -138,12 +120,33 @@ void Component::setTransforms(const tComponentID& id)
 
 //-----------------------------------------------------------------------
 
+void Component::removeTransforms()
+{
+	if (!m_pTransforms)
+		return;
+
+	_disconnectFromParentTransformsSignals();
+
+    m_pTransforms = 0;
+
+	onTransformsChanged();
+}
+ 
+//-----------------------------------------------------------------------
+
+void Component::onTransformsChanged()
+{
+}
+
+//-----------------------------------------------------------------------
+
 void Component::_connectToParentTransformsSignals()
 {
     if (m_pTransforms)
     {
         SignalsList* pSignals = m_pTransforms->getSignalsList();
         pSignals->connect(SIGNAL_COMPONENT_DESTROYED, this, &Component::onParentTransformsDestroyed);
+        pSignals->connect(INTERNAL_SIGNAL_TRANSFORMS_CHANGED, this, &Component::onTransformsChanged);
     }
 }
 
@@ -155,6 +158,7 @@ void Component::_disconnectFromParentTransformsSignals()
     {
         SignalsList* pSignals = m_pTransforms->getSignalsList();
         pSignals->disconnect(SIGNAL_COMPONENT_DESTROYED, this, &Component::onParentTransformsDestroyed);
+        pSignals->disconnect(INTERNAL_SIGNAL_TRANSFORMS_CHANGED, this, &Component::onTransformsChanged);
     }
 }
 
@@ -167,6 +171,13 @@ void Component::onParentTransformsDestroyed(Utils::Variant* pValue)
     assert(m_pTransforms);
 
     setTransforms(0);
+}
+
+//-----------------------------------------------------------------------
+
+void Component::onTransformsChanged(Utils::Variant* pValue)
+{
+	onTransformsChanged();
 }
 
 

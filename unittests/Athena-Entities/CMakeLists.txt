@@ -7,7 +7,7 @@ file(GLOB SRCS main.cpp
                test_Animation.cpp
                test_ComponentsList.cpp
                test_ComponentsManager.cpp
-               test_Entity.cpp
+               # test_Entity.cpp
                test_Scene.cpp
                test_ScenesManager.cpp
                test_Transforms.cpp

@@ -19,10 +19,12 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 /// @brief	Base class for all the components of an entity
 ///
-/// By default, a component is affected by the transforms of its entity
-/// (see Entity::getTransforms()). Other transforms components can be added to an entity,
-/// in order to offset another of its components. To use another transforms component than
-/// the default one, call Component::setTransforms().
+/// By default, a component isn't affected by any transforms. Invoke the 'setTransforms()'
+/// method to assign a transforms component (or use 0, to use the one of the entity owning
+/// the component).
+///
+/// Note that any component that MUST be affected by the transformations of the entity by
+/// default MUST invoke 'setTransforms(0)' in their constructor.
 ///
 /// @remark	Components are kept in lists (see ComponentsList)
 //----------------------------------------------------------------------------------------
@@ -80,6 +82,9 @@ public:
 public:
 	//-----------------------------------------------------------------------------------
 	/// @brief	Sets the Transforms of this component
+	///
+	/// @param	pTransforms		The transforms. If 0, the transforms component of the
+	///							entity will be used.
 	//-----------------------------------------------------------------------------------
     void setTransforms(Transforms* pTransforms);
 
@@ -87,6 +92,11 @@ public:
 	/// @brief	Sets the Transforms of this component
 	//-----------------------------------------------------------------------------------
     void setTransforms(const tComponentID& id);
+
+	//-----------------------------------------------------------------------------------
+	/// @brief	Make this component not affected by any Transforms (the default)
+	//-----------------------------------------------------------------------------------
+    void removeTransforms();
 
 	//-----------------------------------------------------------------------------------
 	/// @brief	Returns the Transforms of this component
@@ -97,6 +107,17 @@ public:
     }
 
 protected:
+	//-----------------------------------------------------------------------------------
+	/// @brief	Called when the transforms affecting this component have changed
+	///
+	/// Can be called when the component isn't affected by any transforms anymore
+	/// (getTransforms() returns 0).
+	///
+	/// @remark	If you override it in your component, don't forget to call the base class
+	///			implementation!
+	//-----------------------------------------------------------------------------------
+	virtual void onTransformsChanged();
+	
     void _connectToParentTransformsSignals();
     void _disconnectFromParentTransformsSignals();
     
@@ -107,6 +128,14 @@ protected:
 	/// @brief	Called when the parent Transforms of this component is destroyed
 	//-----------------------------------------------------------------------------------
     void onParentTransformsDestroyed(Utils::Variant* pValue);
+
+	//-----------------------------------------------------------------------------------
+	/// @brief	Called when the transforms affecting this component have changed
+	///
+	/// This slot will invoke the onTransformsChanged() method that you can override if
+	/// needed
+	//-----------------------------------------------------------------------------------
+    void onTransformsChanged(Utils::Variant* pValue);
 
 
 	//_____ Management of the signals list __________

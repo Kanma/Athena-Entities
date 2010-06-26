@@ -101,7 +101,7 @@ void Entity::addChild(Entity* pChild)
 	m_children.push_back(pChild);
 	pChild->m_pParent = this;
 
-	pChild->getTransforms()->_setParentTransforms(m_pTransforms);
+	pChild->getTransforms()->setTransforms(m_pTransforms);
 }
 
 //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ void Entity::removeChild(Entity* pChild)
 		if (*iter == pChild)
 		{
 			(*iter)->m_pParent = 0;
-			(*iter)->getTransforms()->_setParentTransforms(0);
+			(*iter)->getTransforms()->removeTransforms();
 			m_children.erase(iter);
 			return;
 		}
