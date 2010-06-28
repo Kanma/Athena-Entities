@@ -35,6 +35,7 @@ Scene::Scene(const std::string& strName)
 	assert(ScenesManager::getSingletonPtr());
 
     m_components._setScene(this);
+    memset(m_mainComponents, 0, 3 * sizeof(Component*));
 
 	ScenesManager::getSingletonPtr()->_registerScene(this);
 }

@@ -213,6 +213,44 @@ public:
 	{
 		return m_components.getNbComponents();
 	}
+	
+    //------------------------------------------------------------------------------------
+	/// @brief	Sets the main visual, physical or audio component of the scene
+	///
+	/// Must only be called by those components. The goal is to provide an easy access to
+	/// those components.
+    //------------------------------------------------------------------------------------
+    inline void _setMainComponent(Component* pComponent)
+    {
+        assert(pComponent->getID().type >= COMP_VISUAL);
+        assert(pComponent->getID().type <= COMP_PHYSICAL);
+        
+        m_mainComponents[pComponent->getID().type - COMP_VISUAL] = pComponent;
+    }
+
+    //------------------------------------------------------------------------------------
+	/// @brief	Reset the main component of the given type (visual, physical or audio)
+	///
+	/// Must only be called by those components, when destroyed
+    //------------------------------------------------------------------------------------
+    inline void _resetMainComponent(tComponentType type)
+    {
+        assert(type >= COMP_VISUAL);
+        assert(type <= COMP_PHYSICAL);
+        
+        m_mainComponents[type - COMP_VISUAL] = 0;
+    }
+
+    //------------------------------------------------------------------------------------
+	/// @brief	Returns the main component of the given type
+    //------------------------------------------------------------------------------------
+    inline Component* getMainComponent(tComponentType type)
+    {
+        assert(type >= COMP_VISUAL);
+        assert(type <= COMP_PHYSICAL);
+        
+        return m_mainComponents[type - COMP_VISUAL];
+    }
 
 
 	//_____ Management of the signals list __________
@@ -228,12 +266,13 @@ public:
 
 	//_____ Attributes __________
 protected:
-	std::string			    m_strName;		///< Name of the scene
-	bool					m_bEnabled;		///< Indicates if the scene is enabled
-	bool					m_bShown;		///< Indicates if the scene is shown
-	Signals::SignalsList	m_signals;		///< The signals list
-	tEntitiesList			m_entities;		///< The list of entities of the scene
-	ComponentsList			m_components;   ///< The list of components
+	std::string			    m_strName;		        ///< Name of the scene
+	bool					m_bEnabled;		        ///< Indicates if the scene is enabled
+	bool					m_bShown;		        ///< Indicates if the scene is shown
+	Signals::SignalsList	m_signals;		        ///< The signals list
+	tEntitiesList			m_entities;		        ///< The list of entities of the scene
+	ComponentsList			m_components;           ///< The list of components
+    Component*              m_mainComponents[3];    ///< Main visual, physical and audio components
 };
 
 }

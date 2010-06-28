@@ -97,4 +97,11 @@ SUITE(SceneTests)
 		pScene2->destroy(pEntity);
 		delete pScene2;
 	}
+
+	TEST_FIXTURE(EntitiesTestEnvironment, NoMainComponentByDefault)
+	{
+        CHECK(!pScene->getMainComponent(COMP_VISUAL));
+        CHECK(!pScene->getMainComponent(COMP_AUDIO));
+        CHECK(!pScene->getMainComponent(COMP_PHYSICAL));
+	}
 }
