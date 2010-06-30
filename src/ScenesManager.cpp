@@ -150,13 +150,13 @@ void ScenesManager::_registerScene(Scene* pScene)
 
 void ScenesManager::_destroyScene(Scene* pScene)
 {
-	// CScenesManager
+	// Assertions
 	assert(pScene && "Invalid scene");
 
 	// Declarations
 	tScenesNativeIterator iter, iterEnd;
 
-	// Search the entity
+	// Search the scene
 	for (iter = m_scenes.begin(), iterEnd = m_scenes.end(); iter != iterEnd; ++iter)
 	{
 		if (*iter == pScene)
