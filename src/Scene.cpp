@@ -11,6 +11,7 @@
 #include <Athena-Entities/Signals.h>
 #include <Athena-Core/Utils/PropertiesList.h>
 #include <Athena-Core/Log/LogManager.h>
+#include <memory.h>
 
 
 using namespace Athena::Entities;
