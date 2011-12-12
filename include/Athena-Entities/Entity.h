@@ -176,7 +176,7 @@ public:
     //------------------------------------------------------------------------------------
 	/// @brief	Returns an iterator over the components of the entity
     //------------------------------------------------------------------------------------
-	inline ComponentsList::tComponentsIterator getComponentsIterator()
+	inline Component::tComponentsIterator getComponentsIterator()
 	{
 		return m_components.getComponentsIterator();
 	}

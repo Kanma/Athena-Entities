@@ -48,12 +48,21 @@ Component::~Component()
 	// Assertions
 	assert(m_pList);
 
-    // // Remove the reference to the transforms origin (if any)
-    if (m_pTransforms)
-    {
-        _disconnectFromParentTransformsSignals();
-        m_pTransforms = 0;
-    }
+    m_pTransforms = 0;
+
+    // Remove the link with all the refered components
+    tComponentsIterator iter(m_referees.begin(), m_referees.end());
+    while (iter.hasMoreElements())
+        iter.getNext()->removeReferer(this);
+
+    m_referees.clear();
+
+    // Tell all the components that references us about the destruction
+    iter = tComponentsIterator(m_referers.begin(), m_referers.end());
+    while (iter.hasMoreElements())
+        iter.getNext()->onComponentDestroyed(this);
+    
+    m_referers.clear();
 
 	// Fire a 'component destroyed' signal
 	m_signals.fire(SIGNAL_COMPONENT_DESTROYED);
@@ -79,7 +88,11 @@ void Component::setTransforms(Transforms* pTransforms)
 
     // Unregister to the signals of the current transforms
     if (m_pTransforms)
-        _disconnectFromParentTransformsSignals();
+    {
+        removeReferee(m_pTransforms);
+        m_pTransforms->removeReferer(this);
+        m_pTransforms = 0;
+    }
 
     // Determine the new transforms
     Transforms* pNewTransforms = pTransforms;
@@ -100,8 +113,8 @@ void Component::setTransforms(Transforms* pTransforms)
 
     if (m_pTransforms)
 	{
-    	// Register to the signals of the new transforms
-		_connectToParentTransformsSignals();
+        addReferee(m_pTransforms);
+        m_pTransforms->addReferer(this);
 
 		// Do whatever we must do when our transforms change
 		onTransformsChanged();
@@ -125,7 +138,8 @@ void Component::removeTransforms()
 	if (!m_pTransforms)
 		return;
 
-	_disconnectFromParentTransformsSignals();
+    removeReferee(m_pTransforms);
+    m_pTransforms->removeReferer(this);
 
     m_pTransforms = 0;
 
@@ -138,46 +152,21 @@ void Component::onTransformsChanged()
 {
 }
 
-//-----------------------------------------------------------------------
 
-void Component::_connectToParentTransformsSignals()
-{
-    if (m_pTransforms)
-    {
-        SignalsList* pSignals = m_pTransforms->getSignalsList();
-        pSignals->connect(SIGNAL_COMPONENT_DESTROYED, this, &Component::onParentTransformsDestroyed);
-        pSignals->connect(INTERNAL_SIGNAL_TRANSFORMS_CHANGED, this, &Component::onTransformsChanged);
-    }
-}
+/**************************** REFERERS / REFEREES MANAGEMENT ***************************/
 
-//-----------------------------------------------------------------------
-
-void Component::_disconnectFromParentTransformsSignals()
-{
-    if (m_pTransforms)
-    {
-        SignalsList* pSignals = m_pTransforms->getSignalsList();
-        pSignals->disconnect(SIGNAL_COMPONENT_DESTROYED, this, &Component::onParentTransformsDestroyed);
-        pSignals->disconnect(INTERNAL_SIGNAL_TRANSFORMS_CHANGED, this, &Component::onTransformsChanged);
-    }
-}
-
-
-/**************************************** SLOTS ****************************************/
-
-void Component::onParentTransformsDestroyed(Utils::Variant* pValue)
+void Component::onComponentDestroyed(Component* pReferee)
 {
     // Assertions
-    assert(m_pTransforms);
+    assert(pReferee);
 
-    setTransforms(0);
-}
+    if (m_pTransforms == pReferee)
+    {
+        m_pTransforms = 0;
+        setTransforms(0);
+    }
 
-//-----------------------------------------------------------------------
-
-void Component::onTransformsChanged(Utils::Variant* pValue)
-{
-	onTransformsChanged();
+    removeReferee(pReferee);
 }
 
 

@@ -27,9 +27,6 @@ enum tSignals
                                                 
 	// Components                               
 	SIGNAL_COMPONENT_DESTROYED,					        ///< Fired when a component is destroyed
-	
-	// Internal signals, do not use in your components
-	INTERNAL_SIGNAL_TRANSFORMS_CHANGED,		        	///< Fired when the transforms of a component have changed
 };
 
 }

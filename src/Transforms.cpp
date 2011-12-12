@@ -431,8 +431,10 @@ void Transforms::onTransformsChanged()
 	// Call the base class implementation
 	Component::onTransformsChanged();
 
-	// Fire a 'transforms changed' signal
-    getSignalsList()->fire(INTERNAL_SIGNAL_TRANSFORMS_CHANGED);
+    // Tell all the components that references us about the new transforms
+    tComponentsIterator iter(m_referers.begin(), m_referers.end());
+    while (iter.hasMoreElements())
+        iter.getNext()->onTransformsChanged();
 }
 
 

@@ -53,7 +53,7 @@ void ComponentsList::removeComponent(Component* pComponent, bool bDestroy)
 	assert(pComponent);
     assert(ComponentsManager::getSingletonPtr());
 
-	tComponentsList::iterator iter, iterEnd;
+    Component::tComponentsList::iterator iter, iterEnd;
 
 	for (iter = m_components.begin(), iterEnd = m_components.end(); iter != iterEnd; ++iter)
 	{
@@ -115,9 +115,9 @@ void ComponentsList::destroyAllComponentsOfType(tComponentType type)
     assert(ComponentsManager::getSingletonPtr());
 
     // Declarations
-	tComponentsList::const_iterator iter, iterEnd;
-    tComponentsList originalList = m_components;
-    tComponentsList deleteList;
+	Component::tComponentsList::const_iterator iter, iterEnd;
+    Component::tComponentsList originalList = m_components;
+    Component::tComponentsList deleteList;
     
     // Split the list of components in two
     m_components.clear();
@@ -142,7 +142,7 @@ Component* ComponentsList::getComponent(const tComponentID& id, bool bInAllScene
     // name of the entity owning this list)
     if (id.strEntity.empty() || (m_pEntity && (id.strEntity == m_pEntity->getName())))
     {
-    	tComponentsList::const_iterator iter, iterEnd;
+    	Component::tComponentsList::const_iterator iter, iterEnd;
     	for (iter = m_components.begin(), iterEnd = m_components.end(); iter != iterEnd; ++iter)
     	{
     		if ((*iter)->getID() == id)

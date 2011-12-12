@@ -22,12 +22,6 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 class ATHENA_SYMBOL ComponentsList
 {
-	//_____ Internal types __________
-public:
-	typedef std::vector<Component*>				    tComponentsList;
-	typedef Utils::VectorIterator<tComponentsList>	tComponentsIterator;
-
-
 	//_____ Construction / Destruction __________
 public:
     //------------------------------------------------------------------------------------
@@ -138,9 +132,9 @@ public:
     //------------------------------------------------------------------------------------
 	/// @brief	Returns an iterator over the components of the list
     //------------------------------------------------------------------------------------
-	inline tComponentsIterator getComponentsIterator()
+	inline Component::tComponentsIterator getComponentsIterator()
 	{
-		return tComponentsIterator(m_components.begin(), m_components.end());
+		return Component::tComponentsIterator(m_components.begin(), m_components.end());
 	}
 
     //------------------------------------------------------------------------------------
@@ -158,9 +152,9 @@ private:
 
 	//_____ Attributes __________
 private:
-	Entity*		    m_pEntity;		///< The entity associated with this list
-	Scene*		    m_pScene;		///< The scene associated with this list
-	tComponentsList	m_components;	///< The components
+	Entity*		                m_pEntity;		///< The entity associated with this list
+	Scene*		                m_pScene;		///< The scene associated with this list
+	Component::tComponentsList	m_components;	///< The components
 };
 
 }

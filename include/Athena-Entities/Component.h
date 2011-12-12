@@ -30,6 +30,12 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 class ATHENA_SYMBOL Component: public Utils::Describable
 {
+	//_____ Internal types __________
+public:
+	typedef std::vector<Component*>				    tComponentsList;
+	typedef Utils::VectorIterator<tComponentsList>	tComponentsIterator;
+
+
 	//_____ Construction / Destruction __________
 public:
     //------------------------------------------------------------------------------------
@@ -106,7 +112,6 @@ public:
         return m_pTransforms;
     }
 
-protected:
 	//-----------------------------------------------------------------------------------
 	/// @brief	Called when the transforms affecting this component have changed
 	///
@@ -117,25 +122,60 @@ protected:
 	///			implementation!
 	//-----------------------------------------------------------------------------------
 	virtual void onTransformsChanged();
-	
-    void _connectToParentTransformsSignals();
-    void _disconnectFromParentTransformsSignals();
-    
 
-    //_____ Slots __________
+
+    //_____ Referers / Referees management __________
 protected:
 	//-----------------------------------------------------------------------------------
-	/// @brief	Called when the parent Transforms of this component is destroyed
-	//-----------------------------------------------------------------------------------
-    void onParentTransformsDestroyed(Utils::Variant* pValue);
-
-	//-----------------------------------------------------------------------------------
-	/// @brief	Called when the transforms affecting this component have changed
+	/// @brief	Called when a component this one is referring to is destroyed
 	///
-	/// This slot will invoke the onTransformsChanged() method that you can override if
-	/// needed
+	/// @remark	If you override it in your component, don't forget to call the base class
+	///			implementation!
 	//-----------------------------------------------------------------------------------
-    void onTransformsChanged(Utils::Variant* pValue);
+	virtual void onComponentDestroyed(Component* pReferee);
+
+
+    inline void addReferer(Component* pReferer)
+    {
+        assert(pReferer);
+        m_referers.push_back(pReferer);
+    }
+
+    inline void removeReferer(Component* pReferer)
+    {
+        assert(pReferer);
+        
+        tComponentsList::iterator iter, iterEnd;
+        for (iter = m_referers.begin(), iterEnd = m_referers.end(); iter != iterEnd; ++iter)
+        {
+            if (*iter == pReferer)
+            {
+                m_referers.erase(iter);
+                return;
+            }
+        }
+    }
+
+    inline void addReferee(Component* pReferee)
+    {
+        assert(pReferee);
+        m_referees.push_back(pReferee);
+    }
+
+    inline void removeReferee(Component* pReferee)
+    {
+        assert(pReferee);
+        
+        tComponentsList::iterator iter, iterEnd;
+        for (iter = m_referees.begin(), iterEnd = m_referees.end(); iter != iterEnd; ++iter)
+        {
+            if (*iter == pReferee)
+            {
+                m_referees.erase(iter);
+                return;
+            }
+        }
+    }
 
 
 	//_____ Management of the signals list __________
@@ -206,6 +246,8 @@ public:
 protected:
 	tComponentID			m_id;			///< ID of the component
 	ComponentsList*		    m_pList;		///< The list containing that component
+	tComponentsList	        m_referers;	    ///< The list of components that refers to this one
+	tComponentsList	        m_referees;	    ///< The list of components refered to by this one
 	Transforms*			    m_pTransforms;	///< The transforms origin
 	Signals::SignalsList	m_signals;		///< The signals list
 };
