@@ -129,7 +129,7 @@ public:
 	virtual void onTransformsChanged();
 
 
-    //_____ Referers / Referees management __________
+    //_____ Links management __________
 protected:
 	//-----------------------------------------------------------------------------------
 	/// @brief	Called when a component this one is linked to must be unlinked

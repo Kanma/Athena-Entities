@@ -66,7 +66,7 @@ void Component::setTransforms(Transforms* pTransforms)
     // Unlink from the current transforms
     if (m_pTransforms)
     {
-        this->removeLinkTo(m_pTransforms);
+        removeLinkTo(m_pTransforms);
         m_pTransforms = 0;
     }
 
@@ -89,7 +89,7 @@ void Component::setTransforms(Transforms* pTransforms)
 
     if (m_pTransforms)
 	{
-        this->addLinkTo(m_pTransforms);
+        addLinkTo(m_pTransforms);
 
 		// Do whatever we must do when our transforms change
 		onTransformsChanged();
@@ -113,7 +113,7 @@ void Component::removeTransforms()
 	if (!m_pTransforms)
 		return;
 
-    this->removeLinkTo(m_pTransforms);
+    removeLinkTo(m_pTransforms);
     m_pTransforms = 0;
 
 	onTransformsChanged();
@@ -126,7 +126,7 @@ void Component::onTransformsChanged()
 }
 
 
-/**************************** REFERERS / REFEREES MANAGEMENT ***************************/
+/*********************************** LINKS MANAGEMENT **********************************/
 
 void Component::mustUnlinkComponent(Component* pComponent)
 {
@@ -136,7 +136,7 @@ void Component::mustUnlinkComponent(Component* pComponent)
     if (m_pTransforms == pComponent)
         removeTransforms();
 
-    this->removeLinkTo(pComponent);
+    removeLinkTo(pComponent);
 }
 
 //-----------------------------------------------------------------------
