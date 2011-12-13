@@ -22,6 +22,9 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 class ATHENA_SYMBOL ComponentsList
 {
+    friend class ComponentsManager;
+
+
 	//_____ Construction / Destruction __________
 public:
     //------------------------------------------------------------------------------------
@@ -73,6 +76,7 @@ public:
 		return m_pScene;
 	}
 
+
     //------------------------------------------------------------------------------------
     /// @brief	Add a component to the list
     ///
@@ -81,28 +85,21 @@ public:
     //------------------------------------------------------------------------------------
 	bool _addComponent(Component* pComponent);
 
+
+private:
     //------------------------------------------------------------------------------------
     /// @brief	Remove a component from the list
     ///
     /// @param	pComponent	The component
-    /// @param	bDestroy	Indicates if the component must also be destroyed
     //------------------------------------------------------------------------------------
-	void removeComponent(Component* pComponent, bool bDestroy = true);
+	void _removeComponent(Component* pComponent);
 
-    //------------------------------------------------------------------------------------
-    /// @brief	Remove a component from the list
-    ///
-    /// @param	id			ID of the component
-    /// @param	bDestroy	Indicates if the component must also be destroyed
-    //------------------------------------------------------------------------------------
-	void removeComponent(const tComponentID& id, bool bDestroy = true);
 
+public:
     //------------------------------------------------------------------------------------
     /// @brief	Remove all the components from the list
-    ///
-    /// @param	bDestroy	Indicates if the components must also be destroyed
     //------------------------------------------------------------------------------------
-	void removeAllComponents(bool bDestroy = true);
+	void removeAllComponents();
 
     //------------------------------------------------------------------------------------
     /// @brief	Returns one of the components
@@ -144,10 +141,6 @@ public:
 	{
 		return (unsigned int) m_components.size();
 	}
-
-
-private:
-    void destroyAllComponentsOfType(tComponentType type);
     
 
 	//_____ Attributes __________

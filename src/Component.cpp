@@ -8,8 +8,6 @@
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Transforms.h>
-#include <Athena-Entities/Signals.h>
-#include <Athena-Core/Signals/SignalsList.h>
 #include <Athena-Core/Utils/Variant.h>
 
 
@@ -45,30 +43,9 @@ Component::Component(const std::string& strName, ComponentsList* pList)
 
 Component::~Component()
 {
-	// Assertions
-	assert(m_pList);
-
-    m_pTransforms = 0;
-
-    // Remove the link with all the refered components
-    tComponentsIterator iter(m_referees.begin(), m_referees.end());
-    while (iter.hasMoreElements())
-        iter.getNext()->removeReferer(this);
-
-    m_referees.clear();
-
-    // Tell all the components that references us about the destruction
-    iter = tComponentsIterator(m_referers.begin(), m_referers.end());
-    while (iter.hasMoreElements())
-        iter.getNext()->onComponentDestroyed(this);
-    
-    m_referers.clear();
-
-	// Fire a 'component destroyed' signal
-	m_signals.fire(SIGNAL_COMPONENT_DESTROYED);
-
-	// Remove the component from the list
-	m_pList->removeComponent(this, false);
+    // This was done by our managers
+    assert(m_linked_by.empty());
+    assert(m_linked_to.empty());
 }
 
 //-----------------------------------------------------------------------
@@ -86,11 +63,10 @@ void Component::setTransforms(Transforms* pTransforms)
     // Assertions
     assert(m_pList);
 
-    // Unregister to the signals of the current transforms
+    // Unlink from the current transforms
     if (m_pTransforms)
     {
-        removeReferee(m_pTransforms);
-        m_pTransforms->removeReferer(this);
+        this->removeLinkTo(m_pTransforms);
         m_pTransforms = 0;
     }
 
@@ -113,8 +89,7 @@ void Component::setTransforms(Transforms* pTransforms)
 
     if (m_pTransforms)
 	{
-        addReferee(m_pTransforms);
-        m_pTransforms->addReferer(this);
+        this->addLinkTo(m_pTransforms);
 
 		// Do whatever we must do when our transforms change
 		onTransformsChanged();
@@ -138,14 +113,12 @@ void Component::removeTransforms()
 	if (!m_pTransforms)
 		return;
 
-    removeReferee(m_pTransforms);
-    m_pTransforms->removeReferer(this);
-
+    this->removeLinkTo(m_pTransforms);
     m_pTransforms = 0;
 
 	onTransformsChanged();
 }
- 
+
 //-----------------------------------------------------------------------
 
 void Component::onTransformsChanged()
@@ -155,18 +128,28 @@ void Component::onTransformsChanged()
 
 /**************************** REFERERS / REFEREES MANAGEMENT ***************************/
 
-void Component::onComponentDestroyed(Component* pReferee)
+void Component::mustUnlinkComponent(Component* pComponent)
 {
     // Assertions
-    assert(pReferee);
+    assert(pComponent);
 
-    if (m_pTransforms == pReferee)
-    {
-        m_pTransforms = 0;
-        setTransforms(0);
-    }
+    if (m_pTransforms == pComponent)
+        removeTransforms();
 
-    removeReferee(pReferee);
+    this->removeLinkTo(pComponent);
+}
+
+//-----------------------------------------------------------------------
+
+void Component::unlink()
+{
+    // Tell all the components linked to this one to unlink it
+    while (!m_linked_by.empty())
+        m_linked_by.front()->mustUnlinkComponent(this);
+
+    // Unlink all the components we are linked with
+    while (!m_linked_to.empty())
+        mustUnlinkComponent(m_linked_to.front());
 }
 
 

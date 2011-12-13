@@ -432,7 +432,7 @@ void Transforms::onTransformsChanged()
 	Component::onTransformsChanged();
 
     // Tell all the components that references us about the new transforms
-    tComponentsIterator iter(m_referers.begin(), m_referers.end());
+    tComponentsIterator iter(m_linked_by.begin(), m_linked_by.end());
     while (iter.hasMoreElements())
         iter.getNext()->onTransformsChanged();
 }

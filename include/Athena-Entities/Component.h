@@ -30,6 +30,10 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 class ATHENA_SYMBOL Component: public Utils::Describable
 {
+    friend class ComponentsManager;
+    friend class ComponentsList;
+
+
 	//_____ Internal types __________
 public:
 	typedef std::vector<Component*>				    tComponentsList;
@@ -47,11 +51,6 @@ public:
 	Component(const std::string& strName, ComponentsList* pList);
 
     //------------------------------------------------------------------------------------
-    /// @brief	Destructor
-    //------------------------------------------------------------------------------------
-	virtual ~Component();
-
-    //------------------------------------------------------------------------------------
     /// @brief	Create a new component (Component creation method)
     ///
     /// @param	strName	Name of the component
@@ -59,6 +58,12 @@ public:
     /// @return			The new component
     //------------------------------------------------------------------------------------
 	static Component* create(const std::string& strName, ComponentsList* pList);
+
+protected:
+    //------------------------------------------------------------------------------------
+    /// @brief	Destructor
+    //------------------------------------------------------------------------------------
+	virtual ~Component();
 
 
 	//_____ Methods __________
@@ -127,55 +132,49 @@ public:
     //_____ Referers / Referees management __________
 protected:
 	//-----------------------------------------------------------------------------------
-	/// @brief	Called when a component this one is referring to is destroyed
+	/// @brief	Called when a component this one is linked to must be unlinked
 	///
 	/// @remark	If you override it in your component, don't forget to call the base class
 	///			implementation!
 	//-----------------------------------------------------------------------------------
-	virtual void onComponentDestroyed(Component* pReferee);
+	virtual void mustUnlinkComponent(Component* pComponent);
 
-
-    inline void addReferer(Component* pReferer)
+    inline void addLinkTo(Component* pComponent)
     {
-        assert(pReferer);
-        m_referers.push_back(pReferer);
+        assert(pComponent);
+        m_linked_to.push_back(pComponent);
+        pComponent->m_linked_by.push_back(this);
     }
 
-    inline void removeReferer(Component* pReferer)
+    inline void removeLinkTo(Component* pComponent)
     {
-        assert(pReferer);
+        assert(pComponent);
         
         tComponentsList::iterator iter, iterEnd;
-        for (iter = m_referers.begin(), iterEnd = m_referers.end(); iter != iterEnd; ++iter)
+        for (iter = m_linked_to.begin(), iterEnd = m_linked_to.end(); iter != iterEnd; ++iter)
         {
-            if (*iter == pReferer)
+            if (*iter == pComponent)
             {
-                m_referers.erase(iter);
+                m_linked_to.erase(iter);
+
+                tComponentsList::iterator iter2, iterEnd2;
+                for (iter2 = pComponent->m_linked_by.begin(), iterEnd2 = pComponent->m_linked_by.end();
+                     iter2 != iterEnd2; ++iter2)
+                {
+                    if (*iter2 == this)
+                    {
+                        pComponent->m_linked_by.erase(iter2);
+                        return;
+                    }
+                }
+
                 return;
             }
         }
     }
 
-    inline void addReferee(Component* pReferee)
-    {
-        assert(pReferee);
-        m_referees.push_back(pReferee);
-    }
-
-    inline void removeReferee(Component* pReferee)
-    {
-        assert(pReferee);
-        
-        tComponentsList::iterator iter, iterEnd;
-        for (iter = m_referees.begin(), iterEnd = m_referees.end(); iter != iterEnd; ++iter)
-        {
-            if (*iter == pReferee)
-            {
-                m_referees.erase(iter);
-                return;
-            }
-        }
-    }
+private:
+    void unlink();
 
 
 	//_____ Management of the signals list __________
@@ -246,8 +245,8 @@ public:
 protected:
 	tComponentID			m_id;			///< ID of the component
 	ComponentsList*		    m_pList;		///< The list containing that component
-	tComponentsList	        m_referers;	    ///< The list of components that refers to this one
-	tComponentsList	        m_referees;	    ///< The list of components refered to by this one
+	tComponentsList	        m_linked_to;	///< The list of components that this component links to
+	tComponentsList	        m_linked_by;	///< The list of components that links to this component
 	Transforms*			    m_pTransforms;	///< The transforms origin
 	Signals::SignalsList	m_signals;		///< The signals list
 };

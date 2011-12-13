@@ -8,6 +8,7 @@
 #include <Athena-Entities/Component.h>
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Entities/Transforms.h>
+#include <Athena-Entities/Signals.h>
 #include <Athena-Core/Log/LogManager.h>
 
 #if ATHENA_ENTITIES_SCRIPTING
@@ -128,6 +129,12 @@ void ComponentsManager::destroy(Component* pComponent)
 	assert(pComponent && "Invalid component");
 	assert(m_types.find(pComponent->getType()) != m_types.end());
 
+	// Fire a 'component destroyed' signal
+	pComponent->getSignalsList()->fire(SIGNAL_COMPONENT_DESTROYED);
+
+    // Remove the component form its list
+	pComponent->getList()->_removeComponent(pComponent);
+
 #if ATHENA_ENTITIES_SCRIPTING
 
 	// Determines if the component is a C++ or a Python one
@@ -138,6 +145,7 @@ void ComponentsManager::destroy(Component* pComponent)
 
 #else
 
+    // Actual destruction
 	delete pComponent;
 
 #endif
