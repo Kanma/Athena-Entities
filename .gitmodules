@@ -3,10 +3,10 @@
 	url = git://github.com/Kanma/Athena-Math.git
 [submodule "dependencies/UnitTest++"]
 	path = dependencies/UnitTest++
-	url = git://github.com/Kanma/Athena-Dependencies-UnitTest-cpp.git
+	url = git://github.com/Kanma/UnitTest-cpp.git
 [submodule "dependencies/Athena-Core"]
 	path = dependencies/Athena-Core
 	url = git://github.com/Kanma/Athena-Core.git
-[submodule "dependencies/xmake"]
-	path = dependencies/xmake
+[submodule "dependencies/XMake"]
+	path = dependencies/XMake
 	url = git://github.com/Kanma/XMake.git

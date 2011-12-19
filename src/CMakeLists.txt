@@ -10,25 +10,27 @@ set(SRCS Animation.cpp
          Transforms.cpp
 )
 
-# Precompiler definitions
-add_definitions(-DATHENA_EXPORTS)
 
 # List the include paths
-xmake_include_directories(ATHENA_ENTITIES)
+set(INCLUDE_PATHS "${ATHENA_ENTITIES_SOURCE_DIR}/include"
+                  "${XMAKE_BINARY_DIR}/include")
+
+include_directories(${INCLUDE_PATHS})
+
+xmake_import_search_paths(ATHENA_CORE)
+
 
 # Declaration of the library
 if (NOT ATHENA_ENTITIES_STATIC)
-    add_library(Athena-Entities SHARED ${SRCS} ${PLATFORM_SRCS})
-    xmake_target_link_libraries(Athena-Entities ATHENA_CORE)
-
-    # Set the INSTALL_PATH so that the dynamic library can be local
-    set_target_properties(Athena-Entities PROPERTIES BUILD_WITH_INSTALL_RPATH ON
-                                                     INSTALL_NAME_DIR "@rpath"
-    )
+    xmake_create_dynamic_library(ATHENA_ENTITIES Athena-Entities 1.0.0 1.0.0 ${SRCS})
 else()
-    add_library(Athena-Entities STATIC ${SRCS} ${PLATFORM_SRCS})
-
-    if (NOT WIN32)
-        set_target_properties(Athena-Entities PROPERTIES COMPILE_FLAGS "-fPIC")
-    endif()
+    xmake_create_static_library(ATHENA_ENTITIES Athena-Entities ${SRCS})
 endif()
+
+xmake_project_link(ATHENA_ENTITIES ATHENA_CORE)
+
+xmake_add_to_list_property(ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_EXPORTS")
+
+
+# Exportations
+xmake_export_include_paths(ATHENA_ENTITIES ${INCLUDE_PATHS})
