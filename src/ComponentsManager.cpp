@@ -11,10 +11,10 @@
 #include <Athena-Entities/Signals.h>
 #include <Athena-Core/Log/LogManager.h>
 
-#if ATHENA_ENTITIES_SCRIPTING
-#   include <Athena-Entities/IComponentsCreator.h>
-#   include <Athena-Scripting/ScriptingManager.h>
-#endif
+// #if ATHENA_ENTITIES_SCRIPTING
+// #   include <Athena-Entities/IComponentsCreator.h>
+// #   include <Athena-Scripting/ScriptingManager.h>
+// #endif
 
 
 using namespace Athena::Entities;
@@ -22,9 +22,9 @@ using namespace Athena::Log;
 using namespace Athena::Utils;
 using namespace std;
 
-#if ATHENA_ENTITIES_SCRIPTING
-    using namespace Athena::Scripting;
-#endif
+// #if ATHENA_ENTITIES_SCRIPTING
+//     using namespace Athena::Scripting;
+// #endif
 
 
 /************************************** CONSTANTS ***************************************/
@@ -42,9 +42,9 @@ template<> ComponentsManager* Singleton<ComponentsManager>::ms_Singleton = 0;
 /****************************** CONSTRUCTION / DESTRUCTION ******************************/
 
 ComponentsManager::ComponentsManager()
-#if ATHENA_ENTITIES_SCRIPTING
-: m_pCreator(0)
-#endif
+// #if ATHENA_ENTITIES_SCRIPTING
+// : m_pCreator(0)
+// #endif
 {
 	ATHENA_LOG_EVENT("Creation");
 
@@ -97,18 +97,18 @@ Component* ComponentsManager::create(const std::string& strType, const std::stri
 	if (m_types.find(strType) != m_types.end())
 	{
 		// Use it to create the component
-#if ATHENA_ENTITIES_SCRIPTING
-		if (m_types[strType].bPointer)
-		{
-			pComponent = m_types[strType].pMethod(strName, pList);
-		}
-		else if (m_pCreator)
-		{
-			pComponent = m_pCreator->createComponent(m_types[strType].strClass, strName, pList);
-		}
-#else
+// #if ATHENA_ENTITIES_SCRIPTING
+//      if (m_types[strType].bPointer)
+//      {
+//          pComponent = m_types[strType].pMethod(strName, pList);
+//      }
+//      else if (m_pCreator)
+//      {
+//          pComponent = m_pCreator->createComponent(m_types[strType].strClass, strName, pList);
+//      }
+// #else
 		pComponent = m_types[strType](strName, pList);
-#endif
+// #endif
 	}
 	else
 	{
@@ -135,20 +135,20 @@ void ComponentsManager::destroy(Component* pComponent)
     // Remove the component form its list
 	pComponent->getList()->_removeComponent(pComponent);
 
-#if ATHENA_ENTITIES_SCRIPTING
-
-	// Determines if the component is a C++ or a Python one
-	if (m_types[pComponent->getType()].bPointer)
-		delete pComponent;
-	else if (m_pCreator)
-		m_pCreator->destroyComponent(pComponent);
-
-#else
+// #if ATHENA_ENTITIES_SCRIPTING
+// 
+//  // Determines if the component is a C++ or a Python one
+//  if (m_types[pComponent->getType()].bPointer)
+//      delete pComponent;
+//  else if (m_pCreator)
+//      m_pCreator->destroyComponent(pComponent);
+// 
+// #else
 
     // Actual destruction
 	delete pComponent;
 
-#endif
+// #endif
 }
 
 
@@ -175,48 +175,48 @@ void ComponentsManager::registerType(const std::string& strType,
 	}
 
 	// Add the new type to the list
-#if ATHENA_ENTITIES_SCRIPTING
-
-	tCreationInfos infos;
-	infos.bPointer = true;
-	infos.pMethod = pCreationMethod;
-	m_types[strType] = infos;
-
-#else
+// #if ATHENA_ENTITIES_SCRIPTING
+// 
+//  tCreationInfos infos;
+//  infos.bPointer = true;
+//  infos.pMethod = pCreationMethod;
+//  m_types[strType] = infos;
+// 
+// #else
 
     m_types[strType] = pCreationMethod;
 
-#endif
+// #endif
 }
 
 //-----------------------------------------------------------------------
 
-#if ATHENA_ENTITIES_SCRIPTING
-
-void ComponentsManager::registerType(const std::string& strType,
-								     const std::string& strClass)
-{
-	assert(!strType.empty() && "The type's name is empty");
-	assert(!strClass.empty() && "Invalid Python class");
-
-	// Declarations
-	std::map<String, tRepresentationPartCreationInfos>::iterator iter;
-	tRepresentationPartCreationInfos infos;
-
-	ATHENA_LOG_EVENT("Registering a new type of component: '" + strType + "'");
-
-	// Search if the type is already defined
-	iter = m_types.find(strType);
-	if (iter != m_types.end())
-	{
-		ATHENA_LOG_ERROR("The type of component '" + strType + "' was already registered");
-		return;
-	}
-
-	// Add the new type to the list
-	infos.bPointer		= false;
-	infos.strClass		= strClass;
-	m_types[strType]	= infos;
-}
-
-#endif
+// #if ATHENA_ENTITIES_SCRIPTING
+// 
+// void ComponentsManager::registerType(const std::string& strType,
+//                                   const std::string& strClass)
+// {
+//  assert(!strType.empty() && "The type's name is empty");
+//  assert(!strClass.empty() && "Invalid Python class");
+// 
+//  // Declarations
+//  std::map<String, tRepresentationPartCreationInfos>::iterator iter;
+//  tRepresentationPartCreationInfos infos;
+// 
+//  ATHENA_LOG_EVENT("Registering a new type of component: '" + strType + "'");
+// 
+//  // Search if the type is already defined
+//  iter = m_types.find(strType);
+//  if (iter != m_types.end())
+//  {
+//      ATHENA_LOG_ERROR("The type of component '" + strType + "' was already registered");
+//      return;
+//  }
+// 
+//  // Add the new type to the list
+//  infos.bPointer      = false;
+//  infos.strClass      = strClass;
+//  m_types[strType]    = infos;
+// }
+// 
+// #endif
