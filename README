@@ -29,8 +29,9 @@ It provides the basis of a system in which:
        - audio components
        - debugging-purposes components
        - user-defined type of components
-  7) each entity maintains a list of the 'signals' it emits, allowing other
-     entities (or any software part) to be notified when something happens
+  7) each entity, component and scene maintains a list of the 'signals' it emits,
+     allowing other entities/components/scenes (or any software part) to be
+     notified when something happens
   8) the entities can be animated
 
 
@@ -43,6 +44,43 @@ the different kind of components are in the following modules:
   
 The use of those modules is optional, you can choose to implement your own
 components instead, or to leave out one kind of component.
+
+
+---------------------------------------
+- Dependencies
+---------------------------------------
+
+Athena-Entities requires the following dependencies:
+
+   - XMake
+   - Athena-Math
+   - Athena-Core
+   - UnitTest++
+
+They are provided as GIT submodules of this repository and will be compiled
+automatically during the compilation of Athena-Entities.
+
+To download them, do:
+
+    somewhere$ cd <path/to/the/source/of/Athena-Entities>
+    Athena-Entities$ git submodule init
+    Athena-Entities$ git submodule update
+
+
+---------------------------------------
+- Compilation
+---------------------------------------
+
+(Note: you'll need to install CMake to compile Athena-Core)
+
+To compile Athena-Core (and all its dependencies), do:
+
+    somewhere$ mkdir build
+    somewhere$ cd build
+    build$ cmake <path/to/the/source/of/Athena-Core>
+    build$ make
+
+The library will be put in build/bin/
 
 
 ---------------------------------------
@@ -61,7 +99,7 @@ The license of OGRE is contained in the file 'docs/LICENSE-OGRE'.
 - License
 ---------------------------------------
 
-Athena-Entities is is made available under the MIT License. The text of the license
+Athena-Entities is made available under the MIT License. The text of the license
 is in the file 'LICENSE'.
 
 Under the MIT License you may use Athena-Entities for any purpose you wish, without
