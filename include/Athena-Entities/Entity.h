@@ -30,7 +30,7 @@ namespace Entities {
 ///   - some components
 ///   - some animations (through an Animations Mixer, @see AnimationsMixer)
 //---------------------------------------------------------------------------------------
-class ATHENA_SYMBOL Entity
+class ATHENA_ENTITIES_SYMBOL Entity
 {
 	friend class Scene;
 

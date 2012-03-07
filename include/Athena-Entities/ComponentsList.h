@@ -20,7 +20,7 @@ namespace Entities {
 ///
 /// @remark	A list can be associated with an entity or with a scene
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL ComponentsList
+class ATHENA_ENTITIES_SYMBOL ComponentsList
 {
     friend class ComponentsManager;
 

@@ -28,7 +28,7 @@ namespace Entities {
 ///
 /// @remark	Components are kept in lists (see ComponentsList)
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL Component: public Utils::Describable
+class ATHENA_ENTITIES_SYMBOL Component: public Utils::Describable
 {
     friend class ComponentsManager;
     friend class ComponentsList;

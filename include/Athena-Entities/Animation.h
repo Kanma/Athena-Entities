@@ -25,7 +25,7 @@ namespace Entities {
 /// their offsets into account). Those offsets are used to make one component animation
 /// starts after the others.
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL Animation
+class ATHENA_ENTITIES_SYMBOL Animation
 {
 	//_____ Internal types __________
 public:

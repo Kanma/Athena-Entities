@@ -30,7 +30,7 @@ namespace Entities {
 ///
 /// Each entity contains at least one transforms component.
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL Transforms: public Component
+class ATHENA_ENTITIES_SYMBOL Transforms: public Component
 {
     friend class Entity;
     

@@ -46,7 +46,7 @@ typedef Component* ComponentCreationMethod(const std::string&, ComponentsList*);
 ///
 /// @remark This class is a singleton.
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL ComponentsManager: public Utils::Singleton<ComponentsManager>
+class ATHENA_ENTITIES_SYMBOL ComponentsManager: public Utils::Singleton<ComponentsManager>
 {
 	//_____ Construction / Destruction __________
 public:

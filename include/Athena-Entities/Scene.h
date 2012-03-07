@@ -22,7 +22,7 @@ namespace Entities {
 ///			settings (in its components), like ambient light, background color, fog, sky,
 ///         physical world parameters... and of course, a collection of entities
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL Scene
+class ATHENA_ENTITIES_SYMBOL Scene
 {
 	//_____ Internal types __________
 public:

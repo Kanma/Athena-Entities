@@ -24,7 +24,7 @@ namespace Entities {
 ///   - its offset (allowing an animation to synchronize the playing of several component
 ///     animations)
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL ComponentAnimation
+class ATHENA_ENTITIES_SYMBOL ComponentAnimation
 {
 	//_____ Construction / Destruction __________
 public:

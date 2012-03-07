@@ -20,7 +20,7 @@ namespace Entities {
 ///
 /// The animation currently played is called the current one.
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL AnimationsMixer
+class ATHENA_ENTITIES_SYMBOL AnimationsMixer
 {
 	//_____ Internal types __________
 public:

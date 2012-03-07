@@ -32,13 +32,13 @@ if (NOT ATHENA_ENTITIES_STATIC)
                                  "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
                                  "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
                                  ${SRCS})
+
+    xmake_add_to_list_property(ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_EXPORTS")
 else()
     xmake_create_static_library(ATHENA_ENTITIES Athena-Entities ${SRCS})
 endif()
 
 xmake_project_link(ATHENA_ENTITIES ATHENA_CORE)
-
-xmake_add_to_list_property(ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_EXPORTS")
 
 
 # Exportations

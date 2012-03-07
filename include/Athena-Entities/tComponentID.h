@@ -32,7 +32,7 @@ enum tComponentType
 //----------------------------------------------------------------------------------------
 /// @brief	Represents an ID identifying a component of an entity
 //----------------------------------------------------------------------------------------
-struct ATHENA_SYMBOL tComponentID
+struct ATHENA_ENTITIES_SYMBOL tComponentID
 {
 	//------------------------------------------------------------------------------------
 	/// @brief	Constructor

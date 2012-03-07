@@ -30,7 +30,7 @@ namespace Entities {
 ///
 /// @remark This class is a singleton
 //----------------------------------------------------------------------------------------
-class ATHENA_SYMBOL ScenesManager: public Utils::Singleton<ScenesManager>
+class ATHENA_ENTITIES_SYMBOL ScenesManager: public Utils::Singleton<ScenesManager>
 {
 	//_____ Internal types __________
 public:
