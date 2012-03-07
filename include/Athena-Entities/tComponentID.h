@@ -141,8 +141,8 @@ struct ATHENA_ENTITIES_SYMBOL tComponentID
             return "Debug://" + suffix;
         else if (type == COMP_OTHER)
             return "Other://" + suffix;
-        else if (type == COMP_NONE)
-            return "None";
+
+        return "None";
     }
 
 

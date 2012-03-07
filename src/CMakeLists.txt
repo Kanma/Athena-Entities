@@ -16,6 +16,10 @@ set(SRCS ${XMAKE_BINARY_DIR}/generated/Athena-Entities/module.cpp
          Transforms.cpp
 )
 
+if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
+    set(SRCS ${SRCS} Scripting.cpp)
+endif()
+
 
 # List the include paths
 set(INCLUDE_PATHS "${ATHENA_ENTITIES_SOURCE_DIR}/include"
