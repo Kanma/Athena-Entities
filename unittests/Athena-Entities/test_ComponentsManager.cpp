@@ -9,43 +9,43 @@ using namespace Athena::Entities;
 
 TEST(ComponentsManager_Singleton)
 {
-	CHECK(!ComponentsManager::getSingletonPtr());
-	
-	ComponentsManager* pComponentsManager = new ComponentsManager();
-	CHECK(pComponentsManager == ComponentsManager::getSingletonPtr());
+    CHECK(!ComponentsManager::getSingletonPtr());
 
-	delete pComponentsManager;
-	CHECK(!ComponentsManager::getSingletonPtr());
+    ComponentsManager* pComponentsManager = new ComponentsManager();
+    CHECK(pComponentsManager == ComponentsManager::getSingletonPtr());
+
+    delete pComponentsManager;
+    CHECK(!ComponentsManager::getSingletonPtr());
 }
 
 
 SUITE(ComponentsManagerTests)
 {
-	TEST_FIXTURE(EntitiesTestEnvironment, ComponentCreation)
-	{
-		ComponentsList* pList = new ComponentsList();
+    TEST_FIXTURE(EntitiesTestEnvironment, ComponentCreation)
+    {
+        ComponentsList* pList = new ComponentsList();
 
-		Component* pComponent = pComponentsManager->create(Component::TYPE, "test", pList);
+        Component* pComponent = pComponentsManager->create(Component::TYPE, "test", pList);
 
-		CHECK(pComponent);
-		CHECK(pComponent->getType() == Component::TYPE);
+        CHECK(pComponent);
+        CHECK(pComponent->getType() == Component::TYPE);
 
-		delete pList;
-	}
+        delete pList;
+    }
 
 
-	TEST_FIXTURE(EntitiesTestEnvironment, ComponentDestruction)
-	{
-		ComponentsList* pList = new ComponentsList();
+    TEST_FIXTURE(EntitiesTestEnvironment, ComponentDestruction)
+    {
+        ComponentsList* pList = new ComponentsList();
 
-		Component* pComponent = pComponentsManager->create(Component::TYPE, "test", pList);
+        Component* pComponent = pComponentsManager->create(Component::TYPE, "test", pList);
 
-		CHECK_EQUAL(1, pList->getNbComponents());
+        CHECK_EQUAL(1, pList->getNbComponents());
 
-		pComponentsManager->destroy(pComponent);
+        pComponentsManager->destroy(pComponent);
 
-		CHECK_EQUAL(0, pList->getNbComponents());
+        CHECK_EQUAL(0, pList->getNbComponents());
 
-		delete pList;
-	}
+        delete pList;
+    }
 }

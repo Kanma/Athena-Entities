@@ -11,14 +11,14 @@ using namespace Athena::Utils;
 
 SUITE(ComponentsListTests)
 {
-	TEST_FIXTURE(EntitiesTestEnvironment, Creation)
-	{
-		ComponentsList* pList = new ComponentsList();
+    TEST_FIXTURE(EntitiesTestEnvironment, Creation)
+    {
+        ComponentsList* pList = new ComponentsList();
 
-		CHECK_EQUAL(0, pList->getNbComponents());
+        CHECK_EQUAL(0, pList->getNbComponents());
 
-		delete pList;
-	}
+        delete pList;
+    }
 
 
     TEST_FIXTURE(EntitiesTestEnvironment, EntityAssignment)
@@ -37,24 +37,24 @@ SUITE(ComponentsListTests)
     }
 
 
-	TEST_FIXTURE(EntitiesTestEnvironment, AddComponent)
-	{
-		ComponentsList* pList = new ComponentsList();
+    TEST_FIXTURE(EntitiesTestEnvironment, AddComponent)
+    {
+        ComponentsList* pList = new ComponentsList();
 
-		CHECK_EQUAL(0, pList->getNbComponents());
+        CHECK_EQUAL(0, pList->getNbComponents());
 
-		Component* pComponent = new Component("Component", pList);
+        Component* pComponent = new Component("Component", pList);
 
-		CHECK_EQUAL(1, pList->getNbComponents());
-		
-		unsigned int uiIndex = 0;
-		CHECK(pComponent == pList->getComponent(uiIndex));
-		CHECK(pComponent == pList->getComponent(pComponent->getID()));
+        CHECK_EQUAL(1, pList->getNbComponents());
 
-		CHECK_EQUAL("", pComponent->getID().strEntity);
+        unsigned int uiIndex = 0;
+        CHECK(pComponent == pList->getComponent(uiIndex));
+        CHECK(pComponent == pList->getComponent(pComponent->getID()));
 
-		delete pList;
-	}
+        CHECK_EQUAL("", pComponent->getID().strEntity);
+
+        delete pList;
+    }
 
 
     TEST_FIXTURE(EntitiesTestEnvironment, MemberComponentIDContainsEntityName)

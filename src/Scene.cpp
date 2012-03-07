@@ -1,7 +1,7 @@
-/**	@file	Scene.cpp
-	@author	Philip Abbet
+/** @file   Scene.cpp
+    @author Philip Abbet
 
-	Implementation of the class 'Athena::Entities::Scene'
+    Implementation of the class 'Athena::Entities::Scene'
 */
 
 #include <Athena-Entities/Scene.h>
@@ -32,28 +32,28 @@ static const char* __CONTEXT__ = "Scene";
 Scene::Scene(const std::string& strName)
 : m_strName(strName), m_bEnabled(true), m_bShown(false)
 {
-	// Assertions
-	assert(ScenesManager::getSingletonPtr());
+    // Assertions
+    assert(ScenesManager::getSingletonPtr());
 
     m_components._setScene(this);
     memset(m_mainComponents, 0, 3 * sizeof(Component*));
 
-	ScenesManager::getSingletonPtr()->_registerScene(this);
+    ScenesManager::getSingletonPtr()->_registerScene(this);
 }
 
 //-----------------------------------------------------------------------
 
 Scene::~Scene()
 {
-	// Assertions
-	assert(ScenesManager::getSingletonPtr());
+    // Assertions
+    assert(ScenesManager::getSingletonPtr());
 
-	if (m_bEnabled)
-		enable(false);
+    if (m_bEnabled)
+        enable(false);
 
-	destroyAll();
+    destroyAll();
 
-	ScenesManager::getSingletonPtr()->_destroyScene(this);
+    ScenesManager::getSingletonPtr()->_destroyScene(this);
 }
 
 
@@ -61,57 +61,57 @@ Scene::~Scene()
 
 void Scene::enable(bool bEnabled)
 {
-	if (bEnabled == m_bEnabled)
-		return;
+    if (bEnabled == m_bEnabled)
+        return;
 
-	m_bEnabled = bEnabled;
+    m_bEnabled = bEnabled;
 
-	if (m_bEnabled)
-	{
-		m_signals.fire(SIGNAL_SCENE_ENABLED, new Variant(getName()));
-	}
-	else
-	{
-		if (m_bShown)
-			hide();
+    if (m_bEnabled)
+    {
+        m_signals.fire(SIGNAL_SCENE_ENABLED, new Variant(getName()));
+    }
+    else
+    {
+        if (m_bShown)
+            hide();
 
-		m_signals.fire(SIGNAL_SCENE_DISABLED, new Variant(getName()));
-	}
+        m_signals.fire(SIGNAL_SCENE_DISABLED, new Variant(getName()));
+    }
 }
 
 //-----------------------------------------------------------------------
 
 void Scene::show()
 {
-	// Assertions
-	assert(ScenesManager::getSingletonPtr() && "There isn't an Scene manager's instance");
-	assert(m_bEnabled);
+    // Assertions
+    assert(ScenesManager::getSingletonPtr() && "There isn't an Scene manager's instance");
+    assert(m_bEnabled);
 
     ScenesManager* pScenesManager = ScenesManager::getSingletonPtr();
 
-	// Notify the scenes manager
-	pScenesManager->_onSceneShown(this);
-	m_bShown = true;
+    // Notify the scenes manager
+    pScenesManager->_onSceneShown(this);
+    m_bShown = true;
 
-	// Fire the 'shown' signal
-	m_signals.fire(SIGNAL_SCENE_SHOWN);
+    // Fire the 'shown' signal
+    m_signals.fire(SIGNAL_SCENE_SHOWN);
 }
 
 //-----------------------------------------------------------------------
 
 void Scene::hide()
 {
-	// Assertions
-	assert(ScenesManager::getSingletonPtr() && "There isn't an Scene manager's instance");
+    // Assertions
+    assert(ScenesManager::getSingletonPtr() && "There isn't an Scene manager's instance");
 
     ScenesManager* pScenesManager = ScenesManager::getSingletonPtr();
 
-	// Notify the scenes manager
-	pScenesManager->_onSceneHidden(this);
-	m_bShown = false;
+    // Notify the scenes manager
+    pScenesManager->_onSceneHidden(this);
+    m_bShown = false;
 
-	// Fire the 'hidden' signal
-	m_signals.fire(SIGNAL_SCENE_HIDDEN);
+    // Fire the 'hidden' signal
+    m_signals.fire(SIGNAL_SCENE_HIDDEN);
 }
 
 
@@ -119,149 +119,149 @@ void Scene::hide()
 
 Entity* Scene::create(const std::string& strName, Entity* pParent)
 {
-	// Assertions
-	assert(!strName.empty() && "Invalid entity name");
-	assert(!getEntity(strName) && "Entity name already used");
+    // Assertions
+    assert(!strName.empty() && "Invalid entity name");
+    assert(!getEntity(strName) && "Entity name already used");
 
-	if (pParent && (pParent->getScene() != this))
-		return 0;
+    if (pParent && (pParent->getScene() != this))
+        return 0;
 
-	Entity* pEntity = new Entity(strName, this, pParent);
+    Entity* pEntity = new Entity(strName, this, pParent);
 
-	m_entities.push_back(pEntity);
+    m_entities.push_back(pEntity);
 
-	return pEntity;
+    return pEntity;
 }
 
 //-----------------------------------------------------------------------
 
 Entity* Scene::getEntity(const std::string& strName)
 {
-	assert(!strName.empty() && "The name is empty");
+    assert(!strName.empty() && "The name is empty");
 
-	// Declarations
-	tEntitiesNativeIterator iter, iterEnd;
+    // Declarations
+    tEntitiesNativeIterator iter, iterEnd;
 
-	// Search the entity
-	for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
-	{
-		if ((*iter)->getName() == strName)
-		{
-			// Return it
-			return (*iter);
-		}
-	}
+    // Search the entity
+    for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
+    {
+        if ((*iter)->getName() == strName)
+        {
+            // Return it
+            return (*iter);
+        }
+    }
 
-	// Not found
-	return 0;
+    // Not found
+    return 0;
 }
 
 //-----------------------------------------------------------------------
 
 void Scene::destroy(const std::string& strName)
 {
-	// Assertions
-	assert(!strName.empty() && "The name is empty");
+    // Assertions
+    assert(!strName.empty() && "The name is empty");
 
-	// Declarations
-	tEntitiesNativeIterator iter, iterEnd;
+    // Declarations
+    tEntitiesNativeIterator iter, iterEnd;
 
-	// Search the entity
-	for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
-	{
-		if ((*iter)->getName() == strName)
-		{
-			delete (*iter);
-			m_entities.erase(iter);
-			return;
-		}
-	}
+    // Search the entity
+    for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
+    {
+        if ((*iter)->getName() == strName)
+        {
+            delete (*iter);
+            m_entities.erase(iter);
+            return;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------
 
 void Scene::destroy(Entity* pEntity)
 {
-	// Assertions
-	assert(pEntity && "Invalid entity");
+    // Assertions
+    assert(pEntity && "Invalid entity");
 
-	// Declarations
-	tEntitiesNativeIterator iter, iterEnd;
+    // Declarations
+    tEntitiesNativeIterator iter, iterEnd;
 
-	// Search the entity
-	for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
-	{
-		if (*iter == pEntity)
-		{
-			delete pEntity;
-			m_entities.erase(iter);
-			return;
-		}
-	}
+    // Search the entity
+    for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
+    {
+        if (*iter == pEntity)
+        {
+            delete pEntity;
+            m_entities.erase(iter);
+            return;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------
 
 void Scene::destroyAll()
 {
-	// Declarations
-	tEntitiesNativeIterator iter, iterEnd;
+    // Declarations
+    tEntitiesNativeIterator iter, iterEnd;
 
-	// Search the entity
-	for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
-		delete (*iter);
+    // Search the entity
+    for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
+        delete (*iter);
 
-	m_entities.clear();
+    m_entities.clear();
 }
 
 //-----------------------------------------------------------------------
 
 void Scene::transfer(const std::string& strName, Scene* pSrcScene)
 {
-	// Assertions
-	assert(!strName.empty() && "The name is empty");
-	assert(pSrcScene);
+    // Assertions
+    assert(!strName.empty() && "The name is empty");
+    assert(pSrcScene);
 
-	// Declarations
-	tEntitiesNativeIterator iter, iterEnd;
+    // Declarations
+    tEntitiesNativeIterator iter, iterEnd;
 
-	// Search the entity
-	for (iter = pSrcScene->m_entities.begin(), iterEnd = pSrcScene->m_entities.end();
-		 iter != iterEnd; ++iter)
-	{
-		if ((*iter)->getName() == strName)
-		{
-			Entity* pEntity = *iter;
-			pSrcScene->m_entities.erase(iter);
-			pEntity->m_pScene = this;
-			m_entities.push_back(pEntity);
-			return;
-		}
-	}
+    // Search the entity
+    for (iter = pSrcScene->m_entities.begin(), iterEnd = pSrcScene->m_entities.end();
+         iter != iterEnd; ++iter)
+    {
+        if ((*iter)->getName() == strName)
+        {
+            Entity* pEntity = *iter;
+            pSrcScene->m_entities.erase(iter);
+            pEntity->m_pScene = this;
+            m_entities.push_back(pEntity);
+            return;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------
 
 void Scene::transfer(Entity* pEntity)
 {
-	// Assertions
-	assert(pEntity && "Invalid entity");
-	assert(pEntity->getScene());
-	assert(pEntity->getScene() != this);
+    // Assertions
+    assert(pEntity && "Invalid entity");
+    assert(pEntity->getScene());
+    assert(pEntity->getScene() != this);
 
-	// Declarations
-	tEntitiesNativeIterator iter, iterEnd;
+    // Declarations
+    tEntitiesNativeIterator iter, iterEnd;
 
-	// Search the entity
-	for (iter = pEntity->getScene()->m_entities.begin(), iterEnd = pEntity->getScene()->m_entities.end();
-		 iter != iterEnd; ++iter)
-	{
-		if (*iter == pEntity)
-		{
-			pEntity->getScene()->m_entities.erase(iter);
-			pEntity->m_pScene = this;
-			m_entities.push_back(pEntity);
-			return;
-		}
-	}
+    // Search the entity
+    for (iter = pEntity->getScene()->m_entities.begin(), iterEnd = pEntity->getScene()->m_entities.end();
+         iter != iterEnd; ++iter)
+    {
+        if (*iter == pEntity)
+        {
+            pEntity->getScene()->m_entities.erase(iter);
+            pEntity->m_pScene = this;
+            m_entities.push_back(pEntity);
+            return;
+        }
+    }
 }

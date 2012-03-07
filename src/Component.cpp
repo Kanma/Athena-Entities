@@ -1,7 +1,7 @@
-/**	@file	Component.cpp
-	@author	Philip Abbet
+/** @file   Component.cpp
+    @author Philip Abbet
 
-	Implementation of the class 'Athena::Entities::Component'
+    Implementation of the class 'Athena::Entities::Component'
 */
 
 #include <Athena-Entities/Component.h>
@@ -29,14 +29,14 @@ const std::string Component::TYPE = "Athena/Component";
 Component::Component(const std::string& strName, ComponentsList* pList)
 : m_id(COMP_OTHER, strName), m_pList(pList), m_pTransforms(0)
 {
-	// Assertions
-	assert(!strName.empty() && "Invalid name");
-	assert(pList && "Invalid list");
+    // Assertions
+    assert(!strName.empty() && "Invalid name");
+    assert(pList && "Invalid list");
 
-	if (m_pList->getEntity())
-		m_id.strEntity = m_pList->getEntity()->getName();
+    if (m_pList->getEntity())
+        m_id.strEntity = m_pList->getEntity()->getName();
 
-	pList->_addComponent(this);
+    pList->_addComponent(this);
 }
 
 //-----------------------------------------------------------------------
@@ -52,7 +52,7 @@ Component::~Component()
 
 Component* Component::create(const std::string& strName, ComponentsList* pList)
 {
-	return new Component(strName, pList);
+    return new Component(strName, pList);
 }
 
 
@@ -83,17 +83,17 @@ void Component::setTransforms(Transforms* pTransforms)
                 pNewTransforms = pEntity->getParent()->getTransforms();
         }
     }
-    
+
     // Stores a reference to the new transforms
     m_pTransforms = pNewTransforms;
 
     if (m_pTransforms)
-	{
+    {
         addLinkTo(m_pTransforms);
 
-		// Do whatever we must do when our transforms change
-		onTransformsChanged();
-	}
+        // Do whatever we must do when our transforms change
+        onTransformsChanged();
+    }
 }
 
 //-----------------------------------------------------------------------
@@ -110,13 +110,13 @@ void Component::setTransforms(const tComponentID& id)
 
 void Component::removeTransforms()
 {
-	if (!m_pTransforms)
-		return;
+    if (!m_pTransforms)
+        return;
 
     removeLinkTo(m_pTransforms);
     m_pTransforms = 0;
 
-	onTransformsChanged();
+    onTransformsChanged();
 }
 
 //-----------------------------------------------------------------------
@@ -157,48 +157,48 @@ void Component::unlink()
 
 Utils::PropertiesList* Component::getProperties() const
 {
-	// Call the base class implementation
-	PropertiesList* pProperties = Describable::getProperties();
+    // Call the base class implementation
+    PropertiesList* pProperties = Describable::getProperties();
 
-	// Create the category belonging to this type
-	pProperties->selectCategory(TYPE, false);
+    // Create the category belonging to this type
+    pProperties->selectCategory(TYPE, false);
 
-	// Parent Transforms
+    // Parent Transforms
     if (m_pTransforms)
         pProperties->set("transforms", new Variant(m_pTransforms->getID().toString()));
 
-	// Returns the list
-	return pProperties;
+    // Returns the list
+    return pProperties;
 }
 
 
 //-----------------------------------------------------------------------
 
 bool Component::setProperty(const std::string& strCategory, const std::string& strName,
-							Utils::Variant* pValue)
+                            Utils::Variant* pValue)
 {
-	assert(!strCategory.empty());
-	assert(!strName.empty());
-	assert(pValue);
+    assert(!strCategory.empty());
+    assert(!strName.empty());
+    assert(pValue);
 
-	if (strCategory == TYPE)
-		return Component::setProperty(strName, pValue);
+    if (strCategory == TYPE)
+        return Component::setProperty(strName, pValue);
 
-	return Describable::setProperty(strCategory, strName, pValue);
+    return Describable::setProperty(strCategory, strName, pValue);
 }
 
 //-----------------------------------------------------------------------
 
 bool Component::setProperty(const std::string& strName, Utils::Variant* pValue)
 {
-	// Assertions
-	assert(!strName.empty());
-	assert(pValue);
+    // Assertions
+    assert(!strName.empty());
+    assert(pValue);
 
-	// Declarations
-	bool bUsed = true;
+    // Declarations
+    bool bUsed = true;
 
-	// Parent Transforms
+    // Parent Transforms
     if (strName == "transforms")
     {
         tComponentID id(pValue->toString());
@@ -217,8 +217,8 @@ bool Component::setProperty(const std::string& strName, Utils::Variant* pValue)
         }
     }
 
-	// Destroy the value
-	delete pValue;
+    // Destroy the value
+    delete pValue;
 
-	return bUsed;
+    return bUsed;
 }

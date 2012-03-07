@@ -1,6 +1,6 @@
 /** @file   Prerequisites.h
     @author Philip Abbet
-    
+
     Declaration of the types of the Athena-Entities module
 */
 
@@ -24,14 +24,14 @@
 
 
 //----------------------------------------------------------------------------------------
-/// @brief	Main namespace. All the components of the Athena engine belongs to this
-///			namespace
+/// @brief  Main namespace. All the components of the Athena engine belongs to this
+///         namespace
 //----------------------------------------------------------------------------------------
 namespace Athena
 {
-	//------------------------------------------------------------------------------------
-	/// @brief	Contains all the entities-related classes
-	//------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
+    /// @brief  Contains all the entities-related classes
+    //------------------------------------------------------------------------------------
     namespace Entities
     {
         class Animation;
@@ -44,7 +44,7 @@ namespace Athena
         class Scene;
         class ScenesManager;
         class Transforms;
-        
+
         typedef unsigned int tAnimation;
 
         ATHENA_ENTITIES_SYMBOL extern const char* VERSION;
