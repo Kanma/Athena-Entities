@@ -34,6 +34,8 @@ namespace Athena
         class Transforms;
         
         typedef unsigned int tAnimation;
+
+        extern const char* VERSION;
     }
 }
 
