@@ -9,18 +9,18 @@ endif()
 
 # List the source files
 set(SRCS main.cpp
-         test_Animation.cpp
-         test_ComponentsList.cpp
-         test_ComponentsManager.cpp
-         test_Entity.cpp
-         test_Scene.cpp
-         test_ScenesManager.cpp
-         test_Transforms.cpp
+         tests/test_Animation.cpp
+         tests/test_ComponentsList.cpp
+         tests/test_ComponentsManager.cpp
+         tests/test_Entity.cpp
+         tests/test_Scene.cpp
+         tests/test_ScenesManager.cpp
+         tests/test_Transforms.cpp
 )
 
 if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
     set(SRCS ${SRCS}
-             scripting.cpp
+             tests/scripting.cpp
     )
 endif()
 

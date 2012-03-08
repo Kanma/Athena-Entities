@@ -5,6 +5,8 @@ xmake_import_search_paths(ATHENA_ENTITIES)
 
 # List the source files
 set(SRCS module.cpp
+         Component.cpp
+         ComponentsList.cpp
 )
 
 set(JS_SRCS ComponentID.js

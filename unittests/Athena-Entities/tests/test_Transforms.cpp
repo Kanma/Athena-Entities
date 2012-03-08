@@ -1,7 +1,7 @@
 #include <UnitTest++.h>
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Entities/Transforms.h>
-#include "environments/EntitiesTestEnvironment.h"
+#include "../environments/EntitiesTestEnvironment.h"
 
 
 using namespace Athena::Entities;

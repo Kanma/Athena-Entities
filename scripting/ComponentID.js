@@ -64,7 +64,10 @@ Athena.Entities.ComponentID = function()
     }
     else
     {
-        throw 'Invalid parameters, valid syntaxes:\nComponentID(type, entity, component)\nComponentID(type, component)\nComponentID(type)\nComponentID(id)';
+        this.type      = Athena.Entities.COMP_NONE;
+        this.entity    = '';
+        this.component = '';
+        // throw 'Invalid parameters, valid syntaxes:\nComponentID(type, entity, component)\nComponentID(type, component)\nComponentID(type)\nComponentID(id)';
     }
 }
 

@@ -1,13 +1,26 @@
 #include <UnitTest++.h>
 #include <Athena-Scripting/ScriptingManager.h>
 #include <Athena-Entities/Scripting.h>
-#include "environments/ScriptingTestEnvironment.h"
+#include "../environments/ScriptingTestEnvironment.h"
 #include <iostream>
 
 
 using namespace Athena::Scripting;
 using namespace Athena::Entities;
 using namespace v8;
+
+
+#define JS_TEST(NAME)                                                \
+    TEST_FIXTURE(ScriptingTestEnvironment, NAME)                     \
+    {                                                                \
+        HandleScope handle_scope;                                    \
+                                                                     \
+        Handle<Value> result = pScriptingManager->executeFile(       \
+                ATHENA_ENTITIES_UNITTESTS_SCRIPTS_PATH #NAME ".js"); \
+                                                                     \
+        CHECK(!result.IsEmpty());                                    \
+        CHECK(pScriptingManager->getLastError().empty());            \
+    }
 
 
 SUITE(Conversions)
@@ -38,4 +51,11 @@ SUITE(Conversions)
         CHECK_EQUAL("", id.strEntity);
         CHECK_EQUAL("mycomponent", id.strName);
     }
+}
+
+
+SUITE(ComponentsList)
+{
+    JS_TEST(ComponentsList_Creation);
+    JS_TEST(ComponentsList_AddComponent);
 }

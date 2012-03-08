@@ -1,6 +1,6 @@
 #include <UnitTest++.h>
 #include <Athena-Entities/ScenesManager.h>
-#include "environments/EntitiesTestEnvironment.h"
+#include "../environments/EntitiesTestEnvironment.h"
 
 
 using namespace Athena::Entities;

@@ -17,6 +17,9 @@ using namespace Athena::Entities;
 
 /*********************************** EXTERNAL FUNCTIONS *********************************/
 
+extern bool bind_ComponentsList(Handle<Object> parent);
+extern bool bind_Component(Handle<Object> parent);
+
 
 /*************************************** FUNCTIONS *************************************/
 
@@ -49,10 +52,15 @@ extern "C" {
     {
         HandleScope handle_scope;
 
+        if (Context::GetCurrent()->Global()->Get(String::New("Athena.Core"))->IsUndefined())
+            ScriptingManager::getSingletonPtr()->import("Athena.Core", Context::GetCurrent());
+
         parent->Set(String::New("VERSION"), String::New(Athena::Entities::VERSION));
 
         bind_ComponentType(parent);
 
-        return load_js_file("ComponentID", parent, modulePath);
+        return load_js_file("ComponentID", parent, modulePath) &&
+               bind_ComponentsList(parent) &&
+               bind_Component(parent);
     }
 }

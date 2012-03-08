@@ -29,6 +29,10 @@ include_directories(${INCLUDE_PATHS})
 
 xmake_import_search_paths(ATHENA_CORE)
 
+if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
+    xmake_import_search_paths(ATHENA_SCRIPTING)
+endif()
+
 
 # Declaration of the library
 if (NOT ATHENA_ENTITIES_STATIC)
@@ -43,6 +47,10 @@ else()
 endif()
 
 xmake_project_link(ATHENA_ENTITIES ATHENA_CORE)
+
+if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
+    xmake_project_link(ATHENA_ENTITIES ATHENA_SCRIPTING)
+endif()
 
 
 # Exportations

@@ -5,9 +5,11 @@
 */
 
 #include <Athena-Entities/Scripting.h>
+#include <Athena-Scripting/ScriptingManager.h>
 #include <string>
 
 using namespace Athena::Entities;
+using namespace Athena::Scripting;
 using namespace v8;
 
 
@@ -37,15 +39,19 @@ tComponentID fromJSComponentID(Handle<Value> value)
 
 Handle<Value> toJavaScript(const tComponentID& value)
 {
-    Handle<Value> constructor = Context::GetCurrent()->Global()->Get(String::New("Athena.Entities.ComponentID"));
-    if (!constructor->IsFunction())
-        return ThrowException(String::New("Can't find the constructor function of Athena.Entities.ComponentID"));
+    Local<Object> object = ScriptingManager::getSingletonPtr()->execute("new Athena.Entities.ComponentID('" + value.toString() + "');")->ToObject();
 
-    Local<Object> object = Handle<Function>::Cast(constructor)->NewInstance();
+    // Handle<Value> constructor = Context::GetCurrent()->Global()->Get(String::New("Athena.Entities.ComponentID"));
+    // if (!constructor->IsUndefined())
+    //     return ThrowException(String::New("BLAAAAAhD"));
+    // if (!constructor->IsFunction())
+    //     return ThrowException(String::New("Can't find the constructor function of Athena.Entities.ComponentID"));
 
-    object->Set(String::New("type"),      Number::New(value.type));
-    object->Set(String::New("entity"),    String::New(value.strEntity.c_str()));
-    object->Set(String::New("component"), String::New(value.strName.c_str()));
+    // Local<Object> object = Handle<Function>::Cast(constructor)->NewInstance();
+
+    // object->Set(String::New("type"),      Number::New(value.type));
+    // object->Set(String::New("entity"),    String::New(value.strEntity.c_str()));
+    // object->Set(String::New("component"), String::New(value.strName.c_str()));
 
     return object;
 }

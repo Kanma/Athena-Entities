@@ -2,7 +2,7 @@
 #include <Athena-Entities/ScenesManager.h>
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Transforms.h>
-#include "environments/EntitiesTestEnvironment.h"
+#include "../environments/EntitiesTestEnvironment.h"
 
 
 using namespace Athena::Entities;
