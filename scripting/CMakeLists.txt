@@ -7,6 +7,7 @@ xmake_import_search_paths(ATHENA_ENTITIES)
 set(SRCS module.cpp
          Component.cpp
          ComponentsList.cpp
+         Transforms.cpp
 )
 
 set(JS_SRCS ComponentID.js

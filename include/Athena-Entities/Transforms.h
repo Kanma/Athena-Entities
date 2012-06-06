@@ -218,9 +218,9 @@ public:
                 tTransformSpace relativeTo = TS_LOCAL);
 
     //------------------------------------------------------------------------------------
-    /// @brief  Rotate the component around an arbitrary axis using a quarternion
+    /// @brief  Rotate the component around an arbitrary axis using a quaternion
     ///
-    /// @param  q           The quarternion representing the rotation
+    /// @param  q           The quaternion representing the rotation
     /// @param  relativeTo  The space in which the rotation axis is expressed
     //------------------------------------------------------------------------------------
     void rotate(const Math::Quaternion& q, tTransformSpace relativeTo = TS_LOCAL);
@@ -231,7 +231,7 @@ public:
     void resetOrientation();
 
     //------------------------------------------------------------------------------------
-    /// @brief  Tells the component whether it should inherit orientation from it's parent
+    /// @brief  Tells the transforms whether it should inherit orientation from it's parent
     ///
     /// @remark Orientatings, unlike other transforms, are not always inherited by child
     ///         component. Whether or not orientatings affect the orientation of the
@@ -247,6 +247,14 @@ public:
     ///                     parent's orientation. If false, it will not be affected.
     //------------------------------------------------------------------------------------
     void setInheritOrientation(bool bInherit);
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Indicates if the transforms inherit orientation from it's parent
+    //------------------------------------------------------------------------------------
+    inline bool inheritOrientation() const
+    {
+        return m_bInheritOrientation;
+    }
 
     //------------------------------------------------------------------------------------
     /// @brief  Gets the worldspace orientation of the component
@@ -338,7 +346,7 @@ public:
     void scale(Math::Real x, Math::Real y, Math::Real z);
 
     //------------------------------------------------------------------------------------
-    /// @brief  Tells the component whether it should inherit scaling factors from it's
+    /// @brief  Tells the transforms whether it should inherit scaling factors from it's
     ///         parent
     ///
     /// @remark Scaling factors, unlike other transforms, are not always inherited by
@@ -357,6 +365,14 @@ public:
     ///                     by its parent's scale. If false, it will not be affected.
     //------------------------------------------------------------------------------------
     void setInheritScale(bool bInherit);
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Indicates if the transforms inherit scaling factors from it's parent
+    //------------------------------------------------------------------------------------
+    inline bool inheritScale() const
+    {
+        return m_bInheritScale;
+    }
 
     //------------------------------------------------------------------------------------
     /// @brief  Gets the worldspace scale of the component

@@ -126,7 +126,6 @@ Vector3 Transforms::getWorldPosition()
 
 /*************************************** ORIENTATION ***************************************/
 
-//-----------------------------------------------------------------------
 void Transforms::setDirection(const Vector3& vec, tTransformSpace relativeTo,
                               const Vector3& localDirectionVector)
 {

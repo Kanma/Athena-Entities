@@ -59,3 +59,26 @@ SUITE(ComponentsList)
     JS_TEST(ComponentsList_Creation);
     JS_TEST(ComponentsList_AddComponent);
 }
+
+
+SUITE(Component)
+{
+    JS_TEST(Component_Creation);
+}
+
+
+SUITE(Transforms)
+{
+    JS_TEST(Transforms_Position);
+    JS_TEST(Transforms_Translate);
+
+    JS_TEST(Transforms_Orientation);
+    JS_TEST(Transforms_SetDirection);
+    // JS_TEST(Transforms_LookAt);
+    JS_TEST(Transforms_Roll);
+    JS_TEST(Transforms_Pitch);
+    JS_TEST(Transforms_Yaw);
+    JS_TEST(Transforms_Rotate);
+
+    JS_TEST(Transforms_Scale);
+}

@@ -4,6 +4,7 @@
 #include <Athena-Entities/Scripting.h>
 #include <Athena-Scripting/Utils.h>
 #include <Athena-Scripting/ScriptingManager.h>
+#include <Athena-Scripting/Conversions.h>
 #include <v8.h>
 
 using namespace Athena::Entities;
@@ -21,17 +22,28 @@ using namespace v8;
 // Constructor
 Handle<Value> Component_New(const Arguments& args)
 {
-    if ((args.Length() != 2) || !args[0]->IsString() || !args[1]->IsObject())
-        return ThrowException(String::New("Invalid parameters, valid syntax:\nComponent(name, components_list)"));
+    // New C++ component
+    if ((args.Length() == 2) && args[0]->IsString() && args[1]->IsObject())
+    {
+        ComponentsList* pList = 0;
+        GetObjectPtr(args[1], &pList);
 
-    ComponentsList* pList = 0;
-    GetObjectPtr(args[1], &pList);
+        if (pList)
+            return SetObjectPtr(args.This(), new Component(*String::AsciiValue(args[0]->ToString()), pList),
+                                &NoOpWeakCallback);
+    }
 
-    if (!pList)
-        return ThrowException(String::New("Invalid parameters, valid syntax:\nComponent(name, components_list)"));
+    // Wrapper around an existing C++ component
+    else if ((args.Length() == 1) && args[0]->IsExternal())
+    {
+        Component* pComponent = static_cast<Component*>(External::Unwrap(args[0]));
+        return SetObjectPtr(args.This(), pComponent, &NoOpWeakCallback);
+    }
 
-    return SetObjectPtr(args.This(), new Component(*String::AsciiValue(args[0]->ToString()), pList),
-                        &NoOpWeakCallback);
+    else
+    {
+        return ThrowException(String::New("Invalid parameters, valid syntax:\nComponent(name, components_list)\nComponent(<C++ component>)"));
+    }
 }
 
 
@@ -71,66 +83,47 @@ Handle<Value> Component_GetName(Local<String> property, const AccessorInfo &info
 
 Handle<Value> Component_GetList(Local<String> property, const AccessorInfo &info)
 {
-    HandleScope handle_scope;
-
     Component* ptr = GetPtr(info.This());
     assert(ptr);
 
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.ComponentsList");
-
-    Handle<Object> jsList = func->GetFunction()->NewInstance();
-    SetObjectPtr(jsList, ptr->getList(), &NoOpWeakCallback);
-
-    return handle_scope.Close(jsList);
+    return toJavaScript(ptr->getList());
 }
 
 //-----------------------------------------------------------------------
 
-// Handle<Value> Component_GetTransforms(Local<String> property, const AccessorInfo &info)
-// {
-//     HandleScope handle_scope;
-// 
-//     Component* ptr = GetPtr(info.This());
-//     assert(ptr);
-// 
-//     Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-//                                                         "Athena.Entities.Transforms");
-// 
-//     Handle<Object> jsTransforms = func->GetFunction()->NewInstance();
-//     SetObjectPtr(jsTransforms, ptr->getTransforms(), &NoOpWeakCallback);
-// 
-//     return handle_scope.Close(jsTransforms);
-// }
-
-//-----------------------------------------------------------------------
-
-// void Component_SetTransforms(Local<String> property, Local<Value> value, const AccessorInfo& info)
-// {
-//     HandleScope handle_scope;
-// 
-//     Component* ptr = GetPtr(info.This());
-//     assert(ptr);
-// 
-//     ptr->setTransforms(fromJSTransforms(value));
-// }
-
-//-----------------------------------------------------------------------
-
-Handle<Value> Component_GetSignalsList(Local<String> property, const AccessorInfo &info)
+Handle<Value> Component_GetTransforms(Local<String> property, const AccessorInfo &info)
 {
     HandleScope handle_scope;
 
     Component* ptr = GetPtr(info.This());
     assert(ptr);
 
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Signals.SignalsList");
+    if (ptr->getTransforms())
+        return handle_scope.Close(toJavaScript(ptr->getTransforms()));
 
-    Handle<Object> jsList = func->GetFunction()->NewInstance();
-    SetObjectPtr(jsList, ptr->getSignalsList(), &NoOpWeakCallback);
+    return Handle<Value>();
+}
 
-    return handle_scope.Close(jsList);
+//-----------------------------------------------------------------------
+
+void Component_SetTransforms(Local<String> property, Local<Value> value, const AccessorInfo& info)
+{
+    HandleScope handle_scope;
+
+    Component* ptr = GetPtr(info.This());
+    assert(ptr);
+
+    ptr->setTransforms(fromJSTransforms(value));
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Value> Component_GetSignalsList(Local<String> property, const AccessorInfo &info)
+{
+    Component* ptr = GetPtr(info.This());
+    assert(ptr);
+
+    return toJavaScript(ptr->getSignalsList());
 }
 
 
@@ -165,12 +158,12 @@ bool bind_Component(Handle<Object> parent)
         component->Inherit(pManager->getClassTemplate("Athena.Utils.Describable"));
 
         // Attributes
-        AddAttribute(component, "type",    Component_GetType, 0);
-        AddAttribute(component, "id",      Component_GetID, 0);
-        AddAttribute(component, "name",    Component_GetName, 0);
-        AddAttribute(component, "list",    Component_GetList, 0);
-//        AddAttribute(component, "transforms", Component_GetTransforms, Component_SetTransforms);
-        AddAttribute(component, "signals", Component_GetSignalsList, 0);
+        AddAttribute(component, "type",       Component_GetType, 0);
+        AddAttribute(component, "id",         Component_GetID, 0);
+        AddAttribute(component, "name",       Component_GetName, 0);
+        AddAttribute(component, "list",       Component_GetList, 0);
+        AddAttribute(component, "transforms", Component_GetTransforms, Component_SetTransforms);
+        AddAttribute(component, "signals",    Component_GetSignalsList, 0);
 
         // Methods
         AddMethod(component, "removeTransforms", Component_RemoveTransforms);

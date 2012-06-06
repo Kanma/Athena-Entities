@@ -24,7 +24,23 @@ extern void ComponentWeakCallback(v8::Persistent<v8::Value> value, void* data);
 // Constructor
 Handle<Value> ComponentsList_New(const Arguments& args)
 {
-    return SetObjectPtr(args.This(), new ComponentsList());
+    // New C++ list
+    if (args.Length() == 0)
+    {
+        return SetObjectPtr(args.This(), new ComponentsList());
+    }
+
+    // Wrapper around an existing C++ list
+    else if ((args.Length() == 1) && args[0]->IsExternal())
+    {
+        ComponentsList* pList = static_cast<ComponentsList*>(External::Unwrap(args[0]));
+        return SetObjectPtr(args.This(), pList, &NoOpWeakCallback);
+    }
+
+    else
+    {
+        return ThrowException(String::New("Invalid parameters, valid syntax:\nComponentsList()\nComponentsList(<C++ components list>)"));
+    }
 }
 
 
@@ -100,17 +116,7 @@ Handle<Value> ComponentsList_GetComponent(const Arguments& args)
     if (!pComponent)
         return ThrowException(String::New("Invalid parameters, valid syntax:\ngetComponent(id, in_all_scene)\ngetComponent(index)"));
 
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Component");
-
-    Handle<Value> argv[2];
-    argv[0] = String::New(pComponent->getName().c_str());
-    argv[1] = args.This();
-
-    Handle<Object> jsComponent = func->GetFunction()->NewInstance(2, argv);
-    SetObjectPtr(jsComponent, pComponent, &NoOpWeakCallback);
-
-    return handle_scope.Close(jsComponent);
+    return handle_scope.Close(toJavaScript(pComponent));
 }
 
 
