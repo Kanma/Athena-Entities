@@ -9,11 +9,6 @@ using namespace Athena::Scripting;
 using namespace v8;
 
 
-/*********************************** EXTERNAL FUNCTIONS ********************************/
-
-extern void ComponentWeakCallback(v8::Persistent<v8::Value> value, void* data);
-
-
 /**************************************** MACROS ***************************************/
 
 #define GetPtr(HANDLE) GetObjectPtr<ComponentsList>(HANDLE)

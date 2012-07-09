@@ -54,6 +54,14 @@ SUITE(Conversions)
 }
 
 
+SUITE(ComponentsManager)
+{
+    JS_TEST(ComponentsManager_Retrieval);
+    JS_TEST(ComponentsManager_ComponentCreation);
+    JS_TEST(ComponentsManager_ComponentDestruction);
+}
+
+
 SUITE(ComponentsList)
 {
     JS_TEST(ComponentsList_Creation);

@@ -104,79 +104,17 @@ public:
     //------------------------------------------------------------------------------------
     void registerType(const std::string& strType, ComponentCreationMethod* pCreationMethod);
 
-// #if ATHENA_ENTITIES_SCRIPTING
-//
-//     //------------------------------------------------------------------------------------
-//     /// @brief   Register a new type of component, with a Python 'component creation
-//     ///         function'
-//     ///
-//     /// @param   strType     Name of the type
-//     /// @param   strClass    The Python class
-//     //------------------------------------------------------------------------------------
-//  void registerType(const std::string& strType, const std::string& strClass);
-//
-//     //------------------------------------------------------------------------------------
-//  /// @brief  Notify the manager about the Python creator to use
-//     ///
-//  /// @param  pCreator    The creator
-//     ///
-//     /// @remark We don't care about destruction: the creator is expected to be a Python
-//     ///         object which will be garbage collected at adapted time
-//     //------------------------------------------------------------------------------------
-//  inline void _setCreator(IComponentsCreator* pCreator)
-//  {
-//      // We don't care about destruction: the creator is expected to be a Python object
-//      // which will be garbage collected at adapted time
-//      m_pCreator = pCreator;
-//  }
-//
-//     //------------------------------------------------------------------------------------
-//  /// @brief  Returns the Python creator used by the manager
-//     //------------------------------------------------------------------------------------
-//  inline IComponentsCreator* getCreator() const
-//  {
-//      return m_pCreator;
-//  }
-//
-// #endif
-
 
     //_____ Internal types __________
 private:
-
-// #if ATHENA_ENTITIES_SCRIPTING
-//
-//     //------------------------------------------------------------------------------------
-//  /// @brief  Contains the informations necessary to create a new component of a
-//  ///         specific type
-//     //------------------------------------------------------------------------------------
-//  struct tCreationInfos
-//  {
-//      bool                        bPointer;   ///< Indicates if the 'component creation
-//                                              ///  method' is a C++ or a Python one
-//      ComponentCreationMethod*    pMethod;    ///< The C++ creation method
-//      std::string                 strClass;   ///< The Python class
-//  };
-//
-//     typedef std::map<std::string, tCreationInfos> tCreationsInfosList;
-//
-// #else
-//
     typedef std::map<std::string, ComponentCreationMethod*> tCreationsInfosList;
-
-// #endif
-
-    typedef Utils::MapIterator<tCreationsInfosList> tCreationsInfosIterator;
-    typedef tCreationsInfosList::iterator           tCreationsInfosNativeIterator;
+    typedef Utils::MapIterator<tCreationsInfosList>         tCreationsInfosIterator;
+    typedef tCreationsInfosList::iterator                   tCreationsInfosNativeIterator;
 
 
     //_____ Attributes __________
 private:
     tCreationsInfosList m_types;    ///< The registered types
-
-// #if ATHENA_ENTITIES_SCRIPTING
-//  IComponentsCreator* m_pCreator; ///< The Python creator object to use
-// #endif
 };
 
 }
