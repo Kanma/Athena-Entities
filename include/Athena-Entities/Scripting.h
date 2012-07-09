@@ -54,7 +54,39 @@ namespace Entities {
     //------------------------------------------------------------------------------------
     /// @brief  Wrap a new JavaScript Component around a C++ one
     //------------------------------------------------------------------------------------
-    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(Component* pList);
+    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(Component* pComponent);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Retrieve the C++ Entity wrapped by a JavaScript one
+    //------------------------------------------------------------------------------------
+    Entity* ATHENA_ENTITIES_SYMBOL fromJSEntity(v8::Handle<v8::Value> value);
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Create a new JavaScript Entity (wrapping a new C++ one)
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Object> ATHENA_ENTITIES_SYMBOL createJSEntity();
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Wrap a new JavaScript Entity around a C++ one
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(Entity* pEntity);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Retrieve the C++ Scene wrapped by a JavaScript one
+    //------------------------------------------------------------------------------------
+    Scene* ATHENA_ENTITIES_SYMBOL fromJSScene(v8::Handle<v8::Value> value);
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Create a new JavaScript Scene (wrapping a new C++ one)
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Object> ATHENA_ENTITIES_SYMBOL createJSScene();
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Wrap a new JavaScript Scene around a C++ one
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(Scene* pScene);
 
 
     //------------------------------------------------------------------------------------
@@ -70,7 +102,7 @@ namespace Entities {
     //------------------------------------------------------------------------------------
     /// @brief  Wrap a new JavaScript Transforms around a C++ one
     //------------------------------------------------------------------------------------
-    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(Transforms* pList);
+    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(Transforms* pTransforms);
 }
 }
 

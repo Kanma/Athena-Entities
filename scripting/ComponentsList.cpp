@@ -46,23 +46,23 @@ Handle<Value> ComponentsList_New(const Arguments& args)
 
 /************************************** PROPERTIES *************************************/
 
-// Handle<Value> ComponentsList_GetEntity(Local<String> property, const AccessorInfo &info)
-// {
-//     Component* ptr = GetPtr(info.This());
-//     assert(ptr);
-// 
-//     return toJavaScript(ptr->getEntity());
-// }
+Handle<Value> ComponentsList_GetEntity(Local<String> property, const AccessorInfo &info)
+{
+    ComponentsList* ptr = GetPtr(info.This());
+    assert(ptr);
+
+    return toJavaScript(ptr->getEntity());
+}
 
 //-----------------------------------------------------------------------
 
-// Handle<Value> ComponentsList_GetScene(Local<String> property, const AccessorInfo &info)
-// {
-//     Component* ptr = GetPtr(info.This());
-//     assert(ptr);
-// 
-//     return toJavaScript(ptr->getScene());
-// }
+Handle<Value> ComponentsList_GetScene(Local<String> property, const AccessorInfo &info)
+{
+    ComponentsList* ptr = GetPtr(info.This());
+    assert(ptr);
+
+    return toJavaScript(ptr->getScene());
+}
 
 //-----------------------------------------------------------------------
 
@@ -135,8 +135,8 @@ bool bind_ComponentsList(Handle<Object> parent)
         components_list->InstanceTemplate()->SetInternalFieldCount(1);
 
         // Attributes
-        // AddAttribute(components_list, "entity",       ComponentsList_GetEntity, 0);
-        // AddAttribute(components_list, "scene",        ComponentsList_GetScene, 0);
+        AddAttribute(components_list, "entity",       ComponentsList_GetEntity, 0);
+        AddAttribute(components_list, "scene",        ComponentsList_GetScene, 0);
         AddAttribute(components_list, "nbComponents", ComponentsList_GetNbComponents, 0);
 
         // Methods

@@ -8,6 +8,7 @@
 #define _ATHENA_ENTITIES_SCENE_H_
 
 #include <Athena-Entities/Prerequisites.h>
+#include <Athena-Entities/Entity.h>
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Core/Signals/SignalsList.h>
 #include <Athena-Core/Utils/Iterators.h>
@@ -24,13 +25,6 @@ namespace Entities {
 //----------------------------------------------------------------------------------------
 class ATHENA_ENTITIES_SYMBOL Scene
 {
-    //_____ Internal types __________
-public:
-    typedef std::list<Entity*>                      tEntitiesList;
-    typedef Utils::VectorIterator<tEntitiesList>    tEntitiesIterator;
-    typedef tEntitiesList::iterator                 tEntitiesNativeIterator;
-
-
     //_____ Construction / Destruction __________
 public:
     //------------------------------------------------------------------------------------
@@ -116,6 +110,18 @@ public:
     Entity* getEntity(const std::string& strName);
 
     //------------------------------------------------------------------------------------
+    /// @brief  Returns an entity
+    ///
+    /// @param  uiIndex     The index of the entity
+    /// @return             The entity
+    //------------------------------------------------------------------------------------
+    inline Entity* getEntity(unsigned int uiIndex) const
+    {
+        assert(uiIndex < getNbEntities());
+        return m_entities[uiIndex];
+    }
+
+    //------------------------------------------------------------------------------------
     /// @brief  Destroy an entity
     ///
     /// @param  strName     Name of the entity
@@ -152,9 +158,9 @@ public:
     //------------------------------------------------------------------------------------
     /// @brief  Returns an iterator over the entities
     //------------------------------------------------------------------------------------
-    inline tEntitiesIterator getEntitiesIterator()
+    inline Entity::tEntitiesIterator getEntitiesIterator()
     {
-        return tEntitiesIterator(m_entities.begin(), m_entities.end());
+        return Entity::tEntitiesIterator(m_entities.begin(), m_entities.end());
     }
 
     //------------------------------------------------------------------------------------
@@ -270,7 +276,7 @@ protected:
     bool                    m_bEnabled;             ///< Indicates if the scene is enabled
     bool                    m_bShown;               ///< Indicates if the scene is shown
     Signals::SignalsList    m_signals;              ///< The signals list
-    tEntitiesList           m_entities;             ///< The list of entities of the scene
+    Entity::tEntitiesList   m_entities;             ///< The list of entities of the scene
     ComponentsList          m_components;           ///< The list of components
     Component*              m_mainComponents[3];    ///< Main visual, physical and audio components
 };

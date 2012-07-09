@@ -140,7 +140,7 @@ Entity* Scene::getEntity(const std::string& strName)
     assert(!strName.empty() && "The name is empty");
 
     // Declarations
-    tEntitiesNativeIterator iter, iterEnd;
+    Entity::tEntitiesNativeIterator iter, iterEnd;
 
     // Search the entity
     for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
@@ -164,7 +164,7 @@ void Scene::destroy(const std::string& strName)
     assert(!strName.empty() && "The name is empty");
 
     // Declarations
-    tEntitiesNativeIterator iter, iterEnd;
+    Entity::tEntitiesNativeIterator iter, iterEnd;
 
     // Search the entity
     for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
@@ -186,7 +186,7 @@ void Scene::destroy(Entity* pEntity)
     assert(pEntity && "Invalid entity");
 
     // Declarations
-    tEntitiesNativeIterator iter, iterEnd;
+    Entity::tEntitiesNativeIterator iter, iterEnd;
 
     // Search the entity
     for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
@@ -205,7 +205,7 @@ void Scene::destroy(Entity* pEntity)
 void Scene::destroyAll()
 {
     // Declarations
-    tEntitiesNativeIterator iter, iterEnd;
+    Entity::tEntitiesNativeIterator iter, iterEnd;
 
     // Search the entity
     for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
@@ -223,7 +223,7 @@ void Scene::transfer(const std::string& strName, Scene* pSrcScene)
     assert(pSrcScene);
 
     // Declarations
-    tEntitiesNativeIterator iter, iterEnd;
+    Entity::tEntitiesNativeIterator iter, iterEnd;
 
     // Search the entity
     for (iter = pSrcScene->m_entities.begin(), iterEnd = pSrcScene->m_entities.end();
@@ -250,7 +250,7 @@ void Scene::transfer(Entity* pEntity)
     assert(pEntity->getScene() != this);
 
     // Declarations
-    tEntitiesNativeIterator iter, iterEnd;
+    Entity::tEntitiesNativeIterator iter, iterEnd;
 
     // Search the entity
     for (iter = pEntity->getScene()->m_entities.begin(), iterEnd = pEntity->getScene()->m_entities.end();

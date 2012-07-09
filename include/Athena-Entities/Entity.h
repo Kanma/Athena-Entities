@@ -37,8 +37,8 @@ class ATHENA_ENTITIES_SYMBOL Entity
 
     //_____ Internal types __________
 public:
-    typedef std::list<Entity*>                      tEntitiesList;
-    typedef Utils::VectorIterator<tEntitiesList>    ChildrenIterator;
+    typedef std::vector<Entity*>                    tEntitiesList;
+    typedef Utils::VectorIterator<tEntitiesList>    tEntitiesIterator;
     typedef tEntitiesList::iterator                 tEntitiesNativeIterator;
 
 
@@ -135,9 +135,9 @@ public:
     //------------------------------------------------------------------------------------
     /// @brief  Returns an iterator over the children of the entity
     //------------------------------------------------------------------------------------
-    ChildrenIterator getChildrenIterator()
+    tEntitiesIterator getChildrenIterator()
     {
-        return ChildrenIterator(m_children.begin(), m_children.end());
+        return tEntitiesIterator(m_children.begin(), m_children.end());
     }
 
 

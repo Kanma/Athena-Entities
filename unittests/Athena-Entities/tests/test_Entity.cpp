@@ -44,7 +44,7 @@ SUITE(EntityTests)
         CHECK(pChild->getParent() == pParent);
         CHECK_EQUAL(1, pParent->getNbChildren());
 
-        Entity::ChildrenIterator iter = pParent->getChildrenIterator();
+        Entity::tEntitiesIterator iter = pParent->getChildrenIterator();
         CHECK(iter.hasMoreElements());
         CHECK(iter.getNext() == pChild);
         CHECK(!iter.hasMoreElements());
@@ -75,7 +75,7 @@ SUITE(EntityTests)
         CHECK(pChild->getParent() == pParent);
         CHECK_EQUAL(1, pParent->getNbChildren());
 
-        Entity::ChildrenIterator iter = pParent->getChildrenIterator();
+        Entity::tEntitiesIterator iter = pParent->getChildrenIterator();
         CHECK(iter.hasMoreElements());
         CHECK(iter.getNext() == pChild);
         CHECK(!iter.hasMoreElements());

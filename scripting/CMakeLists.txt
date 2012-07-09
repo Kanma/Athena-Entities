@@ -7,6 +7,8 @@ xmake_import_search_paths(ATHENA_ENTITIES)
 set(SRCS module.cpp
          Component.cpp
          ComponentsList.cpp
+         Entity.cpp
+         Scene.cpp
          Transforms.cpp
 )
 

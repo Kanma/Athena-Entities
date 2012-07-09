@@ -82,3 +82,25 @@ SUITE(Transforms)
 
     JS_TEST(Transforms_Scale);
 }
+
+
+SUITE(Scene)
+{
+    JS_TEST(Scene_Creation);
+    JS_TEST(Scene_Enabled);
+    JS_TEST(Scene_Shown);
+    JS_TEST(Scene_Components);
+    JS_TEST(Scene_EntityCreation);
+    JS_TEST(Scene_EntityDestruction);
+    JS_TEST(Scene_EntityDestroyAll);
+    JS_TEST(Scene_EntityTransfer);
+}
+
+
+SUITE(Entity)
+{
+    JS_TEST(Entity_Creation);
+    JS_TEST(Entity_Enabled);
+    JS_TEST(Entity_Components);
+    JS_TEST(Entity_Children);
+}

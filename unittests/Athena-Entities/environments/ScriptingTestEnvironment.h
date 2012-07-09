@@ -8,9 +8,6 @@
 #include <v8.h>
 
 
-extern bool init_test_module(v8::Handle<v8::Context> context);
-
-
 struct ScriptingTestEnvironment
 {
     Athena::Entities::Scene* pScene;
@@ -32,8 +29,6 @@ struct ScriptingTestEnvironment
 
         pScriptingManager->import("Athena.Entities");
 
-        // init_test_module(pScriptingManager->mainContext());
-
         pScriptingManager->executeFile(ATHENA_SCRIPTING_JS_TEST_RUNNER_PATH "tests.js");
     }
 
@@ -41,8 +36,8 @@ struct ScriptingTestEnvironment
     {
         delete pScene;
 
-        delete pComponentsManager;
         delete pScenesManager;
+        delete pComponentsManager;
 
         delete pScriptingManager;
     }

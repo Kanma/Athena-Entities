@@ -118,7 +118,7 @@ public:
     /// @brief  Returns one of the components
     ///
     /// @param  uiIndex     The index of the component
-    /// @return The component
+    /// @return             The component
     //------------------------------------------------------------------------------------
     inline Component* getComponent(unsigned int uiIndex) const
     {

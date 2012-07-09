@@ -19,6 +19,8 @@ using namespace Athena::Entities;
 
 extern bool bind_ComponentsList(Handle<Object> parent);
 extern bool bind_Component(Handle<Object> parent);
+extern bool bind_Entity(Handle<Object> parent);
+extern bool bind_Scene(Handle<Object> parent);
 extern bool bind_Transforms(Handle<Object> parent);
 
 
@@ -66,6 +68,8 @@ extern "C" {
         return load_js_file("ComponentID", parent, modulePath) &&
                bind_ComponentsList(parent) &&
                bind_Component(parent) &&
+               bind_Entity(parent) &&
+               bind_Scene(parent) &&
                bind_Transforms(parent);
     }
 }

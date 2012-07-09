@@ -91,10 +91,10 @@ Handle<Object> createJSComponentsList()
 
 Handle<Value> toJavaScript(ComponentsList* pList)
 {
-    // Assertions
-    assert(pList);
-
     HandleScope handle_scope;
+
+    if (!pList)
+        return Handle<Value>();
 
     Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
                                                         "Athena.Entities.ComponentsList");
@@ -139,10 +139,10 @@ Handle<Object> createJSComponent()
 
 Handle<Value> toJavaScript(Component* pComponent)
 {
-    // Assertions
-    assert(pComponent);
-
     HandleScope handle_scope;
+
+    if (!pComponent)
+        return Handle<Value>();
 
     Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
                                                         "Athena.Entities.Component");
@@ -153,6 +153,102 @@ Handle<Value> toJavaScript(Component* pComponent)
     Handle<Object> jsComponent = func->GetFunction()->NewInstance(1, argv);
 
     return handle_scope.Close(jsComponent);
+}
+
+//-----------------------------------------------------------------------
+
+Entity* fromJSEntity(Handle<Value> value)
+{
+    if (value->IsObject())
+    {
+        Entity* pEntity = 0;
+        GetObjectPtr(value, &pEntity);
+        return pEntity;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Object> createJSEntity()
+{
+    HandleScope handle_scope;
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.Entity");
+
+    Handle<Object> jsEntity = func->GetFunction()->NewInstance();
+
+    return handle_scope.Close(jsEntity);
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Value> toJavaScript(Entity* pEntity)
+{
+    HandleScope handle_scope;
+
+    if (!pEntity)
+        return Handle<Value>();
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.Entity");
+
+    Handle<Value> argv[1];
+    argv[0] = External::Wrap(pEntity);
+
+    Handle<Object> jsEntity = func->GetFunction()->NewInstance(1, argv);
+
+    return handle_scope.Close(jsEntity);
+}
+
+//-----------------------------------------------------------------------
+
+Scene* fromJSScene(Handle<Value> value)
+{
+    if (value->IsObject())
+    {
+        Scene* pScene = 0;
+        GetObjectPtr(value, &pScene);
+        return pScene;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Object> createJSScene()
+{
+    HandleScope handle_scope;
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.Scene");
+
+    Handle<Object> jsScene = func->GetFunction()->NewInstance();
+
+    return handle_scope.Close(jsScene);
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Value> toJavaScript(Scene* pScene)
+{
+    HandleScope handle_scope;
+
+    if (!pScene)
+        return Handle<Value>();
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.Scene");
+
+    Handle<Value> argv[1];
+    argv[0] = External::Wrap(pScene);
+
+    Handle<Object> jsScene = func->GetFunction()->NewInstance(1, argv);
+
+    return handle_scope.Close(jsScene);
 }
 
 //-----------------------------------------------------------------------
@@ -187,10 +283,10 @@ Handle<Object> createJSTransforms()
 
 Handle<Value> toJavaScript(Transforms* pTransforms)
 {
-    // Assertions
-    assert(pTransforms);
-
     HandleScope handle_scope;
+
+    if (!pTransforms)
+        return Handle<Value>();
 
     Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
                                                         "Athena.Entities.Transforms");
