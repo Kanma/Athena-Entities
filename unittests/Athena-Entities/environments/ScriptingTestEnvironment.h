@@ -34,8 +34,6 @@ struct ScriptingTestEnvironment
 
     ~ScriptingTestEnvironment()
     {
-        delete pScene;
-
         delete pScenesManager;
         delete pComponentsManager;
 

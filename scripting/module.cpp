@@ -21,6 +21,7 @@ extern bool bind_ComponentsManager(Handle<Object> parent);
 extern bool bind_ComponentsList(Handle<Object> parent);
 extern bool bind_Component(Handle<Object> parent);
 extern bool bind_Entity(Handle<Object> parent);
+extern bool bind_ScenesManager(Handle<Object> parent);
 extern bool bind_Scene(Handle<Object> parent);
 extern bool bind_Transforms(Handle<Object> parent);
 
@@ -71,6 +72,7 @@ extern "C" {
                bind_ComponentsList(parent) &&
                bind_Component(parent) &&
                bind_Entity(parent) &&
+               bind_ScenesManager(parent) &&
                bind_Scene(parent) &&
                bind_Transforms(parent);
     }

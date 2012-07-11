@@ -10,6 +10,7 @@ set(SRCS module.cpp
          ComponentsManager.cpp
          Entity.cpp
          Scene.cpp
+         ScenesManager.cpp
          Transforms.cpp
 )
 

@@ -92,6 +92,16 @@ SUITE(Transforms)
 }
 
 
+SUITE(ScenesManager)
+{
+    JS_TEST(ScenesManager_Retrieval);
+    JS_TEST(ScenesManager_SceneCreation);
+    JS_TEST(ScenesManager_SceneDestruction);
+    JS_TEST(ScenesManager_SceneDestroyAll);
+    JS_TEST(ScenesManager_SceneRetrieval);
+}
+
+
 SUITE(Scene)
 {
     JS_TEST(Scene_Creation);

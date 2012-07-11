@@ -83,6 +83,18 @@ public:
     Scene* getScene(const std::string& strName);
 
     //------------------------------------------------------------------------------------
+    /// @brief  Returns a scene
+    ///
+    /// @param  uiIndex     Index of the scene
+    /// @return             The scene
+    //------------------------------------------------------------------------------------
+    inline Scene* getScene(unsigned int uiIndex) const
+    {
+        assert(uiIndex < getNbScenes());
+        return m_scenes[uiIndex];
+    }
+
+    //------------------------------------------------------------------------------------
     /// @brief  Destroy a scene
     ///
     /// @param  strName     Name of the scene
