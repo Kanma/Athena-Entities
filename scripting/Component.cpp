@@ -51,10 +51,12 @@ Handle<Value> Component_New(const Arguments& args)
 
 Handle<Value> Component_GetType(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Component* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return String::New(ptr->getType().c_str());
+    return handle_scope.Close(String::New(ptr->getType().c_str()));
 }
 
 //-----------------------------------------------------------------------
@@ -73,20 +75,24 @@ Handle<Value> Component_GetID(Local<String> property, const AccessorInfo &info)
 
 Handle<Value> Component_GetName(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Component* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return String::New(ptr->getName().c_str());
+    return handle_scope.Close(String::New(ptr->getName().c_str()));
 }
 
 //-----------------------------------------------------------------------
 
 Handle<Value> Component_GetList(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Component* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getList());
+    return handle_scope.Close(toJavaScript(ptr->getList()));
 }
 
 //-----------------------------------------------------------------------
@@ -120,10 +126,12 @@ void Component_SetTransforms(Local<String> property, Local<Value> value, const A
 
 Handle<Value> Component_GetSignalsList(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Component* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getSignalsList());
+    return handle_scope.Close(toJavaScript(ptr->getSignalsList()));
 }
 
 
@@ -131,6 +139,8 @@ Handle<Value> Component_GetSignalsList(Local<String> property, const AccessorInf
 
 Handle<Value> Component_RemoveTransforms(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Component* ptr = GetPtr(args.This());
     assert(ptr);
 

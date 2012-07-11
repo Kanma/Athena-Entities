@@ -43,30 +43,36 @@ Handle<Value> ComponentsList_New(const Arguments& args)
 
 Handle<Value> ComponentsList_GetEntity(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     ComponentsList* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getEntity());
+    return handle_scope.Close(toJavaScript(ptr->getEntity()));
 }
 
 //-----------------------------------------------------------------------
 
 Handle<Value> ComponentsList_GetScene(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     ComponentsList* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getScene());
+    return handle_scope.Close(toJavaScript(ptr->getScene()));
 }
 
 //-----------------------------------------------------------------------
 
 Handle<Value> ComponentsList_GetNbComponents(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     ComponentsList* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return Uint32::New(ptr->getNbComponents());
+    return handle_scope.Close(Uint32::New(ptr->getNbComponents()));
 }
 
 
@@ -74,6 +80,8 @@ Handle<Value> ComponentsList_GetNbComponents(Local<String> property, const Acces
 
 Handle<Value> ComponentsList_RemoveAllComponents(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     ComponentsList* ptr = GetPtr(args.This());
     assert(ptr);
 

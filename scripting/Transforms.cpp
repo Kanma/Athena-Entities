@@ -52,10 +52,12 @@ Handle<Value> Transforms_New(const Arguments& args)
 
 Handle<Value> Transforms_GetPosition(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getPosition());
+    return handle_scope.Close(toJavaScript(ptr->getPosition()));
 }
 
 //-----------------------------------------------------------------------
@@ -80,20 +82,24 @@ void Transforms_SetPosition(Local<String> property, Local<Value> value, const Ac
 
 Handle<Value> Transforms_GetWorldPosition(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getWorldPosition());
+    return handle_scope.Close(toJavaScript(ptr->getWorldPosition()));
 }
 
 //-----------------------------------------------------------------------
 
 Handle<Value> Transforms_GetOrientation(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getOrientation());
+    return handle_scope.Close(toJavaScript(ptr->getOrientation()));
 }
 
 //-----------------------------------------------------------------------
@@ -112,20 +118,24 @@ void Transforms_SetOrientation(Local<String> property, Local<Value> value, const
 
 Handle<Value> Transforms_GetWorldOrientation(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getWorldOrientation());
+    return handle_scope.Close(toJavaScript(ptr->getWorldOrientation()));
 }
 
 //-----------------------------------------------------------------------
 
 Handle<Value> Transforms_GetInheritOrientation(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return Boolean::New(ptr->inheritOrientation());
+    return handle_scope.Close(Boolean::New(ptr->inheritOrientation()));
 }
 
 //-----------------------------------------------------------------------
@@ -144,10 +154,12 @@ void Transforms_SetInheritOrientation(Local<String> property, Local<Value> value
 
 Handle<Value> Transforms_GetScale(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getScale());
+    return handle_scope.Close(toJavaScript(ptr->getScale()));
 }
 
 //-----------------------------------------------------------------------
@@ -172,20 +184,24 @@ void Transforms_SetScale(Local<String> property, Local<Value> value, const Acces
 
 Handle<Value> Transforms_GetWorldScale(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return toJavaScript(ptr->getWorldScale());
+    return handle_scope.Close(toJavaScript(ptr->getWorldScale()));
 }
 
 //-----------------------------------------------------------------------
 
 Handle<Value> Transforms_GetInheritScale(Local<String> property, const AccessorInfo &info)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(info.This());
     assert(ptr);
 
-    return Boolean::New(ptr->inheritScale());
+    return handle_scope.Close(Boolean::New(ptr->inheritScale()));
 }
 
 //-----------------------------------------------------------------------
@@ -205,6 +221,8 @@ void Transforms_SetInheritScale(Local<String> property, Local<Value> value, cons
 
 Handle<Value> Transforms_Translate(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -239,6 +257,8 @@ Handle<Value> Transforms_Translate(const Arguments& args)
 
 Handle<Value> Transforms_SetDirection(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -266,6 +286,8 @@ Handle<Value> Transforms_SetDirection(const Arguments& args)
 
 Handle<Value> Transforms_LookAt(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -293,6 +315,8 @@ Handle<Value> Transforms_LookAt(const Arguments& args)
 
 Handle<Value> Transforms_Roll(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -314,6 +338,8 @@ Handle<Value> Transforms_Roll(const Arguments& args)
 
 Handle<Value> Transforms_Pitch(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -335,6 +361,8 @@ Handle<Value> Transforms_Pitch(const Arguments& args)
 
 Handle<Value> Transforms_Yaw(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -356,6 +384,8 @@ Handle<Value> Transforms_Yaw(const Arguments& args)
 
 Handle<Value> Transforms_Rotate(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -394,6 +424,8 @@ Handle<Value> Transforms_Rotate(const Arguments& args)
 
 Handle<Value> Transforms_ResetOrientation(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
@@ -406,22 +438,26 @@ Handle<Value> Transforms_ResetOrientation(const Arguments& args)
 
 Handle<Value> Transforms_Rescale(const Arguments& args)
 {
+    HandleScope handle_scope;
+
     Transforms* ptr = GetPtr(args.This());
     assert(ptr);
 
     if ((args.Length() == 1) && isJSVector3(args[0]))
     {
         ptr->scale(fromJSVector3Unsafe(args[0]));
-        return Handle<Value>();
     }
     else if ((args.Length() == 3) &&
              args[0]->IsNumber() && args[1]->IsNumber() && args[2]->IsNumber())
     {
         ptr->scale(args[0]->NumberValue(), args[1]->NumberValue(), args[2]->NumberValue());
-        return Handle<Value>();
+    }
+    else
+    {
+        return ThrowException(String::New("Invalid parameters, syntax: scale(vector3) or scale(dx, dy, dz)"));
     }
 
-    return ThrowException(String::New("Invalid parameters, syntax: scale(vector3) or scale(dx, dy, dz)"));
+    return Handle<Value>();
 }
 
 
