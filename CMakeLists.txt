@@ -12,13 +12,27 @@ endif()
 ##########################################################################################
 # Setup the dependencies
 
+set(COMPILE_AS_STATIC ON)
+if (WIN32)
+    set(COMPILE_AS_STATIC OFF)
+endif()
+
 if (NOT DEFINED ATHENA_MATH_STATIC)
-    set(ATHENA_MATH_STATIC ON)
+    set(ATHENA_MATH_STATIC ${COMPILE_AS_STATIC})
 endif()
 
 if (NOT DEFINED ATHENA_CORE_STATIC)
-    set(ATHENA_CORE_STATIC ON)
+    set(ATHENA_CORE_STATIC ${COMPILE_AS_STATIC})
 endif()
+
+
+##########################################################################################
+# Library version
+
+set(ATHENA_ENTITIES_VERSION_MAJOR 1)
+set(ATHENA_ENTITIES_VERSION_MINOR 1)
+set(ATHENA_ENTITIES_VERSION_PATCH 0)
+set(ATHENA_ENTITIES_VERSION_SUFFIX "")
 
 
 ##########################################################################################
@@ -62,6 +76,17 @@ include("${XMAKE_DEPENDENCIES_DIR}/XMake/XMake.cmake")
 # Process subdirectories
 
 add_subdirectory(dependencies)
+
+if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
+    set(ATHENA_CORE_SCRIPTING ON)
+else()
+    set(ATHENA_CORE_SCRIPTING OFF)
+endif()
+
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(unittests)
+
+if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
+    add_subdirectory(scripting)
+endif()

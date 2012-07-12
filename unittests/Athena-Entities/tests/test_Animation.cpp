@@ -27,7 +27,7 @@ public:
             return;
 
         timepos = fTimePos;
-            
+
         value = min + (max - min) * fTimePos / length;
     }
 
@@ -35,7 +35,7 @@ public:
     {
         return timepos;
     }
-	
+
     virtual float getLength() const
     {
         return length;
@@ -78,19 +78,19 @@ class Animable
 public:
     float value;
     std::vector<MinMaxAnimation*> animations;
-    
+
     void update()
     {
         value = 0.0f;
-        
+
         VectorIterator<std::vector<MinMaxAnimation*> > iter(animations);
         while (iter.hasMoreElements())
         {
             MinMaxAnimation* pAnim = iter.getNext();
-            
+
             value += pAnim->getCurrentWeight() * pAnim->value;
         }
-    }    
+    }
 };
 
 
@@ -297,7 +297,7 @@ SUITE(AnimationTests)
 
         anim.addComponentAnimation(&a1);
         anim.addComponentAnimation(&a2);
-        
+
         a1.setWeight(0.5f);
         a2.setWeight(0.5f);
 
@@ -328,7 +328,7 @@ SUITE(AnimationTests)
 
         anim.addComponentAnimation(&a1);
         anim.addComponentAnimation(&a2);
-        
+
         a1.setWeight(0.75f);
         a2.setWeight(0.25f);
 
@@ -359,7 +359,7 @@ SUITE(AnimationTests)
 
         anim.addComponentAnimation(&a1);
         anim.addComponentAnimation(&a2);
-        
+
         a1.setWeight(0.5f);
         a2.setWeight(0.5f);
 
@@ -391,10 +391,10 @@ SUITE(AnimationTests)
         a1.setWeight(0.5f);
         a2.setWeight(0.5f);
         a2.setOffset(2.5f);
-        
+
         anim.addComponentAnimation(&a1);
         anim.addComponentAnimation(&a2);
-        
+
         anim.reset();
         animable.update();
         CHECK_CLOSE(0.0f, animable.value, 1e-6f);

@@ -1,7 +1,7 @@
-/**	@file	Signals.h
-	@author	Philip Abbet
+/** @file   Signals.h
+    @author Philip Abbet
 
-	Declaration of the signals of the Entities module
+    Declaration of the signals of the Entities module
 */
 
 #ifndef _ATHENA_ENTITIES_SIGNALS_H_
@@ -15,18 +15,18 @@ namespace Entities {
 
 enum tSignals
 {
-	// Scenes
-	SIGNAL_SCENE_ENABLED = Signals::SIGNALS_ENTITIES,   ///< Fired when a scene is enabled
-	SIGNAL_SCENE_DISABLED,						        ///< Fired when a scene is disabled
-	SIGNAL_SCENE_SHOWN,							        ///< Fired when a scene is shown
-	SIGNAL_SCENE_HIDDEN,						        ///< Fired when a scene is hidden
-                                                
-	// Entities                                 
-	SIGNAL_ENTITY_ENABLED,						        ///< Fired when an entity is enabled
-	SIGNAL_ENTITY_DISABLED,						        ///< Fired when an entity is disabled
-                                                
-	// Components                               
-	SIGNAL_COMPONENT_DESTROYED,					        ///< Fired when a component is destroyed
+    // Scenes
+    SIGNAL_SCENE_ENABLED = Signals::SIGNALS_ENTITIES,   ///< Fired when a scene is enabled
+    SIGNAL_SCENE_DISABLED,                              ///< Fired when a scene is disabled
+    SIGNAL_SCENE_SHOWN,                                 ///< Fired when a scene is shown
+    SIGNAL_SCENE_HIDDEN,                                ///< Fired when a scene is hidden
+
+    // Entities
+    SIGNAL_ENTITY_ENABLED,                              ///< Fired when an entity is enabled
+    SIGNAL_ENTITY_DISABLED,                             ///< Fired when an entity is disabled
+
+    // Components
+    SIGNAL_COMPONENT_DESTROYED,                         ///< Fired when a component is destroyed
 };
 
 }
