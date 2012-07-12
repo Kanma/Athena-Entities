@@ -15,6 +15,22 @@ namespace Athena {
 namespace Entities {
 
     //------------------------------------------------------------------------------------
+    /// @brief  Retrieve the C++ ComponentAnimation wrapped by a JavaScript one
+    //------------------------------------------------------------------------------------
+    ComponentAnimation* ATHENA_ENTITIES_SYMBOL fromJSComponentAnimation(v8::Handle<v8::Value> value);
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Create a new JavaScript ComponentAnimation (wrapping a new C++ one)
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Object> ATHENA_ENTITIES_SYMBOL createJSComponentAnimation();
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Wrap a new JavaScript ComponentAnimation around a C++ one
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(ComponentAnimation* pComponentAnimation);
+
+
+    //------------------------------------------------------------------------------------
     /// @brief  Create a C++ ComponentID from a JavaScript one
     //------------------------------------------------------------------------------------
     tComponentID ATHENA_ENTITIES_SYMBOL fromJSComponentID(v8::Handle<v8::Value> value);

@@ -20,6 +20,7 @@ using namespace Athena::Entities;
 extern bool bind_ComponentsManager(Handle<Object> parent);
 extern bool bind_ComponentsList(Handle<Object> parent);
 extern bool bind_Component(Handle<Object> parent);
+extern bool bind_ComponentAnimation(Handle<Object> parent);
 extern bool bind_Entity(Handle<Object> parent);
 extern bool bind_ScenesManager(Handle<Object> parent);
 extern bool bind_Scene(Handle<Object> parent);
@@ -74,6 +75,7 @@ extern "C" {
                bind_ComponentsManager(parent) &&
                bind_ComponentsList(parent) &&
                bind_Component(parent) &&
+               bind_ComponentAnimation(parent) &&
                bind_Entity(parent) &&
                bind_ScenesManager(parent) &&
                bind_Scene(parent) &&

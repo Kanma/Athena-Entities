@@ -20,6 +20,56 @@ namespace Athena {
 namespace Entities {
 
 
+//-----------------------------------------------------------------------
+
+ComponentAnimation* fromJSComponentAnimation(Handle<Value> value)
+{
+    if (value->IsObject())
+    {
+        ComponentAnimation* pComponentAnimation = 0;
+        GetObjectPtr(value, &pComponentAnimation);
+        return pComponentAnimation;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Object> createJSComponentAnimation()
+{
+    HandleScope handle_scope;
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.ComponentAnimation");
+
+    Handle<Object> jsComponentAnimation = func->GetFunction()->NewInstance();
+
+    return handle_scope.Close(jsComponentAnimation);
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Value> toJavaScript(ComponentAnimation* pComponentAnimation)
+{
+    HandleScope handle_scope;
+
+    if (!pComponentAnimation)
+        return Handle<Value>();
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.ComponentAnimation");
+
+    Handle<Value> argv[1];
+    argv[0] = External::Wrap(pComponentAnimation);
+
+    Handle<Object> jsComponentAnimation = func->GetFunction()->NewInstance(1, argv);
+
+    return handle_scope.Close(jsComponentAnimation);
+}
+
+//-----------------------------------------------------------------------
+
 tComponentID fromJSComponentID(Handle<Value> value)
 {
     if (value->IsObject())
