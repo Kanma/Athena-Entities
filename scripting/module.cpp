@@ -8,6 +8,7 @@
 #include <Athena-Scripting/ScriptingManager.h>
 #include <Athena-Entities/Prerequisites.h>
 #include <Athena-Entities/tComponentID.h>
+#include <Athena-Entities/Signals.h>
 #include <string>
 
 using namespace v8;
@@ -43,6 +44,18 @@ void bind_ComponentType(Handle<Object> parent)
 }
 
 
+void bind_Signals(Handle<Object> parent)
+{
+    parent->Set(String::New("SIGNAL_SCENE_ENABLED"),       Uint32::New(Athena::Entities::SIGNAL_SCENE_ENABLED));
+    parent->Set(String::New("SIGNAL_SCENE_DISABLED"),      Uint32::New(Athena::Entities::SIGNAL_SCENE_DISABLED));
+    parent->Set(String::New("SIGNAL_SCENE_SHOWN"),         Uint32::New(Athena::Entities::SIGNAL_SCENE_SHOWN));
+    parent->Set(String::New("SIGNAL_SCENE_HIDDEN"),        Uint32::New(Athena::Entities::SIGNAL_SCENE_HIDDEN));
+    parent->Set(String::New("SIGNAL_ENTITY_ENABLED"),      Uint32::New(Athena::Entities::SIGNAL_ENTITY_ENABLED));
+    parent->Set(String::New("SIGNAL_ENTITY_DISABLED"),     Uint32::New(Athena::Entities::SIGNAL_ENTITY_DISABLED));
+    parent->Set(String::New("SIGNAL_COMPONENT_DESTROYED"), Uint32::New(Athena::Entities::SIGNAL_COMPONENT_DESTROYED));
+}
+
+
 bool load_js_file(const std::string& fileName, Handle<Object> parent, const std::string& modulePath)
 {
     Handle<Value> result = ScriptingManager::getSingletonPtr()->executeFile(
@@ -72,6 +85,7 @@ extern "C" {
         parent->Set(String::New("VERSION"), String::New(Athena::Entities::VERSION));
 
         bind_ComponentType(parent);
+        bind_Signals(parent);
 
         return load_js_file("ComponentID", parent, modulePath) &&
                bind_Animation(parent) &&
