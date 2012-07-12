@@ -121,4 +121,5 @@ SUITE(Entity)
     JS_TEST(Entity_Enabled);
     JS_TEST(Entity_Components);
     JS_TEST(Entity_Children);
+    JS_TEST(Entity_AnimationsMixer);
 }

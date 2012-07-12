@@ -70,6 +70,54 @@ Handle<Value> toJavaScript(Animation* pAnimation)
 
 //-----------------------------------------------------------------------
 
+AnimationsMixer* fromJSAnimationsMixer(Handle<Value> value)
+{
+    if (value->IsObject())
+    {
+        AnimationsMixer* pMixer = 0;
+        GetObjectPtr(value, &pMixer);
+        return pMixer;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Object> createJSAnimationsMixer()
+{
+    HandleScope handle_scope;
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.AnimationsMixer");
+
+    Handle<Object> jsAnimationsMixer = func->GetFunction()->NewInstance();
+
+    return handle_scope.Close(jsAnimationsMixer);
+}
+
+//-----------------------------------------------------------------------
+
+Handle<Value> toJavaScript(AnimationsMixer* pMixer)
+{
+    HandleScope handle_scope;
+
+    if (!pMixer)
+        return Handle<Value>();
+
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
+                                                        "Athena.Entities.AnimationsMixer");
+
+    Handle<Value> argv[1];
+    argv[0] = External::Wrap(pMixer);
+
+    Handle<Object> jsAnimationsMixer = func->GetFunction()->NewInstance(1, argv);
+
+    return handle_scope.Close(jsAnimationsMixer);
+}
+
+//-----------------------------------------------------------------------
+
 ComponentAnimation* fromJSComponentAnimation(Handle<Value> value)
 {
     if (value->IsObject())

@@ -12,3 +12,4 @@ CHECK(entity.components !== undefined);
 CHECK_EQUAL(entity.name, entity.components.entity.name);
 CHECK(entity.signals !== undefined);
 CHECK(entity.transforms !== undefined);
+CHECK(entity.animationsMixer === undefined);

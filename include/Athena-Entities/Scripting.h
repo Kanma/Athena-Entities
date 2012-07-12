@@ -31,6 +31,22 @@ namespace Entities {
 
 
     //------------------------------------------------------------------------------------
+    /// @brief  Retrieve the C++ AnimationsMixer wrapped by a JavaScript one
+    //------------------------------------------------------------------------------------
+    AnimationsMixer* ATHENA_ENTITIES_SYMBOL fromJSAnimationsMixer(v8::Handle<v8::Value> value);
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Create a new JavaScript AnimationsMixer (wrapping a new C++ one)
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Object> ATHENA_ENTITIES_SYMBOL createJSAnimationsMixer();
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Wrap a new JavaScript AnimationsMixer around a C++ one
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Value> ATHENA_ENTITIES_SYMBOL toJavaScript(AnimationsMixer* pMixer);
+
+
+    //------------------------------------------------------------------------------------
     /// @brief  Retrieve the C++ ComponentAnimation wrapped by a JavaScript one
     //------------------------------------------------------------------------------------
     ComponentAnimation* ATHENA_ENTITIES_SYMBOL fromJSComponentAnimation(v8::Handle<v8::Value> value);

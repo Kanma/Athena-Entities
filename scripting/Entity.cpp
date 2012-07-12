@@ -155,6 +155,18 @@ Handle<Value> Entity_GetTransforms(Local<String> property, const AccessorInfo &i
     return handle_scope.Close(toJavaScript(ptr->getTransforms()));
 }
 
+//-----------------------------------------------------------------------
+
+Handle<Value> Entity_GetAnimationsMixer(Local<String> property, const AccessorInfo &info)
+{
+    HandleScope handle_scope;
+
+    Entity* ptr = GetPtr(info.This());
+    assert(ptr);
+
+    return handle_scope.Close(toJavaScript(ptr->getAnimationsMixer()));
+}
+
 
 /**************************************** METHODS ***************************************/
 
@@ -226,6 +238,21 @@ Handle<Value> Entity_GetComponent(const Arguments& args)
     return handle_scope.Close(toJavaScript(pComponent));
 }
 
+//-----------------------------------------------------------------------
+
+Handle<Value> Entity_CreateAnimationsMixer(const Arguments& args)
+{
+    HandleScope handle_scope;
+
+    if (args.Length() != 0)
+        return ThrowException(String::New("Invalid parameters, valid syntax:\ncreateAnimationsMixer()"));
+
+    Entity* ptr = GetPtr(args.This());
+    assert(ptr);
+
+    return handle_scope.Close(toJavaScript(ptr->createAnimationsMixer()));
+}
+
 
 /************************************ BINDING FUNCTION **********************************/
 
@@ -242,21 +269,23 @@ bool bind_Entity(Handle<Object> parent)
         entity->InstanceTemplate()->SetInternalFieldCount(1);
 
         // Attributes
-        AddAttribute(entity, "scene",           Entity_GetScene, 0);
-        AddAttribute(entity, "name",            Entity_GetName, 0);
-        AddAttribute(entity, "enabled",         Entity_GetEnabled, Entity_SetEnabled);
-        AddAttribute(entity, "parent",          Entity_GetParent, 0);
-        AddAttribute(entity, "nbChildren",      Entity_GetNbChildren, 0);
-        AddAttribute(entity, "components",      Entity_GetComponentsList, 0);
-        AddAttribute(entity, "nbComponents",    Entity_GetNbComponents, 0);
-        AddAttribute(entity, "signals",         Entity_GetSignalsList, 0);
-        AddAttribute(entity, "transforms",      Entity_GetTransforms, 0);
+        AddAttribute(entity, "scene",              Entity_GetScene, 0);
+        AddAttribute(entity, "name",               Entity_GetName, 0);
+        AddAttribute(entity, "enabled",            Entity_GetEnabled, Entity_SetEnabled);
+        AddAttribute(entity, "parent",             Entity_GetParent, 0);
+        AddAttribute(entity, "nbChildren",         Entity_GetNbChildren, 0);
+        AddAttribute(entity, "components",         Entity_GetComponentsList, 0);
+        AddAttribute(entity, "nbComponents",       Entity_GetNbComponents, 0);
+        AddAttribute(entity, "signals",            Entity_GetSignalsList, 0);
+        AddAttribute(entity, "transforms",         Entity_GetTransforms, 0);
+        AddAttribute(entity, "animationsMixer",    Entity_GetAnimationsMixer, 0);
 
         // Methods
-        AddMethod(entity, "addChild",           Entity_AddChild);
-        AddMethod(entity, "removeChild",        Entity_RemoveChild);
-        AddMethod(entity, "destroyAllChildren", Entity_DestroyAllChildren);
-        AddMethod(entity, "getComponent",       Entity_GetComponent);
+        AddMethod(entity, "addChild",              Entity_AddChild);
+        AddMethod(entity, "removeChild",           Entity_RemoveChild);
+        AddMethod(entity, "destroyAllChildren",    Entity_DestroyAllChildren);
+        AddMethod(entity, "getComponent",          Entity_GetComponent);
+        AddMethod(entity, "createAnimationsMixer", Entity_CreateAnimationsMixer);
 
         pManager->declareClassTemplate("Athena.Entities.Entity", entity);
     }
