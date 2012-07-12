@@ -32,7 +32,7 @@ endif()
 set(ATHENA_ENTITIES_VERSION_MAJOR 1)
 set(ATHENA_ENTITIES_VERSION_MINOR 1)
 set(ATHENA_ENTITIES_VERSION_PATCH 0)
-set(ATHENA_ENTITIES_VERSION_SUFFIX " (Dev)")
+set(ATHENA_ENTITIES_VERSION_SUFFIX "")
 
 
 ##########################################################################################
