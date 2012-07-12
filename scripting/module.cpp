@@ -17,6 +17,7 @@ using namespace Athena::Entities;
 
 /*********************************** EXTERNAL FUNCTIONS *********************************/
 
+extern bool bind_Animation(Handle<Object> parent);
 extern bool bind_ComponentsManager(Handle<Object> parent);
 extern bool bind_ComponentsList(Handle<Object> parent);
 extern bool bind_Component(Handle<Object> parent);
@@ -72,6 +73,7 @@ extern "C" {
         bind_ComponentType(parent);
 
         return load_js_file("ComponentID", parent, modulePath) &&
+               bind_Animation(parent) &&
                bind_ComponentsManager(parent) &&
                bind_ComponentsList(parent) &&
                bind_Component(parent) &&

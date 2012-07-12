@@ -5,6 +5,7 @@ xmake_import_search_paths(ATHENA_ENTITIES)
 
 # List the source files
 set(SRCS module.cpp
+         Animation.cpp
          Component.cpp
          ComponentAnimation.cpp
          ComponentsList.cpp

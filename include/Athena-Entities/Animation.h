@@ -163,6 +163,17 @@ public:
     void removeComponentAnimation(ComponentAnimation* pComponentAnimation);
 
     //------------------------------------------------------------------------------------
+    /// @brief  Returns a component animation
+    ///
+    /// @param  uiIndex     Index of the component animation
+    //------------------------------------------------------------------------------------
+    inline ComponentAnimation* getComponentAnimation(unsigned int uiIndex) const
+    {
+        assert(uiIndex < getNbComponentAnimations());
+        return m_componentAnimations[uiIndex];
+    }
+
+    //------------------------------------------------------------------------------------
     /// @brief  Returns an iterator over the component animations
     //------------------------------------------------------------------------------------
     inline tComponentAnimationsIterator getComponentAnimationsIterator()
