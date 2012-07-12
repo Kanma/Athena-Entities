@@ -16,153 +16,73 @@ using namespace Athena::Scripting;
 using namespace v8;
 
 
+#define FROM_JS(CLASS_NAME)                                                                \
+CLASS_NAME* fromJS##CLASS_NAME(Handle<Value> value)                                        \
+{                                                                                          \
+    if (value->IsObject())                                                                 \
+    {                                                                                      \
+        CLASS_NAME* pObject = 0;                                                           \
+        GetObjectPtr(value, &pObject);                                                     \
+        return pObject;                                                                    \
+    }                                                                                      \
+                                                                                           \
+    return 0;                                                                              \
+}
+
+
+#define CREATE_JS(CLASS_NAME)                                                              \
+Handle<Object> createJS##CLASS_NAME()                                                      \
+{                                                                                          \
+    HandleScope handle_scope;                                                              \
+                                                                                           \
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate( \
+                                                        "Athena.Entities." #CLASS_NAME);   \
+                                                                                           \
+    Handle<Object> jsObject = func->GetFunction()->NewInstance();                          \
+                                                                                           \
+    return handle_scope.Close(jsObject);                                                   \
+}
+
+
+#define TO_JS(CLASS_NAME)                                                                  \
+Handle<Value> toJavaScript(CLASS_NAME* pObject)                                            \
+{                                                                                          \
+    HandleScope handle_scope;                                                              \
+                                                                                           \
+    if (!pObject)                                                                          \
+        return Handle<Value>();                                                            \
+                                                                                           \
+    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate( \
+                                                        "Athena.Entities." #CLASS_NAME);   \
+                                                                                           \
+    Handle<Value> argv[1];                                                                 \
+    argv[0] = External::Wrap(pObject);                                                     \
+                                                                                           \
+    Handle<Object> jsObject = func->GetFunction()->NewInstance(1, argv);                   \
+                                                                                           \
+    return handle_scope.Close(jsObject);                                                   \
+}
+
+
+#define IMPLEMENT_CONVERSIONS(CLASS_NAME)                                                  \
+    FROM_JS(CLASS_NAME);                                                                   \
+    CREATE_JS(CLASS_NAME);                                                                 \
+    TO_JS(CLASS_NAME);
+
+
+
 namespace Athena {
 namespace Entities {
 
 
-//-----------------------------------------------------------------------
-
-Animation* fromJSAnimation(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        Animation* pAnimation = 0;
-        GetObjectPtr(value, &pAnimation);
-        return pAnimation;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSAnimation()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Animation");
-
-    Handle<Object> jsAnimation = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsAnimation);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(Animation* pAnimation)
-{
-    HandleScope handle_scope;
-
-    if (!pAnimation)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Animation");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pAnimation);
-
-    Handle<Object> jsAnimation = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsAnimation);
-}
-
-//-----------------------------------------------------------------------
-
-AnimationsMixer* fromJSAnimationsMixer(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        AnimationsMixer* pMixer = 0;
-        GetObjectPtr(value, &pMixer);
-        return pMixer;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSAnimationsMixer()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.AnimationsMixer");
-
-    Handle<Object> jsAnimationsMixer = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsAnimationsMixer);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(AnimationsMixer* pMixer)
-{
-    HandleScope handle_scope;
-
-    if (!pMixer)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.AnimationsMixer");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pMixer);
-
-    Handle<Object> jsAnimationsMixer = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsAnimationsMixer);
-}
-
-//-----------------------------------------------------------------------
-
-ComponentAnimation* fromJSComponentAnimation(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        ComponentAnimation* pComponentAnimation = 0;
-        GetObjectPtr(value, &pComponentAnimation);
-        return pComponentAnimation;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSComponentAnimation()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.ComponentAnimation");
-
-    Handle<Object> jsComponentAnimation = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsComponentAnimation);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(ComponentAnimation* pComponentAnimation)
-{
-    HandleScope handle_scope;
-
-    if (!pComponentAnimation)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.ComponentAnimation");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pComponentAnimation);
-
-    Handle<Object> jsComponentAnimation = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsComponentAnimation);
-}
+IMPLEMENT_CONVERSIONS(Animation)
+IMPLEMENT_CONVERSIONS(AnimationsMixer)
+IMPLEMENT_CONVERSIONS(ComponentAnimation)
+IMPLEMENT_CONVERSIONS(ComponentsList)
+IMPLEMENT_CONVERSIONS(Component)
+IMPLEMENT_CONVERSIONS(Entity)
+IMPLEMENT_CONVERSIONS(Scene)
+IMPLEMENT_CONVERSIONS(Transforms)
 
 //-----------------------------------------------------------------------
 
@@ -188,261 +108,11 @@ tComponentID fromJSComponentID(Handle<Value> value)
 
 Handle<Value> toJavaScript(const tComponentID& value)
 {
+    HandleScope handle_scope;
+
     Local<Object> object = ScriptingManager::getSingletonPtr()->execute("new Athena.Entities.ComponentID('" + value.toString() + "');")->ToObject();
 
-    // Handle<Value> constructor = Context::GetCurrent()->Global()->Get(String::New("Athena.Entities.ComponentID"));
-    // if (!constructor->IsUndefined())
-    //     return ThrowException(String::New("BLAAAAAhD"));
-    // if (!constructor->IsFunction())
-    //     return ThrowException(String::New("Can't find the constructor function of Athena.Entities.ComponentID"));
-
-    // Local<Object> object = Handle<Function>::Cast(constructor)->NewInstance();
-
-    // object->Set(String::New("type"),      Number::New(value.type));
-    // object->Set(String::New("entity"),    String::New(value.strEntity.c_str()));
-    // object->Set(String::New("component"), String::New(value.strName.c_str()));
-
-    return object;
-}
-
-//-----------------------------------------------------------------------
-
-ComponentsList* fromJSComponentsList(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        ComponentsList* pList = 0;
-        GetObjectPtr(value, &pList);
-        return pList;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSComponentsList()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.ComponentsList");
-
-    Handle<Object> jsList = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsList);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(ComponentsList* pList)
-{
-    HandleScope handle_scope;
-
-    if (!pList)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.ComponentsList");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pList);
-
-    Handle<Object> jsList = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsList);
-}
-
-//-----------------------------------------------------------------------
-
-Component* fromJSComponent(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        Component* pComponent = 0;
-        GetObjectPtr(value, &pComponent);
-        return pComponent;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSComponent()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Component");
-
-    Handle<Object> jsComponent = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsComponent);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(Component* pComponent)
-{
-    HandleScope handle_scope;
-
-    if (!pComponent)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Component");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pComponent);
-
-    Handle<Object> jsComponent = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsComponent);
-}
-
-//-----------------------------------------------------------------------
-
-Entity* fromJSEntity(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        Entity* pEntity = 0;
-        GetObjectPtr(value, &pEntity);
-        return pEntity;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSEntity()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Entity");
-
-    Handle<Object> jsEntity = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsEntity);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(Entity* pEntity)
-{
-    HandleScope handle_scope;
-
-    if (!pEntity)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Entity");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pEntity);
-
-    Handle<Object> jsEntity = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsEntity);
-}
-
-//-----------------------------------------------------------------------
-
-Scene* fromJSScene(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        Scene* pScene = 0;
-        GetObjectPtr(value, &pScene);
-        return pScene;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSScene()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Scene");
-
-    Handle<Object> jsScene = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsScene);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(Scene* pScene)
-{
-    HandleScope handle_scope;
-
-    if (!pScene)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Scene");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pScene);
-
-    Handle<Object> jsScene = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsScene);
-}
-
-//-----------------------------------------------------------------------
-
-Transforms* fromJSTransforms(Handle<Value> value)
-{
-    if (value->IsObject())
-    {
-        Transforms* pTransforms = 0;
-        GetObjectPtr(value, &pTransforms);
-        return pTransforms;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Object> createJSTransforms()
-{
-    HandleScope handle_scope;
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Transforms");
-
-    Handle<Object> jsTransforms = func->GetFunction()->NewInstance();
-
-    return handle_scope.Close(jsTransforms);
-}
-
-//-----------------------------------------------------------------------
-
-Handle<Value> toJavaScript(Transforms* pTransforms)
-{
-    HandleScope handle_scope;
-
-    if (!pTransforms)
-        return Handle<Value>();
-
-    Handle<FunctionTemplate> func = ScriptingManager::getSingletonPtr()->getClassTemplate(
-                                                        "Athena.Entities.Transforms");
-
-    Handle<Value> argv[1];
-    argv[0] = External::Wrap(pTransforms);
-
-    Handle<Object> jsTransforms = func->GetFunction()->NewInstance(1, argv);
-
-    return handle_scope.Close(jsTransforms);
+    return handle_scope.Close(object);
 }
 
 }
