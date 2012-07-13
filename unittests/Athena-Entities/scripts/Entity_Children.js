@@ -15,7 +15,6 @@ CHECK_EQUAL(1, entity1.nbChildren);
 CHECK(entity2.parent !== undefined);
 CHECK_EQUAL('Entity1', entity2.parent.name);
 
-
 entity1.removeChild(entity2);
 
 CHECK_EQUAL(0, entity1.nbChildren);

@@ -49,7 +49,7 @@ Entity::Entity(const std::string& strName, Scene* pScene, Entity* pParent)
 
 Entity::~Entity()
 {
-    // Destroy te animations mixer
+    // Destroy the animations mixer
     if (m_pAnimationsMixer)
     {
         delete m_pAnimationsMixer;
