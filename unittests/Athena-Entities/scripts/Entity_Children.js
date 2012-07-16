@@ -27,4 +27,3 @@ entity1.addChild(entity2);
 entity1.destroyAllChildren();
 
 CHECK_EQUAL(0, entity1.nbChildren);
-CHECK(entity2.parent === undefined);
