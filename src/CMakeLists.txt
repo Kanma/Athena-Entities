@@ -3,6 +3,24 @@ configure_file(${ATHENA_ENTITIES_SOURCE_DIR}/src/module.cpp.in
                ${XMAKE_BINARY_DIR}/generated/Athena-Entities/module.cpp)
 
 
+# List the headers files
+set(HEADERS ${XMAKE_BINARY_DIR}/include/Athena-Entities/Config.h
+            ../include/Athena-Entities/Animation.h
+            ../include/Athena-Entities/AnimationsMixer.h
+            ../include/Athena-Entities/Component.h
+            ../include/Athena-Entities/ComponentAnimation.h
+            ../include/Athena-Entities/ComponentsList.h
+            ../include/Athena-Entities/ComponentsManager.h
+            ../include/Athena-Entities/Entity.h
+            ../include/Athena-Entities/Prerequisites.h
+            ../include/Athena-Entities/Scene.h
+            ../include/Athena-Entities/ScenesManager.h
+            ../include/Athena-Entities/Signals.h
+            ../include/Athena-Entities/Transforms.h
+            ../include/Athena-Entities/tComponentID.h
+)
+
+
 # List the source files
 set(SRCS ${XMAKE_BINARY_DIR}/generated/Athena-Entities/module.cpp
          Animation.cpp
@@ -17,6 +35,7 @@ set(SRCS ${XMAKE_BINARY_DIR}/generated/Athena-Entities/module.cpp
 )
 
 if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
+    set(HEADERS ${HEADERS} ../include/Athena-Entities/Scripting.h)
     set(SRCS ${SRCS} Scripting.cpp)
 endif()
 
@@ -39,11 +58,11 @@ if (NOT ATHENA_ENTITIES_STATIC)
     xmake_create_dynamic_library(ATHENA_ENTITIES Athena-Entities
                                  "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
                                  "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
-                                 ${SRCS})
+                                 ${HEADERS} ${SRCS})
 
     xmake_add_to_list_property(ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_EXPORTS")
 else()
-    xmake_create_static_library(ATHENA_ENTITIES Athena-Entities ${SRCS})
+    xmake_create_static_library(ATHENA_ENTITIES Athena-Entities ${HEADERS} ${SRCS})
 endif()
 
 xmake_project_link(ATHENA_ENTITIES ATHENA_CORE)

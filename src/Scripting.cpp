@@ -56,7 +56,7 @@ Handle<Value> toJavaScript(CLASS_NAME* pObject)                                 
                                                         "Athena.Entities." #CLASS_NAME);   \
                                                                                            \
     Handle<Value> argv[1];                                                                 \
-    argv[0] = External::Wrap(pObject);                                                     \
+    argv[0] = External::New(pObject);                                                     \
                                                                                            \
     Handle<Object> jsObject = func->GetFunction()->NewInstance(1, argv);                   \
                                                                                            \
@@ -95,7 +95,7 @@ tComponentID fromJSComponentID(Handle<Value> value)
 
         if (std::string("Athena.Entities.ComponentID") == *String::AsciiValue(prototype->Get(String::New("__classname__"))))
         {
-            return tComponentID((tComponentType) object->Get(String::New("type"))->ToNumber()->NumberValue(),
+            return tComponentID((tComponentType) object->Get(String::New("type"))->ToUint32()->Value(),
                                 *String::AsciiValue(object->Get(String::New("entity"))),
                                 *String::AsciiValue(object->Get(String::New("component"))));
         }

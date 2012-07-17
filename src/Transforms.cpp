@@ -16,6 +16,7 @@ using namespace Athena::Entities;
 using namespace Athena::Math;
 using namespace Athena::Signals;
 using namespace Athena::Utils;
+using namespace Athena;
 using namespace std;
 
 
