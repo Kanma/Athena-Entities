@@ -7,6 +7,10 @@ if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
 endif()
 
 
+# List the header files
+set(HEADERS environments/EntitiesTestEnvironment.h
+)
+
 # List the source files
 set(SRCS main.cpp
          tests/test_Animation.cpp
@@ -19,14 +23,13 @@ set(SRCS main.cpp
 )
 
 if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
-    set(SRCS ${SRCS}
-             tests/scripting.cpp
-    )
+    set(HEADERS ${HEADERS} environments/ScriptingTestEnvironment.h)
+    set(SRCS ${SRCS} tests/scripting.cpp)
 endif()
 
 
 # Declaration of the executable
-xmake_create_executable(UNITTESTS_ATHENA_ENTITIES UnitTests-Athena-Entities ${SRCS})
+xmake_create_executable(UNITTESTS_ATHENA_ENTITIES UnitTests-Athena-Entities ${HEADERS} ${SRCS})
 
 xmake_add_to_list_property(UNITTESTS_ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_UNITTESTS_SCRIPTS_PATH=\"${ATHENA_ENTITIES_SOURCE_DIR}/unittests/Athena-Entities/scripts/\";ATHENA_SCRIPTING_JS_TEST_RUNNER_PATH=\"${ATHENA_SCRIPTING_SOURCE_DIR}/unittests/js-test-runner/\"")
 
