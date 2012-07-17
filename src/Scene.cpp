@@ -204,14 +204,12 @@ void Scene::destroy(Entity* pEntity)
 
 void Scene::destroyAll()
 {
-    // Declarations
-    Entity::tEntitiesNativeIterator iter, iterEnd;
-
-    // Search the entity
-    for (iter = m_entities.begin(), iterEnd = m_entities.end(); iter != iterEnd; ++iter)
-        delete (*iter);
-
-    m_entities.clear();
+    // Destroy all the entities
+    while (!m_entities.empty())
+    {
+        delete m_entities.front();
+        m_entities.erase(m_entities.begin());
+    }
 }
 
 //-----------------------------------------------------------------------
