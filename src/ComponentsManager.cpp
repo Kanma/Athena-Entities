@@ -11,6 +11,10 @@
 #include <Athena-Entities/Signals.h>
 #include <Athena-Core/Log/LogManager.h>
 
+#if ATHENA_ENTITIES_SCRIPTING
+    #include <Athena-Entities/Scripting.h>
+#endif
+
 
 using namespace Athena::Entities;
 using namespace Athena::Log;
@@ -37,10 +41,10 @@ ComponentsManager::ComponentsManager()
     ATHENA_LOG_EVENT("Creation");
 
     // Register the base type of all the components
-    registerType(Component::TYPE, (ComponentCreationMethod*) &Component::create);
+    registerType<Component>();
 
     // Register the types of uncategorized components known by the engine
-    registerType(Transforms::TYPE, (ComponentCreationMethod*) &Transforms::create);
+    registerType<Transforms>();
 }
 
 //-----------------------------------------------------------------------
@@ -48,6 +52,10 @@ ComponentsManager::ComponentsManager()
 ComponentsManager::~ComponentsManager()
 {
     ATHENA_LOG_EVENT("Destruction");
+
+    tCreationsInfosIterator iter(m_types.begin(), m_types.end());
+    while (iter.hasMoreElements())
+        delete iter.getNext();
 }
 
 //-----------------------------------------------------------------------
@@ -81,11 +89,11 @@ Component* ComponentsManager::create(const std::string& strType, const std::stri
 
     ATHENA_LOG_DEBUG("Creating a new component of type '" + strType + "' with the name '" + strName + "'");
 
-    // Search the creation method of the type
+    // Search the creation infos of the type
     if (m_types.find(strType) != m_types.end())
     {
-        // Use it to create the component
-        pComponent = m_types[strType](strName, pList);
+        // Use them to create the component
+        pComponent = m_types[strType]->create(strName, pList);
     }
     else
     {
@@ -116,28 +124,24 @@ void ComponentsManager::destroy(Component* pComponent)
     delete pComponent;
 }
 
+//-----------------------------------------------------------------------
 
-/************************* REGISTRATION OF NEW TYPES OF COMPONENTS **********************/
+#if ATHENA_ENTITIES_SCRIPTING
 
-void ComponentsManager::registerType(const std::string& strType,
-                                     ComponentCreationMethod* pCreationMethod)
+v8::Handle<v8::Value> ComponentsManager::convertToJavaScript(Component* pComponent)
 {
     // Assertions
-    assert(!strType.empty() && "The type's name is empty");
-    assert(pCreationMethod && "Invalid creation method");
+    assert(pComponent);
 
-    // Declarations
-    tCreationsInfosNativeIterator       iter;
-
-    ATHENA_LOG_EVENT("Registering a new type of component: '" + strType + "'");
-
-    // Search if the type is already defined
-    iter = m_types.find(strType);
-    if (iter != m_types.end())
+    // Search the creation infos of the type
+    if (m_types.find(pComponent->getType()) != m_types.end())
     {
-        ATHENA_LOG_ERROR("The type of component '" + strType + "' was already registered");
-        return;
+        // Use them to wrap the component
+        return m_types[pComponent->getType()]->convertToJavaScript(pComponent);
     }
 
-    m_types[strType] = pCreationMethod;
+    // Type not found, return a basic component
+    return Entities::toJavaScript(pComponent);
 }
+
+#endif

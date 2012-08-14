@@ -9,6 +9,12 @@
 
 #include <Athena-Entities/Prerequisites.h>
 #include <Athena-Core/Utils/Iterators.h>
+#include <Athena-Core/Log/Declarations.h>
+#include <Athena-Core/Log/LogManager.h>
+
+#if ATHENA_ENTITIES_SCRIPTING
+    #include <v8.h>
+#endif
 
 
 namespace Athena {
@@ -48,6 +54,38 @@ typedef Component* ComponentCreationMethod(const std::string&, ComponentsList*);
 //----------------------------------------------------------------------------------------
 class ATHENA_ENTITIES_SYMBOL ComponentsManager: public Utils::Singleton<ComponentsManager>
 {
+    //_____ Internal types __________
+private:
+    struct ComponentCreationInfos
+    {
+        virtual Component* create(const std::string& strName, ComponentsList* pList) = 0;
+
+#if ATHENA_ENTITIES_SCRIPTING
+        virtual v8::Handle<v8::Value> convertToJavaScript(Component* pComponent) = 0;
+#endif
+    };
+
+    template<class TYPE>
+    struct TemplatedComponentCreationInfos: public ComponentCreationInfos
+    {
+        virtual Component* create(const std::string& strName, ComponentsList* pList)
+        {
+            return TYPE::create(strName, pList);
+        }
+
+#if ATHENA_ENTITIES_SCRIPTING
+        virtual v8::Handle<v8::Value> convertToJavaScript(Component* pComponent)
+        {
+            return toJavaScript(dynamic_cast<TYPE*>(pComponent));
+        }
+#endif
+    };
+
+    typedef std::map<std::string, ComponentCreationInfos*>  tCreationsInfosList;
+    typedef Utils::MapIterator<tCreationsInfosList>         tCreationsInfosIterator;
+    typedef tCreationsInfosList::iterator                   tCreationsInfosNativeIterator;
+
+
     //_____ Construction / Destruction __________
 public:
     //------------------------------------------------------------------------------------
@@ -94,6 +132,18 @@ public:
     void destroy(Component* pComponent);
 
 
+#if ATHENA_ENTITIES_SCRIPTING
+    //------------------------------------------------------------------------------------
+    /// @brief  Wrap a new JavaScript component around a C++ one, by taking its actual
+    ///         type into account
+    ///
+    /// For instance, if the component is a Transforms one, the new JavaScript component
+    /// will have all the methods and attributes of a Transforms component.
+    //------------------------------------------------------------------------------------
+    v8::Handle<v8::Value> convertToJavaScript(Component* pComponent);
+#endif
+
+
     //_____ Registration of new types of components __________
 public:
     //------------------------------------------------------------------------------------
@@ -102,14 +152,26 @@ public:
     /// @param  strType         Name of the type
     /// @param  pCreationMethod The creation method
     //------------------------------------------------------------------------------------
-    void registerType(const std::string& strType, ComponentCreationMethod* pCreationMethod);
+    template<class T>
+    void registerType()
+    {
+        using namespace Athena::Log;
 
+        // Declarations
+        tCreationsInfosNativeIterator iter;
 
-    //_____ Internal types __________
-private:
-    typedef std::map<std::string, ComponentCreationMethod*> tCreationsInfosList;
-    typedef Utils::MapIterator<tCreationsInfosList>         tCreationsInfosIterator;
-    typedef tCreationsInfosList::iterator                   tCreationsInfosNativeIterator;
+        ATHENA_LOG_EVENT2("Components manager", "Registering a new type of component: '" + T::TYPE + "'");
+
+        // Search if the type is already defined
+        iter = m_types.find(T::TYPE);
+        if (iter != m_types.end())
+        {
+            ATHENA_LOG_ERROR2("Components manager", "The type of component '" + T::TYPE + "' was already registered");
+            return;
+        }
+
+        m_types[T::TYPE] = new TemplatedComponentCreationInfos<T>();
+    }
 
 
     //_____ Attributes __________
