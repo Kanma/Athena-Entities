@@ -78,9 +78,9 @@ include("${XMAKE_DEPENDENCIES_DIR}/XMake/XMake.cmake")
 add_subdirectory(dependencies)
 
 if (DEFINED ATHENA_SCRIPTING_ENABLED AND ATHENA_SCRIPTING_ENABLED)
-    set(ATHENA_CORE_SCRIPTING ON)
+    set(ATHENA_ENTITIES_SCRIPTING ON)
 else()
-    set(ATHENA_CORE_SCRIPTING OFF)
+    set(ATHENA_ENTITIES_SCRIPTING OFF)
 endif()
 
 add_subdirectory(include)
