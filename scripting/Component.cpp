@@ -40,10 +40,7 @@ Handle<Value> Component_New(const Arguments& args)
         return SetObjectPtr(args.This(), pComponent, &NoOpWeakCallback);
     }
 
-    else
-    {
-        return ThrowException(String::New("Invalid parameters, valid syntax:\nComponent(name, components_list)\nComponent(<C++ component>)"));
-    }
+    return ThrowException(String::New("Invalid parameters, valid syntax:\nComponent(name, components_list)\nComponent(<C++ component>)"));
 }
 
 

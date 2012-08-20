@@ -23,3 +23,7 @@ CHECK_EQUAL('Component2', entity.getComponent(2).name);
 
 CHECK(entity.getComponent(component2.id) !== undefined);
 CHECK_EQUAL('Component2', entity.getComponent(component2.id).name);
+
+
+CHECK(entity.getComponent(0) !== undefined);
+CHECK(entity.getComponent(0).position !== undefined);

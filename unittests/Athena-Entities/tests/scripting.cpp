@@ -66,6 +66,7 @@ SUITE(ComponentsList)
 {
     JS_TEST(ComponentsList_Creation);
     JS_TEST(ComponentsList_AddComponent);
+    JS_TEST(ComponentsList_ComponentRetrieval);
 }
 
 

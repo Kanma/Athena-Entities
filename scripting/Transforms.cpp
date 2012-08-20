@@ -41,10 +41,7 @@ Handle<Value> Transforms_New(const Arguments& args)
         return SetObjectPtr(args.This(), pTransforms, &NoOpWeakCallback);
     }
 
-    else
-    {
-        return ThrowException(String::New("Invalid parameters, valid syntax:\nTransforms(name, components_list)\nTransforms(<C++ component>)"));
-    }
+    return ThrowException(String::New("Invalid parameters, valid syntax:\nTransforms(name, components_list)\nTransforms(<C++ component>)"));
 }
 
 

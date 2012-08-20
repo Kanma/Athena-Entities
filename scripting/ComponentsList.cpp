@@ -1,4 +1,5 @@
 #include <Athena-Entities/ComponentsList.h>
+#include <Athena-Entities/ComponentsManager.h>
 #include <Athena-Entities/Scripting.h>
 #include <Athena-Scripting/Utils.h>
 #include <Athena-Scripting/ScriptingManager.h>
@@ -94,6 +95,8 @@ Handle<Value> ComponentsList_RemoveAllComponents(const Arguments& args)
 
 Handle<Value> ComponentsList_GetComponent(const Arguments& args)
 {
+    assert(ComponentsManager::getSingletonPtr());
+
     HandleScope handle_scope;
 
     ComponentsList* ptr = GetPtr(args.This());
@@ -119,7 +122,7 @@ Handle<Value> ComponentsList_GetComponent(const Arguments& args)
     if (!pComponent)
         return ThrowException(String::New("Invalid parameters, valid syntax:\ngetComponent(id, in_all_scene)\ngetComponent(index)"));
 
-    return handle_scope.Close(toJavaScript(pComponent));
+    return handle_scope.Close(ComponentsManager::getSingletonPtr()->convertToJavaScript(pComponent));
 }
 
 

@@ -1,6 +1,7 @@
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Scene.h>
 #include <Athena-Entities/Scripting.h>
+#include <Athena-Entities/ComponentsManager.h>
 #include <Athena-Scripting/Utils.h>
 #include <Athena-Scripting/ScriptingManager.h>
 #include <Athena-Scripting/Conversions.h>
@@ -220,6 +221,8 @@ Handle<Value> Entity_DestroyAllChildren(const Arguments& args)
 
 Handle<Value> Entity_GetComponent(const Arguments& args)
 {
+    assert(ComponentsManager::getSingletonPtr());
+
     HandleScope handle_scope;
 
     Entity* ptr = GetPtr(args.This());
@@ -235,7 +238,7 @@ Handle<Value> Entity_GetComponent(const Arguments& args)
     if (!pComponent)
         return ThrowException(String::New("Invalid parameters, valid syntax:\ngetComponent(id)\ngetComponent(index)"));
 
-    return handle_scope.Close(toJavaScript(pComponent));
+    return handle_scope.Close(ComponentsManager::getSingletonPtr()->convertToJavaScript(pComponent));
 }
 
 //-----------------------------------------------------------------------
