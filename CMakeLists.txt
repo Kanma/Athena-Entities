@@ -1,37 +1,13 @@
 cmake_minimum_required(VERSION 2.6)
 project(ATHENA_ENTITIES)
 
-##########################################################################################
-# Settings
-
-if (NOT DEFINED ATHENA_ENTITIES_STATIC)
-    set(ATHENA_ENTITIES_STATIC OFF CACHE BOOL "Build Athena-Entities as a static library")
-endif()
-
-
-##########################################################################################
-# Setup the dependencies
-
-set(COMPILE_AS_STATIC ON)
-if (WIN32)
-    set(COMPILE_AS_STATIC OFF)
-endif()
-
-if (NOT DEFINED ATHENA_MATH_STATIC)
-    set(ATHENA_MATH_STATIC ${COMPILE_AS_STATIC})
-endif()
-
-if (NOT DEFINED ATHENA_CORE_STATIC)
-    set(ATHENA_CORE_STATIC ${COMPILE_AS_STATIC})
-endif()
-
 
 ##########################################################################################
 # Library version
 
 set(ATHENA_ENTITIES_VERSION_MAJOR 1)
 set(ATHENA_ENTITIES_VERSION_MINOR 1)
-set(ATHENA_ENTITIES_VERSION_PATCH 2)
+set(ATHENA_ENTITIES_VERSION_PATCH 3)
 set(ATHENA_ENTITIES_VERSION_SUFFIX "")
 
 

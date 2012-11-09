@@ -54,16 +54,12 @@ endif()
 
 
 # Declaration of the library
-if (NOT ATHENA_ENTITIES_STATIC)
-    xmake_create_dynamic_library(ATHENA_ENTITIES Athena-Entities
-                                 "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
-                                 "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
-                                 ${HEADERS} ${SRCS})
+xmake_create_dynamic_library(ATHENA_ENTITIES Athena-Entities
+                             "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
+                             "${ATHENA_ENTITIES_VERSION_MAJOR}.${ATHENA_ENTITIES_VERSION_MINOR}.${ATHENA_ENTITIES_VERSION_PATCH}"
+                             ${HEADERS} ${SRCS})
 
-    xmake_add_to_list_property(ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_EXPORTS")
-else()
-    xmake_create_static_library(ATHENA_ENTITIES Athena-Entities ${HEADERS} ${SRCS})
-endif()
+xmake_add_to_list_property(ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_EXPORTS")
 
 xmake_project_link(ATHENA_ENTITIES ATHENA_CORE)
 

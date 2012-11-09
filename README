@@ -1,7 +1,7 @@
 ********************************************************************************
 *                                                                              *
 *                               Athena-Entities                                *
-*                                Version 1.1.2                                 *
+*                                Version 1.1.3                                 *
 *                    http://github.com/Kanma/Athena-Entities                   *
 *                                                                              *
 ********************************************************************************
@@ -46,6 +46,13 @@ The use of those modules is optional, you can choose to implement your own
 components instead, or to leave out one kind of component.
 
 
+This module can be used as a standalone library, or combined with the rest of
+the Athena Game Framework (http://github.com/Kanma/Athena-Framework).
+
+Additionally, when the Athena-Scripting (http://github.com/Kanma/Athena-Scripting)
+module is built alongside this one, Athena-Entities will be usable from JavaScript.
+
+
 ---------------------------------------
 - Dependencies
 ---------------------------------------
@@ -71,13 +78,13 @@ To download them, do:
 - Compilation
 ---------------------------------------
 
-(Note: you'll need to install CMake to compile Athena-Core)
+(Note: you'll need to install CMake to compile Athena-Entities)
 
-To compile Athena-Core (and all its dependencies), do:
+To compile Athena-Entities (and all its dependencies), do:
 
     somewhere$ mkdir build
     somewhere$ cd build
-    build$ cmake <path/to/the/source/of/Athena-Core>
+    build$ cmake <path/to/the/source/of/Athena-Entities>
     build$ make
 
 The library will be put in build/bin/
