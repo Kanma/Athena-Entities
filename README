@@ -63,6 +63,7 @@ Athena-Entities requires the following dependencies:
    - Athena-Math
    - Athena-Core
    - UnitTest++
+   - rapidjson
 
 They are provided as GIT submodules of this repository and will be compiled
 automatically during the compilation of Athena-Entities.
