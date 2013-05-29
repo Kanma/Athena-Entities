@@ -1,0 +1,30 @@
+{
+    "id": "Transforms://Transforms1",
+    "properties": [
+        {
+            "__category__": "Athena/Transforms",
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+            },
+            "scale": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "inheritOrientation": true,
+            "inheritScale": true
+        },
+        {
+            "__category__": "Athena/Component",
+            "transforms": "Transforms://Transforms2"
+        }
+    ]
+}

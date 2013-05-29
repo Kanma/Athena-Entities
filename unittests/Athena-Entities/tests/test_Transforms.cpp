@@ -992,36 +992,8 @@ SUITE(TransformsJSONSerialization)
 
         std::string json = toJSON(pTransforms);
 
-        CHECK_EQUAL("{\n" \
-                    "    \"id\": \"Transforms://Transforms1\",\n" \
-                    "    \"properties\": [\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Transforms\",\n" \
-                    "            \"position\": {\n" \
-                    "                \"x\": 0,\n" \
-                    "                \"y\": 0,\n" \
-                    "                \"z\": 0\n" \
-                    "            },\n" \
-                    "            \"orientation\": {\n" \
-                    "                \"x\": 0,\n" \
-                    "                \"y\": 0,\n" \
-                    "                \"z\": 0,\n" \
-                    "                \"w\": 1\n" \
-                    "            },\n" \
-                    "            \"scale\": {\n" \
-                    "                \"x\": 1,\n" \
-                    "                \"y\": 1,\n" \
-                    "                \"z\": 1\n" \
-                    "            },\n" \
-                    "            \"inheritOrientation\": true,\n" \
-                    "            \"inheritScale\": true\n" \
-                    "        },\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Component\",\n" \
-                    "            \"transforms\": null\n" \
-                    "        }\n" \
-                    "    ]\n" \
-                    "}", json);
+        std::string reference = readFile("transforms_no_parent.component");
+        CHECK_EQUAL(reference, json);
     }
 }
 
@@ -1333,36 +1305,9 @@ SUITE(TransformsJSONDeserialization)
         ComponentsList list;
         PropertiesList* pDelayedProperties = new PropertiesList();
 
-        Component* pComponent = fromJSON(std::string("{\n" \
-                    "    \"id\": \"Transforms://Transforms1\",\n" \
-                    "    \"properties\": [\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Transforms\",\n" \
-                    "            \"position\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 1.0,\n" \
-                    "                \"z\": 2.0\n" \
-                    "            },\n" \
-                    "            \"orientation\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 0.1,\n" \
-                    "                \"z\": 0.2,\n" \
-                    "                \"w\": 0.3\n" \
-                    "            },\n" \
-                    "            \"scale\": {\n" \
-                    "                \"x\": 10,\n" \
-                    "                \"y\": 20,\n" \
-                    "                \"z\": 30\n" \
-                    "            },\n" \
-                    "            \"inheritOrientation\": true,\n" \
-                    "            \"inheritScale\": false\n" \
-                    "        },\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Component\",\n" \
-                    "            \"transforms\": null\n" \
-                    "        }\n" \
-                    "    ]\n" \
-                    "}"), &list, pDelayedProperties);
+        std::string reference = readFile("transforms_no_parent.component");
+
+        Component* pComponent = fromJSON(reference, &list, pDelayedProperties);
 
         CHECK(pComponent);
         CHECK_EQUAL("Transforms1", pComponent->getName());
@@ -1374,20 +1319,20 @@ SUITE(TransformsJSONDeserialization)
         CHECK(pTransforms);
 
         CHECK_CLOSE(0.0f, pTransforms->getPosition().x, 1e-6f);
-        CHECK_CLOSE(1.0f, pTransforms->getPosition().y, 1e-6f);
-        CHECK_CLOSE(2.0f, pTransforms->getPosition().z, 1e-6f);
+        CHECK_CLOSE(0.0f, pTransforms->getPosition().y, 1e-6f);
+        CHECK_CLOSE(0.0f, pTransforms->getPosition().z, 1e-6f);
 
-        CHECK_CLOSE(0.3f, pTransforms->getOrientation().w, 1e-6f);
+        CHECK_CLOSE(1.0f, pTransforms->getOrientation().w, 1e-6f);
         CHECK_CLOSE(0.0f, pTransforms->getOrientation().x, 1e-6f);
-        CHECK_CLOSE(0.1f, pTransforms->getOrientation().y, 1e-6f);
-        CHECK_CLOSE(0.2f, pTransforms->getOrientation().z, 1e-6f);
+        CHECK_CLOSE(0.0f, pTransforms->getOrientation().y, 1e-6f);
+        CHECK_CLOSE(0.0f, pTransforms->getOrientation().z, 1e-6f);
 
-        CHECK_CLOSE(10.0f, pTransforms->getScale().x, 1e-6f);
-        CHECK_CLOSE(20.0f, pTransforms->getScale().y, 1e-6f);
-        CHECK_CLOSE(30.0f, pTransforms->getScale().z, 1e-6f);
+        CHECK_CLOSE(1.0f, pTransforms->getScale().x, 1e-6f);
+        CHECK_CLOSE(1.0f, pTransforms->getScale().y, 1e-6f);
+        CHECK_CLOSE(1.0f, pTransforms->getScale().z, 1e-6f);
 
         CHECK(pTransforms->inheritOrientation());
-        CHECK(!pTransforms->inheritScale());
+        CHECK(pTransforms->inheritScale());
 
         PropertiesList::tCategoriesIterator iter = pDelayedProperties->getCategoriesIterator();
         CHECK(!iter.hasMoreElements());
@@ -1404,36 +1349,9 @@ SUITE(TransformsJSONDeserialization)
 
         PropertiesList* pDelayedProperties = new PropertiesList();
 
-        Component* pComponent = fromJSON(std::string("{\n" \
-                    "    \"id\": \"Transforms://Transforms1\",\n" \
-                    "    \"properties\": [\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Transforms\",\n" \
-                    "            \"position\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 1.0,\n" \
-                    "                \"z\": 2.0\n" \
-                    "            },\n" \
-                    "            \"orientation\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 0.1,\n" \
-                    "                \"z\": 0.2,\n" \
-                    "                \"w\": 0.3\n" \
-                    "            },\n" \
-                    "            \"scale\": {\n" \
-                    "                \"x\": 10,\n" \
-                    "                \"y\": 20,\n" \
-                    "                \"z\": 30\n" \
-                    "            },\n" \
-                    "            \"inheritOrientation\": true,\n" \
-                    "            \"inheritScale\": false\n" \
-                    "        },\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Component\",\n" \
-                    "            \"transforms\": \"Transforms://Transforms2\"\n" \
-                    "        }\n" \
-                    "    ]\n" \
-                    "}"), &list, pDelayedProperties);
+        std::string reference = readFile("transforms_with_parent.component");
+
+        Component* pComponent = fromJSON(reference, &list, pDelayedProperties);
 
         CHECK(pComponent);
         CHECK_EQUAL("Transforms1", pComponent->getName());
@@ -1454,36 +1372,9 @@ SUITE(TransformsJSONDeserialization)
 
         PropertiesList* pDelayedProperties = new PropertiesList();
 
-        Component* pComponent = fromJSON(std::string("{\n" \
-                    "    \"id\": \"Transforms://Transforms1\",\n" \
-                    "    \"properties\": [\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Transforms\",\n" \
-                    "            \"position\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 1.0,\n" \
-                    "                \"z\": 2.0\n" \
-                    "            },\n" \
-                    "            \"orientation\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 0.1,\n" \
-                    "                \"z\": 0.2,\n" \
-                    "                \"w\": 0.3\n" \
-                    "            },\n" \
-                    "            \"scale\": {\n" \
-                    "                \"x\": 10,\n" \
-                    "                \"y\": 20,\n" \
-                    "                \"z\": 30\n" \
-                    "            },\n" \
-                    "            \"inheritOrientation\": true,\n" \
-                    "            \"inheritScale\": false\n" \
-                    "        },\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Component\",\n" \
-                    "            \"transforms\": \"Transforms://Transforms2\"\n" \
-                    "        }\n" \
-                    "    ]\n" \
-                    "}"), &list, pDelayedProperties);
+        std::string reference = readFile("transforms_with_parent.component");
+
+        Component* pComponent = fromJSON(reference, &list, pDelayedProperties);
 
         CHECK(pComponent);
         CHECK_EQUAL("Transforms1", pComponent->getName());
@@ -1522,40 +1413,9 @@ SUITE(TransformsJSONDeserialization)
 
         PropertiesList* pDelayedProperties = new PropertiesList();
 
-        Component* pComponent = fromJSON(std::string("{\n" \
-                    "    \"id\": \"Transforms://Transforms1\",\n" \
-                    "    \"properties\": [\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Unknown\",\n" \
-                    "            \"unused\": \"hello\"\n" \
-                    "        },\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Transforms\",\n" \
-                    "            \"position\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 1.0,\n" \
-                    "                \"z\": 2.0\n" \
-                    "            },\n" \
-                    "            \"orientation\": {\n" \
-                    "                \"x\": 0.0,\n" \
-                    "                \"y\": 0.1,\n" \
-                    "                \"z\": 0.2,\n" \
-                    "                \"w\": 0.3\n" \
-                    "            },\n" \
-                    "            \"scale\": {\n" \
-                    "                \"x\": 10,\n" \
-                    "                \"y\": 20,\n" \
-                    "                \"z\": 30\n" \
-                    "            },\n" \
-                    "            \"inheritOrientation\": true,\n" \
-                    "            \"inheritScale\": false\n" \
-                    "        },\n" \
-                    "        {\n" \
-                    "            \"__category__\": \"Athena/Component\",\n" \
-                    "            \"transforms\": null\n" \
-                    "        }\n" \
-                    "    ]\n" \
-                    "}"), &list, pDelayedProperties);
+        std::string reference = readFile("unknown_type.component");
+
+        Component* pComponent = fromJSON(reference, &list, pDelayedProperties);
 
         CHECK(pComponent);
         CHECK_EQUAL("Transforms1", pComponent->getName());
