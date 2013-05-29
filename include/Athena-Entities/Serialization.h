@@ -75,6 +75,21 @@ namespace Entities {
     ATHENA_ENTITIES_SYMBOL void toJSON(Entities::Entity* pEntity,
                                        rapidjson::Value &json_entity,
                                        rapidjson::Value::AllocatorType &allocator);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief Returns the entity represented by a rapidjson value
+    ///
+    /// @param  json_entity         The rapidjson value
+    /// @param  pScene              The scene to use to create the entity
+    /// @retval pDelayedProperties  If provided, the properties that aren't usable yet
+    ///                             (because, for example, another object which isn't
+    ///                             already created is needed) are put into that list by
+    ///                             the describable
+    /// @return                     The component, or 0 in case or failure
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL Entities::Entity* fromJSON(const rapidjson::Value& json_entity,
+                                                      Entities::Scene* pScene);
 }
 }
 

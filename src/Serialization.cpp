@@ -8,6 +8,7 @@
 #include <Athena-Entities/Component.h>
 #include <Athena-Entities/ComponentsManager.h>
 #include <Athena-Entities/Entity.h>
+#include <Athena-Entities/Scene.h>
 #include <Athena-Core/Data/Serialization.h>
 #include <Athena-Core/Log/LogManager.h>
 #include <rapidjson/stringbuffer.h>
@@ -93,16 +94,21 @@ Athena::Entities::Component* Athena::Entities::fromJSON(
 
     tComponentID id(json_component["id"].GetString());
 
-    ATHENA_LOG_COMMENT("Attempt to create a component with name: " + id.strName);
+    pComponent = pList->getComponent(id);
 
-    while (!pComponent && (iter != iterEnd))
+    if (!pComponent)
     {
-        std::string strType = (*iter)["__category__"].GetString();
-        ATHENA_LOG_COMMENT("  Trying with type: " + strType);
+        ATHENA_LOG_COMMENT("Attempt to create a component with name: " + id.strName);
 
-        pComponent = pManager->create(strType, id.strName, pList);
+        while (!pComponent && (iter != iterEnd))
+        {
+            std::string strType = (*iter)["__category__"].GetString();
+            ATHENA_LOG_COMMENT("  Trying with type: " + strType);
 
-        ++iter;
+            pComponent = pManager->create(strType, id.strName, pList);
+
+            ++iter;
+        }
     }
 
     // Assign the properties to the component
@@ -199,4 +205,71 @@ void Athena::Entities::toJSON(Entities::Entity* pEntity,
     }
 
     json_entity.AddMember("children", array, allocator);
+}
+
+//-----------------------------------------------------------------------
+
+Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& json_entity,
+                                                     Entities::Scene* pScene)
+{
+    // Assertions
+    assert(pScene);
+
+    // Check that the json representation contains all the required infos
+    if (!json_entity.IsObject())
+    {
+        ATHENA_LOG_ERROR("Failed to deserialize the Entity: not an object");
+        return 0;
+    }
+
+    if (!json_entity.HasMember("name") || !json_entity["name"].IsString())
+    {
+        ATHENA_LOG_ERROR("Failed to deserialize the Entity: no name found");
+        return 0;
+    }
+
+    if (!json_entity.HasMember("components") || !json_entity["components"].IsArray() ||
+        (json_entity["components"].Size() == 0))
+    {
+        ATHENA_LOG_ERROR("Failed to deserialize the Entity: no components found");
+        return 0;
+    }
+
+    // Create the entity
+    Entity* pEntity = pScene->create(json_entity["name"].GetString());
+    if (!pEntity)
+        return 0;
+
+    // Create the components
+    const rapidjson::Value& components = json_entity["components"];
+    rapidjson::Value::ConstValueIterator iter, iterEnd;
+
+    for (iter = components.Begin(), iterEnd = components.End(); iter != iterEnd; ++iter)
+    {
+        
+        fromJSON(*iter, pEntity->getComponentsList());
+    }
+
+    // Create the children
+    if (json_entity.HasMember("children"))
+    {
+        const rapidjson::Value& children = json_entity["children"];
+
+        for (iter = children.Begin(), iterEnd = children.End(); iter != iterEnd; ++iter)
+        {
+            Entity* pChild = fromJSON(*iter, pScene);
+            if (pChild)
+                pEntity->addChild(pChild);
+        }
+    }
+
+    // Disable the entity if needed
+    if (json_entity.HasMember("enabled") && json_entity["enabled"].IsBool() &&
+        !json_entity["enabled"].GetBool())
+    {
+        pEntity->enable(false);
+    }
+
+    // Return the component
+    return pEntity;
 }

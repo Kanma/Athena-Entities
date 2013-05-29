@@ -98,8 +98,13 @@ Component* ComponentsList::getComponent(const tComponentID& id, bool bInAllScene
         Component::tComponentsList::const_iterator iter, iterEnd;
         for (iter = m_components.begin(), iterEnd = m_components.end(); iter != iterEnd; ++iter)
         {
-            if ((*iter)->getID() == id)
+            tComponentID compID = (*iter)->getID();
+
+            if ((compID == id) ||
+                (id.strEntity.empty() && (compID.type == id.type) && (compID.strName == id.strName)))
+            {
                 return *iter;
+            }
         }
     }
 

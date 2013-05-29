@@ -220,3 +220,183 @@ SUITE(EntityJSONSerialization)
         CHECK_EQUAL("child", child["name"].GetString());
     }
 }
+
+
+SUITE(EntityJSONDeserialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObject)
+    {
+        rapidjson::Document document;
+        rapidjson::Value components;
+        rapidjson::Value component;
+        rapidjson::Value properties;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+
+
+        document.SetObject();
+
+        field.SetString("test");
+        document.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        document.AddMember("enabled", field, document.GetAllocator());
+
+
+        components.SetArray();
+
+        component.SetObject();
+
+        field.SetString("Transforms://Transforms");
+        component.AddMember("id", field, document.GetAllocator());
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        component.AddMember("properties", properties, document.GetAllocator());
+
+        components.PushBack(component, document.GetAllocator());
+
+        document.AddMember("components", components, document.GetAllocator());
+
+
+        Entity* pEntity = fromJSON(document, pScene);
+        CHECK(pEntity);
+        CHECK_EQUAL("test", pEntity->getName());
+        CHECK_EQUAL(1, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObjectWithChildren)
+    {
+        rapidjson::Document document;
+        rapidjson::Value components;
+        rapidjson::Value component;
+        rapidjson::Value properties;
+        rapidjson::Value children;
+        rapidjson::Value child;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+
+
+        document.SetObject();
+
+        field.SetString("parent");
+        document.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        document.AddMember("enabled", field, document.GetAllocator());
+
+
+        components.SetArray();
+
+        component.SetObject();
+
+        field.SetString("Transforms://Transforms");
+        component.AddMember("id", field, document.GetAllocator());
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        component.AddMember("properties", properties, document.GetAllocator());
+
+        components.PushBack(component, document.GetAllocator());
+
+        document.AddMember("components", components, document.GetAllocator());
+
+
+        children.SetArray();
+
+        child.SetObject();
+
+        field.SetString("child");
+        child.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        child.AddMember("enabled", field, document.GetAllocator());
+
+        components.SetArray();
+
+        component.SetObject();
+
+        field.SetString("Transforms://Transforms");
+        component.AddMember("id", field, document.GetAllocator());
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        component.AddMember("properties", properties, document.GetAllocator());
+
+        components.PushBack(component, document.GetAllocator());
+
+        child.AddMember("components", components, document.GetAllocator());
+
+        children.PushBack(child, document.GetAllocator());
+
+        document.AddMember("children", children, document.GetAllocator());
+
+
+        Entity* pParent = fromJSON(document, pScene);
+        CHECK(pParent);
+        CHECK_EQUAL("parent", pParent->getName());
+        CHECK_EQUAL(1, pParent->getNbComponents());
+        CHECK_EQUAL(1, pParent->getNbChildren());
+
+
+        unsigned int index = 0;
+        Entity* pChild = pParent->getChild(index);
+        CHECK(pChild);
+        CHECK_EQUAL("child", pChild->getName());
+        CHECK_EQUAL(1, pChild->getNbComponents());
+        CHECK_EQUAL(0, pChild->getNbChildren());
+    }
+}
