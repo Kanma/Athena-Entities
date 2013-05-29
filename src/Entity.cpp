@@ -129,6 +129,29 @@ void Entity::removeChild(Entity* pChild)
 
 //-----------------------------------------------------------------------
 
+Entity* Entity::getChild(const std::string& strName)
+{
+    assert(!strName.empty() && "The name is empty");
+
+    // Declarations
+    Entity::tEntitiesNativeIterator iter, iterEnd;
+
+    // Search the child
+    for (iter = m_children.begin(), iterEnd = m_children.end(); iter != iterEnd; ++iter)
+    {
+        if ((*iter)->getName() == strName)
+        {
+            // Return it
+            return (*iter);
+        }
+    }
+
+    // Not found
+    return 0;
+}
+
+//-----------------------------------------------------------------------
+
 void Entity::destroyAllChildren()
 {
     // Destroy the children
