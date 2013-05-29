@@ -1,6 +1,7 @@
 #include <UnitTest++.h>
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Entities/Transforms.h>
+#include <Athena-Entities/Serialization.h>
 #include "../environments/EntitiesTestEnvironment.h"
 
 
@@ -888,5 +889,93 @@ SUITE(TransformsComponentScalingTests)
         CHECK(Vector3(2.0f, 3.0f, 4.0f).positionEquals(pTransforms1->getWorldScale()));
         CHECK(Vector3(2.0f, 3.0f, 4.0f).positionEquals(pTransforms2->getScale()));
         CHECK(Vector3(4.0f, 9.0f, 16.0f).positionEquals(pTransforms2->getWorldScale()));
+    }
+}
+
+
+SUITE(TransformsJSONSerialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObject)
+    {
+        ComponentsList list;
+
+        Transforms* pTransforms = new Transforms("Transforms1", &list);
+
+        rapidjson::Document document;
+
+        toJSON(pTransforms, document, document.GetAllocator());
+
+        CHECK(document.IsObject());
+        CHECK(document.HasMember("id"));
+        CHECK(document.HasMember("properties"));
+
+        CHECK_EQUAL("Transforms://Transforms1", document["id"].GetString());
+
+        rapidjson::Value& properties = document["properties"];
+
+        CHECK(properties.IsArray());
+        CHECK_EQUAL(2, properties.Size());
+
+        rapidjson::Value& category = properties[(rapidjson::SizeType) 0];
+
+        CHECK(category.IsObject());
+        CHECK_EQUAL("Athena/Transforms", category["__category__"].GetString());
+
+        CHECK(category.HasMember("position"));
+        CHECK(category.HasMember("orientation"));
+        CHECK(category.HasMember("scale"));
+        CHECK(category.HasMember("inheritOrientation"));
+        CHECK(category.HasMember("inheritScale"));
+
+        category = properties[1];
+
+        CHECK(category.IsObject());
+        CHECK_EQUAL("Athena/Component", category["__category__"].GetString());
+
+        CHECK(!category.HasMember("transforms"));
+    }
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObjectWithReferenceToAnotherTransforms)
+    {
+        ComponentsList list;
+
+        Transforms* pTransforms1 = new Transforms("Transforms1", &list);
+        Transforms* pTransforms2 = new Transforms("Transforms2", &list);
+
+        pTransforms2->setTransforms(pTransforms1);
+
+        rapidjson::Document document;
+
+        toJSON(pTransforms2, document, document.GetAllocator());
+
+        CHECK(document.IsObject());
+        CHECK(document.HasMember("id"));
+        CHECK(document.HasMember("properties"));
+
+        CHECK_EQUAL("Transforms://Transforms2", document["id"].GetString());
+
+        rapidjson::Value& properties = document["properties"];
+
+        CHECK(properties.IsArray());
+        CHECK_EQUAL(2, properties.Size());
+
+        rapidjson::Value& category = properties[(rapidjson::SizeType) 0];
+
+        CHECK(category.IsObject());
+        CHECK_EQUAL("Athena/Transforms", category["__category__"].GetString());
+
+        CHECK(category.HasMember("position"));
+        CHECK(category.HasMember("orientation"));
+        CHECK(category.HasMember("scale"));
+        CHECK(category.HasMember("inheritOrientation"));
+        CHECK(category.HasMember("inheritScale"));
+
+        category = properties[1];
+
+        CHECK(category.IsObject());
+        CHECK_EQUAL("Athena/Component", category["__category__"].GetString());
+
+        CHECK(category.HasMember("transforms"));
+        CHECK_EQUAL("Transforms://Transforms1", category["transforms"].GetString());
     }
 }

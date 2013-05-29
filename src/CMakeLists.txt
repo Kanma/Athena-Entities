@@ -15,6 +15,7 @@ set(HEADERS ${XMAKE_BINARY_DIR}/include/Athena-Entities/Config.h
             ../include/Athena-Entities/Prerequisites.h
             ../include/Athena-Entities/Scene.h
             ../include/Athena-Entities/ScenesManager.h
+            ../include/Athena-Entities/Serialization.h
             ../include/Athena-Entities/Signals.h
             ../include/Athena-Entities/Transforms.h
             ../include/Athena-Entities/tComponentID.h
@@ -31,6 +32,7 @@ set(SRCS ${XMAKE_BINARY_DIR}/generated/Athena-Entities/module.cpp
          Entity.cpp
          Scene.cpp
          ScenesManager.cpp
+         Serialization.cpp
          Transforms.cpp
 )
 
