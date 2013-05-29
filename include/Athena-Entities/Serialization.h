@@ -31,7 +31,7 @@ namespace Entities {
     /// @brief Returns the component represented by a rapidjson value
     ///
     /// @param  json_component      The rapidjson value
-    /// @param pList                The list to which add the component
+    /// @param  pList               The list to which add the component
     /// @retval pDelayedProperties  If provided, the properties that aren't usable yet
     ///                             (because, for example, another object which isn't
     ///                             already created is needed) are put into that list by
@@ -53,15 +53,16 @@ namespace Entities {
     /// @brief Returns the component represented by a JSON string
     ///
     /// @param  json_component      The JSON string
-    /// @retval pComponent          The component
+    /// @param  pList               The list to which add the component
     /// @retval pDelayedProperties  If provided, the properties that aren't usable yet
     ///                             (because, for example, another object which isn't
     ///                             already created is needed) are put into that list by
     ///                             the component
+    /// @return                     The component, or 0 in case or failure
     //------------------------------------------------------------------------------------
-    // ATHENA_ENTITIES_SYMBOL bool fromJSON(const std::string& json_component,
-    //                                      Entities::Component* pComponent,
-    //                                      Utils::PropertiesList* pDelayedProperties = 0);
+    ATHENA_ENTITIES_SYMBOL Entities::Component* fromJSON(const std::string& json_component,
+                                                         Entities::ComponentsList* pList,
+                                                         Utils::PropertiesList* pDelayedProperties = 0);
 }
 }
 

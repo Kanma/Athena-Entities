@@ -130,3 +130,23 @@ std::string Athena::Entities::toJSON(Entities::Component* pComponent)
 
     return s.GetString();
 }
+
+//-----------------------------------------------------------------------
+
+Athena::Entities::Component* Athena::Entities::fromJSON(const std::string& json_component,
+                                                        Entities::ComponentsList* pList,
+                                                        PropertiesList* pDelayedProperties)
+{
+    // Assertions
+    assert(pList);
+
+    // Convert to a JSON representation
+    Document document;
+	if (document.Parse<0>(json_component.c_str()).HasParseError())
+    {
+        ATHENA_LOG_ERROR(document.GetParseError());
+        return 0;
+    }
+
+    return fromJSON(document, pList, pDelayedProperties);
+}

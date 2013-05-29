@@ -1116,6 +1116,8 @@ SUITE(TransformsJSONDeserialization)
 
         PropertiesList::tCategoriesIterator iter = pDelayedProperties->getCategoriesIterator();
         CHECK(!iter.hasMoreElements());
+
+        delete pDelayedProperties;
     }
 
 
@@ -1172,6 +1174,8 @@ SUITE(TransformsJSONDeserialization)
 
         PropertiesList::tCategoriesIterator iter = pDelayedProperties->getCategoriesIterator();
         CHECK(!iter.hasMoreElements());
+
+        delete pDelayedProperties;
     }
 
 
@@ -1243,6 +1247,8 @@ SUITE(TransformsJSONDeserialization)
 
         propIter.moveNext();
         CHECK(!propIter.hasMoreElements());
+
+        delete pDelayedProperties;
     }
 
 
@@ -1317,5 +1323,262 @@ SUITE(TransformsJSONDeserialization)
 
         categIter.moveNext();
         CHECK(!categIter.hasMoreElements());
+
+        delete pDelayedProperties;
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithoutParentTransforms)
+    {
+        ComponentsList list;
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(std::string("{\n" \
+                    "    \"id\": \"Transforms://Transforms1\",\n" \
+                    "    \"properties\": [\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Transforms\",\n" \
+                    "            \"position\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 1.0,\n" \
+                    "                \"z\": 2.0\n" \
+                    "            },\n" \
+                    "            \"orientation\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 0.1,\n" \
+                    "                \"z\": 0.2,\n" \
+                    "                \"w\": 0.3\n" \
+                    "            },\n" \
+                    "            \"scale\": {\n" \
+                    "                \"x\": 10,\n" \
+                    "                \"y\": 20,\n" \
+                    "                \"z\": 30\n" \
+                    "            },\n" \
+                    "            \"inheritOrientation\": true,\n" \
+                    "            \"inheritScale\": false\n" \
+                    "        },\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Component\",\n" \
+                    "            \"transforms\": null\n" \
+                    "        }\n" \
+                    "    ]\n" \
+                    "}"), &list, pDelayedProperties);
+
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getUnknownProperties());
+        CHECK(!pComponent->getTransforms());
+
+        Transforms* pTransforms = Transforms::cast(pComponent);
+        CHECK(pTransforms);
+
+        CHECK_CLOSE(0.0f, pTransforms->getPosition().x, 1e-6f);
+        CHECK_CLOSE(1.0f, pTransforms->getPosition().y, 1e-6f);
+        CHECK_CLOSE(2.0f, pTransforms->getPosition().z, 1e-6f);
+
+        CHECK_CLOSE(0.3f, pTransforms->getOrientation().w, 1e-6f);
+        CHECK_CLOSE(0.0f, pTransforms->getOrientation().x, 1e-6f);
+        CHECK_CLOSE(0.1f, pTransforms->getOrientation().y, 1e-6f);
+        CHECK_CLOSE(0.2f, pTransforms->getOrientation().z, 1e-6f);
+
+        CHECK_CLOSE(10.0f, pTransforms->getScale().x, 1e-6f);
+        CHECK_CLOSE(20.0f, pTransforms->getScale().y, 1e-6f);
+        CHECK_CLOSE(30.0f, pTransforms->getScale().z, 1e-6f);
+
+        CHECK(pTransforms->inheritOrientation());
+        CHECK(!pTransforms->inheritScale());
+
+        PropertiesList::tCategoriesIterator iter = pDelayedProperties->getCategoriesIterator();
+        CHECK(!iter.hasMoreElements());
+
+        delete pDelayedProperties;
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithExistingParentTransforms)
+    {
+        ComponentsList list;
+
+        Transforms* pParent = new Transforms("Transforms2", &list);
+
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(std::string("{\n" \
+                    "    \"id\": \"Transforms://Transforms1\",\n" \
+                    "    \"properties\": [\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Transforms\",\n" \
+                    "            \"position\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 1.0,\n" \
+                    "                \"z\": 2.0\n" \
+                    "            },\n" \
+                    "            \"orientation\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 0.1,\n" \
+                    "                \"z\": 0.2,\n" \
+                    "                \"w\": 0.3\n" \
+                    "            },\n" \
+                    "            \"scale\": {\n" \
+                    "                \"x\": 10,\n" \
+                    "                \"y\": 20,\n" \
+                    "                \"z\": 30\n" \
+                    "            },\n" \
+                    "            \"inheritOrientation\": true,\n" \
+                    "            \"inheritScale\": false\n" \
+                    "        },\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Component\",\n" \
+                    "            \"transforms\": \"Transforms://Transforms2\"\n" \
+                    "        }\n" \
+                    "    ]\n" \
+                    "}"), &list, pDelayedProperties);
+
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getUnknownProperties());
+        CHECK_EQUAL(pParent, pComponent->getTransforms());
+
+        PropertiesList::tCategoriesIterator iter = pDelayedProperties->getCategoriesIterator();
+        CHECK(!iter.hasMoreElements());
+
+        delete pDelayedProperties;
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithUnknownParentTransforms)
+    {
+        ComponentsList list;
+
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(std::string("{\n" \
+                    "    \"id\": \"Transforms://Transforms1\",\n" \
+                    "    \"properties\": [\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Transforms\",\n" \
+                    "            \"position\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 1.0,\n" \
+                    "                \"z\": 2.0\n" \
+                    "            },\n" \
+                    "            \"orientation\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 0.1,\n" \
+                    "                \"z\": 0.2,\n" \
+                    "                \"w\": 0.3\n" \
+                    "            },\n" \
+                    "            \"scale\": {\n" \
+                    "                \"x\": 10,\n" \
+                    "                \"y\": 20,\n" \
+                    "                \"z\": 30\n" \
+                    "            },\n" \
+                    "            \"inheritOrientation\": true,\n" \
+                    "            \"inheritScale\": false\n" \
+                    "        },\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Component\",\n" \
+                    "            \"transforms\": \"Transforms://Transforms2\"\n" \
+                    "        }\n" \
+                    "    ]\n" \
+                    "}"), &list, pDelayedProperties);
+
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getUnknownProperties());
+        CHECK(!pComponent->getTransforms());
+
+
+        PropertiesList::tCategoriesIterator categIter = pDelayedProperties->getCategoriesIterator();
+        CHECK(categIter.hasMoreElements());
+
+        PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+        CHECK_EQUAL("Athena/Component", pCategory->strName);
+
+        categIter.moveNext();
+        CHECK(!categIter.hasMoreElements());
+
+
+        PropertiesList::tPropertiesIterator propIter = pDelayedProperties->getPropertiesIterator("Athena/Component");
+        CHECK(propIter.hasMoreElements());
+
+        PropertiesList::tProperty* pProperty = propIter.peekNextPtr();
+        CHECK_EQUAL("transforms", pProperty->strName);
+        CHECK_EQUAL("Transforms://Transforms2", pProperty->pValue->toString());
+
+        propIter.moveNext();
+        CHECK(!propIter.hasMoreElements());
+
+        delete pDelayedProperties;
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithUnknownComponentType)
+    {
+        ComponentsList list;
+
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(std::string("{\n" \
+                    "    \"id\": \"Transforms://Transforms1\",\n" \
+                    "    \"properties\": [\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Unknown\",\n" \
+                    "            \"unused\": \"hello\"\n" \
+                    "        },\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Transforms\",\n" \
+                    "            \"position\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 1.0,\n" \
+                    "                \"z\": 2.0\n" \
+                    "            },\n" \
+                    "            \"orientation\": {\n" \
+                    "                \"x\": 0.0,\n" \
+                    "                \"y\": 0.1,\n" \
+                    "                \"z\": 0.2,\n" \
+                    "                \"w\": 0.3\n" \
+                    "            },\n" \
+                    "            \"scale\": {\n" \
+                    "                \"x\": 10,\n" \
+                    "                \"y\": 20,\n" \
+                    "                \"z\": 30\n" \
+                    "            },\n" \
+                    "            \"inheritOrientation\": true,\n" \
+                    "            \"inheritScale\": false\n" \
+                    "        },\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Component\",\n" \
+                    "            \"transforms\": null\n" \
+                    "        }\n" \
+                    "    ]\n" \
+                    "}"), &list, pDelayedProperties);
+
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getTransforms());
+
+
+        PropertiesList::tCategoriesIterator categIter = pDelayedProperties->getCategoriesIterator();
+        CHECK(!categIter.hasMoreElements());
+
+
+        PropertiesList* pUnknownProperties = pComponent->getUnknownProperties();
+        CHECK(pUnknownProperties);
+
+        categIter = pUnknownProperties->getCategoriesIterator();
+        CHECK(categIter.hasMoreElements());
+
+        PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+        CHECK_EQUAL("Unknown", pCategory->strName);
+
+        categIter.moveNext();
+        CHECK(!categIter.hasMoreElements());
+
+        delete pDelayedProperties;
     }
 }
