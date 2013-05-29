@@ -4,6 +4,7 @@
 #include <Athena-Entities/ComponentsManager.h>
 #include <Athena-Entities/ScenesManager.h>
 #include <Athena-Entities/Scene.h>
+#include <Athena-Core/Log/LogManager.h>
 
 
 struct EntitiesTestEnvironment
@@ -11,10 +12,12 @@ struct EntitiesTestEnvironment
     Athena::Entities::Scene* pScene;
     Athena::Entities::ComponentsManager* pComponentsManager;
     Athena::Entities::ScenesManager* pScenesManager;
+    Athena::Log::LogManager* pLogManager;
 
     EntitiesTestEnvironment()
     : pScene(0)
     {
+        pLogManager = new Athena::Log::LogManager();
         pScenesManager = new Athena::Entities::ScenesManager();
         pComponentsManager = new Athena::Entities::ComponentsManager();
 
@@ -27,6 +30,7 @@ struct EntitiesTestEnvironment
 
         delete pComponentsManager;
         delete pScenesManager;
+        delete pLogManager;
     }
 };
 

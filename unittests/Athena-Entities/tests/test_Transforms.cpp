@@ -2,9 +2,11 @@
 #include <Athena-Entities/ComponentsList.h>
 #include <Athena-Entities/Transforms.h>
 #include <Athena-Entities/Serialization.h>
+#include <Athena-Core/Data/Serialization.h>
 #include "../environments/EntitiesTestEnvironment.h"
 
 
+using namespace Athena;
 using namespace Athena::Entities;
 using namespace Athena::Utils;
 using namespace Athena::Math;
@@ -932,7 +934,8 @@ SUITE(TransformsJSONSerialization)
         CHECK(category.IsObject());
         CHECK_EQUAL("Athena/Component", category["__category__"].GetString());
 
-        CHECK(!category.HasMember("transforms"));
+        CHECK(category.HasMember("transforms"));
+        CHECK(category["transforms"].IsNull());
     }
 
     TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObjectWithReferenceToAnotherTransforms)
@@ -977,5 +980,300 @@ SUITE(TransformsJSONSerialization)
 
         CHECK(category.HasMember("transforms"));
         CHECK_EQUAL("Transforms://Transforms1", category["transforms"].GetString());
+    }
+}
+
+
+SUITE(TransformsJSONDeserialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObjectWithoutParentTransforms)
+    {
+        ComponentsList list;
+        rapidjson::Document document;
+        rapidjson::Value properties;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+        Variant variant;
+
+
+        document.SetObject();
+
+        field.SetString("Transforms://Transforms1");
+        document.AddMember("id", field, document.GetAllocator());
+
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        variant = Variant(Vector3(0.0f, 1.0f, 2.0f));
+        Data::toJSON(&variant, field,  document.GetAllocator());
+        entry.AddMember("position", field, document.GetAllocator());
+
+        variant = Variant(Quaternion(0.0f, 0.1f, 0.2f, 0.3f));
+        Data::toJSON(&variant, field,  document.GetAllocator());
+        entry.AddMember("orientation", field, document.GetAllocator());
+
+        variant = Variant(Vector3(10.0f, 20.0f, 30.0f));
+        Data::toJSON(&variant, field,  document.GetAllocator());
+        entry.AddMember("scale", field, document.GetAllocator());
+
+        field.SetBool(true);
+        entry.AddMember("inheritOrientation", field, document.GetAllocator());
+
+        field.SetBool(false);
+        entry.AddMember("inheritScale", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        document.AddMember("properties", properties, document.GetAllocator());
+
+
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(document, &list, pDelayedProperties);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getUnknownProperties());
+        CHECK(!pComponent->getTransforms());
+
+        Transforms* pTransforms = Transforms::cast(pComponent);
+        CHECK(pTransforms);
+
+        CHECK_CLOSE(0.0f, pTransforms->getPosition().x, 1e-6f);
+        CHECK_CLOSE(1.0f, pTransforms->getPosition().y, 1e-6f);
+        CHECK_CLOSE(2.0f, pTransforms->getPosition().z, 1e-6f);
+
+        CHECK_CLOSE(0.0f, pTransforms->getOrientation().w, 1e-6f);
+        CHECK_CLOSE(0.1f, pTransforms->getOrientation().x, 1e-6f);
+        CHECK_CLOSE(0.2f, pTransforms->getOrientation().y, 1e-6f);
+        CHECK_CLOSE(0.3f, pTransforms->getOrientation().z, 1e-6f);
+
+        CHECK_CLOSE(10.0f, pTransforms->getScale().x, 1e-6f);
+        CHECK_CLOSE(20.0f, pTransforms->getScale().y, 1e-6f);
+        CHECK_CLOSE(30.0f, pTransforms->getScale().z, 1e-6f);
+
+        CHECK(pTransforms->inheritOrientation());
+        CHECK(!pTransforms->inheritScale());
+
+        PropertiesList::tCategoriesIterator iter = pDelayedProperties->getCategoriesIterator();
+        CHECK(!iter.hasMoreElements());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObjectWithExistingParentTransforms)
+    {
+        ComponentsList list;
+        rapidjson::Document document;
+        rapidjson::Value properties;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+        Variant variant;
+
+        Transforms* pParent = new Transforms("Transforms2", &list);
+
+
+        document.SetObject();
+
+        field.SetString("Transforms://Transforms1");
+        document.AddMember("id", field, document.GetAllocator());
+
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetString("Transforms://Transforms2");
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        document.AddMember("properties", properties, document.GetAllocator());
+
+
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(document, &list, pDelayedProperties);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getUnknownProperties());
+        CHECK_EQUAL(pParent, pComponent->getTransforms());
+
+        PropertiesList::tCategoriesIterator iter = pDelayedProperties->getCategoriesIterator();
+        CHECK(!iter.hasMoreElements());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObjectWithUnknownParentTransforms)
+    {
+        ComponentsList list;
+        rapidjson::Document document;
+        rapidjson::Value properties;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+        Variant variant;
+
+        document.SetObject();
+
+        field.SetString("Transforms://Transforms1");
+        document.AddMember("id", field, document.GetAllocator());
+
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetString("Transforms://Transforms2");
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        document.AddMember("properties", properties, document.GetAllocator());
+
+
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(document, &list, pDelayedProperties);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getUnknownProperties());
+        CHECK(!pComponent->getTransforms());
+
+
+        PropertiesList::tCategoriesIterator categIter = pDelayedProperties->getCategoriesIterator();
+        CHECK(categIter.hasMoreElements());
+
+        PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+        CHECK_EQUAL("Athena/Component", pCategory->strName);
+
+        categIter.moveNext();
+        CHECK(!categIter.hasMoreElements());
+
+
+        PropertiesList::tPropertiesIterator propIter = pDelayedProperties->getPropertiesIterator("Athena/Component");
+        CHECK(propIter.hasMoreElements());
+
+        PropertiesList::tProperty* pProperty = propIter.peekNextPtr();
+        CHECK_EQUAL("transforms", pProperty->strName);
+        CHECK_EQUAL("Transforms://Transforms2", pProperty->pValue->toString());
+
+        propIter.moveNext();
+        CHECK(!propIter.hasMoreElements());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObjectWithUnknownComponentType)
+    {
+        ComponentsList list;
+        rapidjson::Document document;
+        rapidjson::Value properties;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+        Variant variant;
+
+        document.SetObject();
+
+        field.SetString("Transforms://Transforms1");
+        document.AddMember("id", field, document.GetAllocator());
+
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Unknown");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetString("hello");
+        entry.AddMember("unused", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+
+        document.AddMember("properties", properties, document.GetAllocator());
+
+
+        PropertiesList* pDelayedProperties = new PropertiesList();
+
+        Component* pComponent = fromJSON(document, &list, pDelayedProperties);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms1", pComponent->getName());
+        CHECK_EQUAL(Transforms::TYPE, pComponent->getType());
+        CHECK(!pComponent->getTransforms());
+
+
+        PropertiesList::tCategoriesIterator categIter = pDelayedProperties->getCategoriesIterator();
+        CHECK(!categIter.hasMoreElements());
+
+
+        PropertiesList* pUnknownProperties = pComponent->getUnknownProperties();
+        CHECK(pUnknownProperties);
+
+        categIter = pUnknownProperties->getCategoriesIterator();
+        CHECK(categIter.hasMoreElements());
+
+        PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+        CHECK_EQUAL("Unknown", pCategory->strName);
+
+        categIter.moveNext();
+        CHECK(!categIter.hasMoreElements());
     }
 }

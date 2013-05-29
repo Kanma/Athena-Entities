@@ -40,8 +40,8 @@ typedef Component* ComponentCreationMethod(const std::string&, ComponentsList*);
 /// component is associated with a 'creation method'. The Components manager call this
 /// method when it needs to create a component of its associated type.
 ///
-/// This mecanism is mainly targetted at scene loaders that read the type of the components
-/// to create from a file.
+/// This mechanism is mainly targetted at scene loaders that read the type of the
+/// components to create from a file.
 ///
 /// Other modules of Athena defines some component types. The user can register new types
 /// by subclassing an existing component class, and registering a 'component creation

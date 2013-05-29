@@ -94,14 +94,13 @@ Component* ComponentsManager::create(const std::string& strType, const std::stri
     {
         // Use them to create the component
         pComponent = m_types[strType]->create(strName, pList);
+        if (!pComponent)
+            ATHENA_LOG_ERROR("Failed to create a component of type '" + strType + "' with the name '" + strName + "'");
     }
     else
     {
-        ATHENA_LOG_ERROR("Unknow component's type: " + strType);
+        ATHENA_LOG_ERROR("Failed to create the component '" + strName + "': unknown component type (" + strType + ")");
     }
-
-    if (!pComponent)
-        ATHENA_LOG_ERROR("Failed to create a component of type '" + strType + "' with the name '" + strName + "'");
 
     return pComponent;
 }
