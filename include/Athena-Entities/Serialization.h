@@ -90,6 +90,11 @@ namespace Entities {
     //------------------------------------------------------------------------------------
     ATHENA_ENTITIES_SYMBOL Entities::Entity* fromJSON(const rapidjson::Value& json_entity,
                                                       Entities::Scene* pScene);
+
+    //------------------------------------------------------------------------------------
+    /// @brief Returns the JSON representation of a component as a string
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL std::string toJSON(Entities::Entity* pEntity);
 }
 }
 

@@ -219,6 +219,33 @@ SUITE(EntityJSONSerialization)
         CHECK(child.IsObject());
         CHECK_EQUAL("child", child["name"].GetString());
     }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToString)
+    {
+        Entity* pEntity = pScene->create("test");
+
+        std::string json = toJSON(pEntity);
+
+        std::string reference = readFile("single.entity");
+
+        CHECK_EQUAL(reference, json);
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToStringWithChildren)
+    {
+        Entity* pParent = pScene->create("parent");
+        Entity* pChild = pScene->create("child");
+
+        pParent->addChild(pChild);
+
+        std::string json = toJSON(pParent);
+
+        std::string reference = readFile("one_child.entity");
+
+        CHECK_EQUAL(reference, json);
+    }
 }
 
 

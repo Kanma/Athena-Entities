@@ -273,3 +273,22 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& jso
     // Return the component
     return pEntity;
 }
+
+//-----------------------------------------------------------------------
+
+std::string Athena::Entities::toJSON(Entities::Entity* pEntity)
+{
+    // Assertions
+    assert(pEntity);
+
+    // Retrieve the JSON representation
+    Document document;
+    toJSON(pEntity, document, document.GetAllocator());
+
+    // Convert it to string
+    StringBuffer s;
+    PrettyWriter<StringBuffer> writer(s);
+    document.Accept(writer);
+
+    return s.GetString();
+}
