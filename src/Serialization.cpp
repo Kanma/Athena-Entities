@@ -7,6 +7,7 @@
 #include <Athena-Entities/Serialization.h>
 #include <Athena-Entities/Component.h>
 #include <Athena-Entities/ComponentsManager.h>
+#include <Athena-Entities/Entity.h>
 #include <Athena-Core/Data/Serialization.h>
 #include <Athena-Core/Log/LogManager.h>
 #include <rapidjson/stringbuffer.h>
@@ -149,4 +150,53 @@ Athena::Entities::Component* Athena::Entities::fromJSON(const std::string& json_
     }
 
     return fromJSON(document, pList, pDelayedProperties);
+}
+
+//-----------------------------------------------------------------------
+
+void Athena::Entities::toJSON(Entities::Entity* pEntity,
+                              rapidjson::Value &json_entity,
+                              rapidjson::Value::AllocatorType &allocator)
+{
+    // Assertions
+    assert(pEntity);
+
+    // Declarations
+    Value value;
+    Value array;
+
+    // Create the JSON representation
+    json_entity.SetObject();
+
+    value.SetString(pEntity->getName().c_str(), allocator);
+    json_entity.AddMember("name", value, allocator);
+
+    value.SetBool(pEntity->isEnabled());
+    json_entity.AddMember("enabled", value, allocator);
+
+    // Components
+    array.SetArray();
+
+    Component::tComponentsIterator compIter = pEntity->getComponentsIterator();
+    while (compIter.hasMoreElements())
+    {
+        Component* pComponent = compIter.getNext();
+        toJSON(pComponent, value, allocator);
+        array.PushBack(value, allocator);
+    }
+
+    json_entity.AddMember("components", array, allocator);
+
+    // Children
+    array.SetArray();
+
+    Entity::tEntitiesIterator childrenIter = pEntity->getChildrenIterator();
+    while (childrenIter.hasMoreElements())
+    {
+        Entity* pChild = childrenIter.getNext();
+        toJSON(pChild, value, allocator);
+        array.PushBack(value, allocator);
+    }
+
+    json_entity.AddMember("children", array, allocator);
 }

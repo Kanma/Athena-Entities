@@ -2,6 +2,7 @@
 #include <Athena-Entities/ScenesManager.h>
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Transforms.h>
+#include <Athena-Entities/Serialization.h>
 #include "../environments/EntitiesTestEnvironment.h"
 
 
@@ -138,5 +139,84 @@ SUITE(EntityTests)
         CHECK(!pRetrievedEntity);
 
         pScene->destroy(pParent);
+    }
+}
+
+
+SUITE(EntityJSONSerialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObject)
+    {
+        Entity* pEntity = pScene->create("test");
+
+        rapidjson::Document document;
+
+        toJSON(pEntity, document, document.GetAllocator());
+
+        CHECK(document.IsObject());
+        CHECK(document.HasMember("name"));
+        CHECK(document.HasMember("components"));
+        CHECK(document.HasMember("children"));
+
+        CHECK_EQUAL("test", document["name"].GetString());
+
+
+        rapidjson::Value& components = document["components"];
+
+        CHECK(components.IsArray());
+        CHECK_EQUAL(1, components.Size());
+
+        rapidjson::Value& component = components[(rapidjson::SizeType) 0];
+
+        CHECK(component.IsObject());
+        CHECK_EQUAL("Transforms://Transforms", component["id"].GetString());
+
+
+        rapidjson::Value& children = document["children"];
+
+        CHECK(children.IsArray());
+        CHECK_EQUAL(0, children.Size());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObjectWithChild)
+    {
+        Entity* pParent = pScene->create("parent");
+        Entity* pChild = pScene->create("child");
+
+        pParent->addChild(pChild);
+
+        rapidjson::Document document;
+
+        toJSON(pParent, document, document.GetAllocator());
+
+        CHECK(document.IsObject());
+        CHECK(document.HasMember("name"));
+        CHECK(document.HasMember("components"));
+        CHECK(document.HasMember("children"));
+
+        CHECK_EQUAL("parent", document["name"].GetString());
+
+
+        rapidjson::Value& components = document["components"];
+
+        CHECK(components.IsArray());
+        CHECK_EQUAL(1, components.Size());
+
+        rapidjson::Value& component = components[(rapidjson::SizeType) 0];
+
+        CHECK(component.IsObject());
+        CHECK_EQUAL("Transforms://Transforms", component["id"].GetString());
+
+
+        rapidjson::Value& children = document["children"];
+
+        CHECK(children.IsArray());
+        CHECK_EQUAL(1, children.Size());
+
+        rapidjson::Value& child = children[(rapidjson::SizeType) 0];
+
+        CHECK(child.IsObject());
+        CHECK_EQUAL("child", child["name"].GetString());
     }
 }
