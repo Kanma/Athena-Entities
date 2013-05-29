@@ -111,3 +111,22 @@ Athena::Entities::Component* Athena::Entities::fromJSON(
     // Return the component
     return pComponent;
 }
+
+//-----------------------------------------------------------------------
+
+std::string Athena::Entities::toJSON(Entities::Component* pComponent)
+{
+    // Assertions
+    assert(pComponent);
+
+    // Retrieve the JSON representation
+    Document document;
+    toJSON(pComponent, document, document.GetAllocator());
+
+    // Convert it to string
+    StringBuffer s;
+    PrettyWriter<StringBuffer> writer(s);
+    document.Accept(writer);
+
+    return s.GetString();
+}

@@ -46,7 +46,7 @@ namespace Entities {
     //------------------------------------------------------------------------------------
     /// @brief Returns the JSON representation of a component as a string
     //------------------------------------------------------------------------------------
-    // ATHENA_ENTITIES_SYMBOL std::string toJSON(Entities::Component* pComponent);
+    ATHENA_ENTITIES_SYMBOL std::string toJSON(Entities::Component* pComponent);
 
 
     //------------------------------------------------------------------------------------

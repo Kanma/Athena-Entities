@@ -938,6 +938,7 @@ SUITE(TransformsJSONSerialization)
         CHECK(category["transforms"].IsNull());
     }
 
+
     TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObjectWithReferenceToAnotherTransforms)
     {
         ComponentsList list;
@@ -980,6 +981,47 @@ SUITE(TransformsJSONSerialization)
 
         CHECK(category.HasMember("transforms"));
         CHECK_EQUAL("Transforms://Transforms1", category["transforms"].GetString());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToString)
+    {
+        ComponentsList list;
+
+        Transforms* pTransforms = new Transforms("Transforms1", &list);
+
+        std::string json = toJSON(pTransforms);
+
+        CHECK_EQUAL("{\n" \
+                    "    \"id\": \"Transforms://Transforms1\",\n" \
+                    "    \"properties\": [\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Transforms\",\n" \
+                    "            \"position\": {\n" \
+                    "                \"x\": 0,\n" \
+                    "                \"y\": 0,\n" \
+                    "                \"z\": 0\n" \
+                    "            },\n" \
+                    "            \"orientation\": {\n" \
+                    "                \"x\": 0,\n" \
+                    "                \"y\": 0,\n" \
+                    "                \"z\": 0,\n" \
+                    "                \"w\": 1\n" \
+                    "            },\n" \
+                    "            \"scale\": {\n" \
+                    "                \"x\": 1,\n" \
+                    "                \"y\": 1,\n" \
+                    "                \"z\": 1\n" \
+                    "            },\n" \
+                    "            \"inheritOrientation\": true,\n" \
+                    "            \"inheritScale\": true\n" \
+                    "        },\n" \
+                    "        {\n" \
+                    "            \"__category__\": \"Athena/Component\",\n" \
+                    "            \"transforms\": null\n" \
+                    "        }\n" \
+                    "    ]\n" \
+                    "}", json);
     }
 }
 
