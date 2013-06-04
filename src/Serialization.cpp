@@ -368,3 +368,55 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const std::string& json_ent
 
     return fromJSON(document, pScene, pCombinedDelayedProperties);
 }
+
+//-----------------------------------------------------------------------
+
+void Athena::Entities::toJSON(Entities::Scene* pScene,
+                              rapidjson::Value &json_scene,
+                              rapidjson::Value::AllocatorType &allocator)
+{
+    // Assertions
+    assert(pScene);
+
+    // Declarations
+    Value value;
+    Value array;
+
+    // Create the JSON representation
+    json_scene.SetObject();
+
+    value.SetString(pScene->getName().c_str(), allocator);
+    json_scene.AddMember("name", value, allocator);
+
+    value.SetBool(pScene->isEnabled());
+    json_scene.AddMember("enabled", value, allocator);
+
+    // Components
+    array.SetArray();
+
+    Component::tComponentsIterator compIter = pScene->getComponentsIterator();
+    while (compIter.hasMoreElements())
+    {
+        Component* pComponent = compIter.getNext();
+        toJSON(pComponent, value, allocator);
+        array.PushBack(value, allocator);
+    }
+
+    json_scene.AddMember("components", array, allocator);
+
+    // Entities
+    array.SetArray();
+
+    Entity::tEntitiesIterator childrenIter = pScene->getEntitiesIterator();
+    while (childrenIter.hasMoreElements())
+    {
+        Entity* pEntity = childrenIter.getNext();
+        if (!pEntity->getParent())
+        {
+            toJSON(pEntity, value, allocator);
+            array.PushBack(value, allocator);
+        }
+    }
+
+    json_scene.AddMember("entities", array, allocator);
+}

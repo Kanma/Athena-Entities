@@ -1,6 +1,7 @@
 #include <UnitTest++.h>
 #include <Athena-Entities/ScenesManager.h>
 #include <Athena-Entities/Entity.h>
+#include <Athena-Entities/Serialization.h>
 #include "../environments/EntitiesTestEnvironment.h"
 
 
@@ -103,5 +104,37 @@ SUITE(SceneTests)
         CHECK(!pScene->getMainComponent(COMP_VISUAL));
         CHECK(!pScene->getMainComponent(COMP_AUDIO));
         CHECK(!pScene->getMainComponent(COMP_PHYSICAL));
+    }
+}
+
+
+SUITE(SceneJSONSerialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObject)
+    {
+        Scene* pScene = new Scene("test");
+
+        rapidjson::Document document;
+
+        toJSON(pScene, document, document.GetAllocator());
+
+        CHECK(document.IsObject());
+        CHECK(document.HasMember("name"));
+        CHECK(document.HasMember("components"));
+        CHECK(document.HasMember("entities"));
+
+        CHECK_EQUAL("test", document["name"].GetString());
+
+
+        rapidjson::Value& components = document["components"];
+
+        CHECK(components.IsArray());
+        CHECK_EQUAL(0, components.Size());
+
+
+        rapidjson::Value& entities = document["entities"];
+
+        CHECK(entities.IsArray());
+        CHECK_EQUAL(0, entities.Size());
     }
 }

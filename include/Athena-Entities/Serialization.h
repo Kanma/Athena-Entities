@@ -116,6 +116,18 @@ namespace Entities {
     ATHENA_ENTITIES_SYMBOL Entities::Entity* fromJSON(const std::string& json_entity,
                                                       Entities::Scene* pScene,
                                                       Utils::PropertiesList* pCombinedDelayedProperties = 0);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief Returns the rapidjson representation of a scene
+    ///
+    /// @param  pScene          The scene
+    /// @retval json_scene      The resulting rapidjson representation
+    /// @param  allocator       The memory allocator to use
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL void toJSON(Entities::Scene* pScene,
+                                       rapidjson::Value &json_scene,
+                                       rapidjson::Value::AllocatorType &allocator);
 }
 }
 
