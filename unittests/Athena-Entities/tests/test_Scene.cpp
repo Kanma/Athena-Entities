@@ -288,4 +288,29 @@ SUITE(SceneJSONDeserialization)
         CHECK_EQUAL(1, pChild->getNbComponents());
         CHECK_EQUAL(0, pChild->getNbChildren());
     }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromDataStream)
+    {
+        DataStream* pStream = pLocationManager->open("unittests", "simple.scene");
+        Scene* pScene = fromJSON(pStream);
+        pStream->close();
+
+        CHECK(pScene);
+        CHECK_EQUAL("test", pScene->getName());
+        CHECK_EQUAL(0, pScene->getNbComponents());
+        CHECK_EQUAL(2, pScene->getNbEntities());
+
+        Entity* pParent = pScene->getEntity("parent");
+        CHECK(pParent);
+        CHECK_EQUAL(1, pParent->getNbComponents());
+        CHECK_EQUAL(1, pParent->getNbChildren());
+
+        unsigned int index = 0;
+        Entity* pChild = pParent->getChild(index);
+        CHECK(pChild);
+        CHECK_EQUAL("child", pChild->getName());
+        CHECK_EQUAL(1, pChild->getNbComponents());
+        CHECK_EQUAL(0, pChild->getNbChildren());
+    }
 }

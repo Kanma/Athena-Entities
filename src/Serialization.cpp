@@ -564,3 +564,33 @@ void Athena::Entities::toJSON(Entities::Scene* pScene, Data::DataStream* pStream
 
     pStream->write(s.GetString(), s.Size());
 }
+
+//-----------------------------------------------------------------------
+
+Athena::Entities::Scene* Athena::Entities::fromJSON(Data::DataStream* pStream,
+                                                    Utils::PropertiesList* pCombinedDelayedProperties)
+{
+    // Assertions
+    assert(pStream);
+
+    // Read the content of the file
+    std::string content;
+    char buffer[1025];
+
+    while (!pStream->eof())
+    {
+        size_t count = pStream->read(buffer, 1024);
+        buffer[count] = 0;
+        content += buffer;
+    }
+
+    // Convert to a JSON representation
+    Document document;
+    if (document.Parse<0>(content.c_str()).HasParseError())
+    {
+        ATHENA_LOG_ERROR(document.GetParseError());
+        return 0;
+    }
+
+    return fromJSON(document, pCombinedDelayedProperties);
+}

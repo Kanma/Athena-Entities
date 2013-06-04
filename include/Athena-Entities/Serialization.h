@@ -170,6 +170,21 @@ namespace Entities {
     /// @brief Writes the JSON representation of a scene in a DataStream object
     //------------------------------------------------------------------------------------
     ATHENA_ENTITIES_SYMBOL void toJSON(Entities::Scene* pScene, Data::DataStream* pStream);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief Returns the scene represented by the content of a DataStream object
+    ///
+    /// @param  pStream                     The DataStream object
+    /// @retval pCombinedDelayedProperties  If provided, the properties that aren't usable
+    ///                                     yet (on this entity or any of its children)
+    ///                                     are put into that list. The name of the
+    ///                                     categories is of the form
+    ///                                     <componentID>#<category>.
+    /// @return                             The scene, or 0 in case or failure
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL Entities::Scene* fromJSON(Data::DataStream* pStream,
+                                                     Utils::PropertiesList* pCombinedDelayedProperties = 0);
 }
 }
 
