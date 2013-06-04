@@ -205,6 +205,28 @@ Handle<Value> Entity_RemoveChild(const Arguments& args)
 
 //-----------------------------------------------------------------------
 
+Handle<Value> Entity_GetChild(const Arguments& args)
+{
+    HandleScope handle_scope;
+
+    Entity* ptr = GetPtr(args.This());
+    assert(ptr);
+
+    Entity* pChild = 0;
+
+    if ((args.Length() == 1) && args[0]->IsUint32())
+        pChild = ptr->getChild(args[0]->ToUint32()->Value());
+    else if ((args.Length() == 1) && args[0]->IsString())
+        pChild = ptr->getChild(*String::AsciiValue(args[0]->ToString()));
+
+    if (!pChild)
+        return ThrowException(String::New("Invalid parameters, valid syntax:\ngetChild(name)\ngetChild(index)"));
+
+    return handle_scope.Close(toJavaScript(pChild));
+}
+
+//-----------------------------------------------------------------------
+
 Handle<Value> Entity_DestroyAllChildren(const Arguments& args)
 {
     HandleScope handle_scope;
@@ -286,6 +308,7 @@ bool bind_Entity(Handle<Object> parent)
         // Methods
         AddMethod(entity, "addChild",              Entity_AddChild);
         AddMethod(entity, "removeChild",           Entity_RemoveChild);
+        AddMethod(entity, "getChild",              Entity_GetChild);
         AddMethod(entity, "destroyAllChildren",    Entity_DestroyAllChildren);
         AddMethod(entity, "getComponent",          Entity_GetComponent);
         AddMethod(entity, "createAnimationsMixer", Entity_CreateAnimationsMixer);

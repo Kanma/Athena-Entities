@@ -133,6 +133,26 @@ public:
     }
 
     //------------------------------------------------------------------------------------
+    /// @brief  Returns a child of the entity
+    ///
+    /// @param  strName     Name of the child
+    /// @return             The child, 0 if not found
+    //------------------------------------------------------------------------------------
+    Entity* getChild(const std::string& strName);
+
+    //------------------------------------------------------------------------------------
+    /// @brief  Returns a child of the child
+    ///
+    /// @param  uiIndex     The index of the child
+    /// @return             The child
+    //------------------------------------------------------------------------------------
+    inline Entity* getChild(unsigned int uiIndex) const
+    {
+        assert(uiIndex < getNbChildren());
+        return m_children[uiIndex];
+    }
+
+    //------------------------------------------------------------------------------------
     /// @brief  Returns an iterator over the children of the entity
     //------------------------------------------------------------------------------------
     tEntitiesIterator getChildrenIterator()

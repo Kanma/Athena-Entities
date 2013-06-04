@@ -6,8 +6,8 @@ project(ATHENA_ENTITIES)
 # Library version
 
 set(ATHENA_ENTITIES_VERSION_MAJOR 1)
-set(ATHENA_ENTITIES_VERSION_MINOR 1)
-set(ATHENA_ENTITIES_VERSION_PATCH 3)
+set(ATHENA_ENTITIES_VERSION_MINOR 2)
+set(ATHENA_ENTITIES_VERSION_PATCH 0)
 set(ATHENA_ENTITIES_VERSION_SUFFIX "")
 
 
@@ -39,6 +39,7 @@ Athena-Entities requires the following dependencies:
    - Athena-Math
    - Athena-Core
    - UnitTest++
+   - rapidjson
 They are provided as GIT submodules of this repository.
 Did you forgot to execute the following commands?
    git submodule init

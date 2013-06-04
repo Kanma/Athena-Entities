@@ -2,6 +2,7 @@
 #include <Athena-Entities/ScenesManager.h>
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Transforms.h>
+#include <Athena-Entities/Serialization.h>
 #include "../environments/EntitiesTestEnvironment.h"
 
 
@@ -138,5 +139,391 @@ SUITE(EntityTests)
         CHECK(!pRetrievedEntity);
 
         pScene->destroy(pParent);
+    }
+}
+
+
+SUITE(EntityJSONSerialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObject)
+    {
+        Entity* pEntity = pScene->create("test");
+
+        rapidjson::Document document;
+
+        toJSON(pEntity, document, document.GetAllocator());
+
+        CHECK(document.IsObject());
+        CHECK(document.HasMember("name"));
+        CHECK(document.HasMember("components"));
+        CHECK(document.HasMember("children"));
+
+        CHECK_EQUAL("test", document["name"].GetString());
+
+
+        rapidjson::Value& components = document["components"];
+
+        CHECK(components.IsArray());
+        CHECK_EQUAL(1, components.Size());
+
+        rapidjson::Value& component = components[(rapidjson::SizeType) 0];
+
+        CHECK(component.IsObject());
+        CHECK_EQUAL("Transforms://Transforms", component["id"].GetString());
+
+
+        rapidjson::Value& children = document["children"];
+
+        CHECK(children.IsArray());
+        CHECK_EQUAL(0, children.Size());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToObjectWithChild)
+    {
+        Entity* pParent = pScene->create("parent");
+        Entity* pChild = pScene->create("child");
+
+        pParent->addChild(pChild);
+
+        rapidjson::Document document;
+
+        toJSON(pParent, document, document.GetAllocator());
+
+        CHECK(document.IsObject());
+        CHECK(document.HasMember("name"));
+        CHECK(document.HasMember("components"));
+        CHECK(document.HasMember("children"));
+
+        CHECK_EQUAL("parent", document["name"].GetString());
+
+
+        rapidjson::Value& components = document["components"];
+
+        CHECK(components.IsArray());
+        CHECK_EQUAL(1, components.Size());
+
+        rapidjson::Value& component = components[(rapidjson::SizeType) 0];
+
+        CHECK(component.IsObject());
+        CHECK_EQUAL("Transforms://Transforms", component["id"].GetString());
+
+
+        rapidjson::Value& children = document["children"];
+
+        CHECK(children.IsArray());
+        CHECK_EQUAL(1, children.Size());
+
+        rapidjson::Value& child = children[(rapidjson::SizeType) 0];
+
+        CHECK(child.IsObject());
+        CHECK_EQUAL("child", child["name"].GetString());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToString)
+    {
+        Entity* pEntity = pScene->create("test");
+
+        std::string json = toJSON(pEntity);
+
+        std::string reference = readFile("single.entity");
+
+        CHECK_EQUAL(reference, json);
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToStringWithChildren)
+    {
+        Entity* pParent = pScene->create("parent");
+        Entity* pChild = pScene->create("child");
+
+        pParent->addChild(pChild);
+
+        std::string json = toJSON(pParent);
+
+        std::string reference = readFile("one_child.entity");
+
+        CHECK_EQUAL(reference, json);
+    }
+}
+
+
+SUITE(EntityJSONDeserialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObject)
+    {
+        rapidjson::Document document;
+        rapidjson::Value components;
+        rapidjson::Value component;
+        rapidjson::Value properties;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+
+
+        document.SetObject();
+
+        field.SetString("test");
+        document.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        document.AddMember("enabled", field, document.GetAllocator());
+
+
+        components.SetArray();
+
+        component.SetObject();
+
+        field.SetString("Transforms://Transforms");
+        component.AddMember("id", field, document.GetAllocator());
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        component.AddMember("properties", properties, document.GetAllocator());
+
+        components.PushBack(component, document.GetAllocator());
+
+        document.AddMember("components", components, document.GetAllocator());
+
+
+        Entity* pEntity = fromJSON(document, pScene);
+        CHECK(pEntity);
+        CHECK_EQUAL("test", pEntity->getName());
+        CHECK_EQUAL(1, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObjectWithChildren)
+    {
+        rapidjson::Document document;
+        rapidjson::Value components;
+        rapidjson::Value component;
+        rapidjson::Value properties;
+        rapidjson::Value children;
+        rapidjson::Value child;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+
+
+        document.SetObject();
+
+        field.SetString("parent");
+        document.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        document.AddMember("enabled", field, document.GetAllocator());
+
+
+        components.SetArray();
+
+        component.SetObject();
+
+        field.SetString("Transforms://Transforms");
+        component.AddMember("id", field, document.GetAllocator());
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        component.AddMember("properties", properties, document.GetAllocator());
+
+        components.PushBack(component, document.GetAllocator());
+
+        document.AddMember("components", components, document.GetAllocator());
+
+
+        children.SetArray();
+
+        child.SetObject();
+
+        field.SetString("child");
+        child.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        child.AddMember("enabled", field, document.GetAllocator());
+
+        components.SetArray();
+
+        component.SetObject();
+
+        field.SetString("Transforms://Transforms");
+        component.AddMember("id", field, document.GetAllocator());
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        component.AddMember("properties", properties, document.GetAllocator());
+
+        components.PushBack(component, document.GetAllocator());
+
+        child.AddMember("components", components, document.GetAllocator());
+
+        children.PushBack(child, document.GetAllocator());
+
+        document.AddMember("children", children, document.GetAllocator());
+
+
+        Entity* pParent = fromJSON(document, pScene);
+        CHECK(pParent);
+        CHECK_EQUAL("parent", pParent->getName());
+        CHECK_EQUAL(1, pParent->getNbComponents());
+        CHECK_EQUAL(1, pParent->getNbChildren());
+
+
+        unsigned int index = 0;
+        Entity* pChild = pParent->getChild(index);
+        CHECK(pChild);
+        CHECK_EQUAL("child", pChild->getName());
+        CHECK_EQUAL(1, pChild->getNbComponents());
+        CHECK_EQUAL(0, pChild->getNbChildren());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromString)
+    {
+        std::string reference = readFile("single.entity");
+
+        Entity* pEntity = fromJSON(reference, pScene);
+
+        CHECK(pEntity);
+        CHECK_EQUAL("test", pEntity->getName());
+        CHECK_EQUAL(1, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithChildren)
+    {
+        std::string reference = readFile("one_child.entity");
+
+        Entity* pParent = fromJSON(reference, pScene);
+        CHECK(pParent);
+        CHECK_EQUAL("parent", pParent->getName());
+        CHECK_EQUAL(1, pParent->getNbComponents());
+        CHECK_EQUAL(1, pParent->getNbChildren());
+
+        unsigned int index = 0;
+        Entity* pChild = pParent->getChild(index);
+        CHECK(pChild);
+        CHECK_EQUAL("child", pChild->getName());
+        CHECK_EQUAL(1, pChild->getNbComponents());
+        CHECK_EQUAL(0, pChild->getNbChildren());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithDelayedProperty)
+    {
+        std::string reference = readFile("delayed_property.entity");
+
+        Entity* pEntity = fromJSON(reference, pScene);
+
+        CHECK(pEntity);
+        CHECK_EQUAL("test", pEntity->getName());
+        CHECK_EQUAL(3, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+
+        Component* pComponent = pEntity->getComponent(0);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms", pComponent->getName());
+        CHECK(!pComponent->getTransforms());
+
+        pComponent = pEntity->getComponent(1);
+        CHECK(pComponent);
+        CHECK_EQUAL("Delayed", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Last", pComponent->getTransforms()->getName());
+
+        pComponent = pEntity->getComponent(2);
+        CHECK(pComponent);
+        CHECK_EQUAL("Last", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Transforms", pComponent->getTransforms()->getName());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithDelayedPropertyInChild)
+    {
+        std::string reference = readFile("delayed_property_in_child.entity");
+
+        Entity* pEntity = fromJSON(reference, pScene);
+
+        CHECK(pEntity);
+        CHECK_EQUAL("parent", pEntity->getName());
+        CHECK_EQUAL(1, pEntity->getNbComponents());
+        CHECK_EQUAL(1, pEntity->getNbChildren());
+
+        unsigned int index = 0;
+        pEntity = pEntity->getChild(index);
+
+        CHECK_EQUAL("child", pEntity->getName());
+        CHECK_EQUAL(3, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+
+        Component* pComponent = pEntity->getComponent(0);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Transforms://parent:Transforms", pComponent->getTransforms()->getID().toString());
+
+        pComponent = pEntity->getComponent(1);
+        CHECK(pComponent);
+        CHECK_EQUAL("Delayed", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Last", pComponent->getTransforms()->getName());
+
+        pComponent = pEntity->getComponent(2);
+        CHECK(pComponent);
+        CHECK_EQUAL("Last", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Transforms", pComponent->getTransforms()->getName());
     }
 }

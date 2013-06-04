@@ -31,7 +31,11 @@ endif()
 # Declaration of the executable
 xmake_create_executable(UNITTESTS_ATHENA_ENTITIES UnitTests-Athena-Entities ${HEADERS} ${SRCS})
 
+file(MAKE_DIRECTORY "${XMAKE_BINARY_DIR}/generated/unittests/Athena-Entities/")
+
 xmake_add_to_list_property(UNITTESTS_ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_UNITTESTS_SCRIPTS_PATH=\"${ATHENA_ENTITIES_SOURCE_DIR}/unittests/Athena-Entities/scripts/\";ATHENA_SCRIPTING_JS_TEST_RUNNER_PATH=\"${ATHENA_SCRIPTING_SOURCE_DIR}/unittests/js-test-runner/\"")
+xmake_add_to_list_property(UNITTESTS_ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_UNITTESTS_DATA_PATH=\"${ATHENA_ENTITIES_SOURCE_DIR}/unittests/Athena-Entities/data/\"")
+xmake_add_to_list_property(UNITTESTS_ATHENA_ENTITIES COMPILE_DEFINITIONS "ATHENA_ENTITIES_UNITTESTS_GENERATED_PATH=\"${XMAKE_BINARY_DIR}/generated/unittests/Athena-Entities/\"")
 
 xmake_project_link(UNITTESTS_ATHENA_ENTITIES UNITTEST_CPP)
 xmake_project_link(UNITTESTS_ATHENA_ENTITIES ATHENA_ENTITIES)

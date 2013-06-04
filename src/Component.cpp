@@ -166,6 +166,8 @@ Utils::PropertiesList* Component::getProperties() const
     // Parent Transforms
     if (m_pTransforms)
         pProperties->set("transforms", new Variant(m_pTransforms->getID().toString()));
+    else
+        pProperties->set("transforms", new Variant());
 
     // Returns the list
     return pProperties;

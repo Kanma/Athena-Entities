@@ -1,0 +1,58 @@
+{
+    "name": "test",
+    "enabled": true,
+    "components": [
+        {
+            "id": "Transforms://Transforms",
+            "properties": [
+                {
+                    "__category__": "Athena/Transforms",
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "__category__": "Athena/Component",
+                    "transforms": null
+                }
+            ]
+        },
+        {
+            "id": "Transforms://Delayed",
+            "properties": [
+                {
+                    "__category__": "Athena/Transforms",
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "__category__": "Athena/Component",
+                    "transforms": "Transforms://Last"
+                }
+            ]
+        },
+        {
+            "id": "Transforms://Last",
+            "properties": [
+                {
+                    "__category__": "Athena/Transforms",
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    }
+                },
+                {
+                    "__category__": "Athena/Component",
+                    "transforms": "Transforms://Transforms"
+                }
+            ]
+        }
+    ],
+    "children": []
+}
