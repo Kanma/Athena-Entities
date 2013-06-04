@@ -426,4 +426,66 @@ SUITE(EntityJSONDeserialization)
         CHECK_EQUAL(1, pChild->getNbComponents());
         CHECK_EQUAL(0, pChild->getNbChildren());
     }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromString)
+    {
+        std::string reference = readFile("single.entity");
+
+        Entity* pEntity = fromJSON(reference, pScene);
+
+        CHECK(pEntity);
+        CHECK_EQUAL("test", pEntity->getName());
+        CHECK_EQUAL(1, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithChildren)
+    {
+        std::string reference = readFile("one_child.entity");
+
+        Entity* pParent = fromJSON(reference, pScene);
+        CHECK(pParent);
+        CHECK_EQUAL("parent", pParent->getName());
+        CHECK_EQUAL(1, pParent->getNbComponents());
+        CHECK_EQUAL(1, pParent->getNbChildren());
+
+        unsigned int index = 0;
+        Entity* pChild = pParent->getChild(index);
+        CHECK(pChild);
+        CHECK_EQUAL("child", pChild->getName());
+        CHECK_EQUAL(1, pChild->getNbComponents());
+        CHECK_EQUAL(0, pChild->getNbChildren());
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithDelayedProperty)
+    {
+        std::string reference = readFile("delayed_property.entity");
+
+        Entity* pEntity = fromJSON(reference, pScene);
+
+        CHECK(pEntity);
+        CHECK_EQUAL("test", pEntity->getName());
+        CHECK_EQUAL(3, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+
+        Component* pComponent = pEntity->getComponent(0);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms", pComponent->getName());
+        CHECK(!pComponent->getTransforms());
+
+        pComponent = pEntity->getComponent(1);
+        CHECK(pComponent);
+        CHECK_EQUAL("Delayed", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Last", pComponent->getTransforms()->getName());
+
+        pComponent = pEntity->getComponent(2);
+        CHECK(pComponent);
+        CHECK_EQUAL("Last", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Transforms", pComponent->getTransforms()->getName());
+    }
 }

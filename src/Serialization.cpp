@@ -11,6 +11,7 @@
 #include <Athena-Entities/Scene.h>
 #include <Athena-Core/Data/Serialization.h>
 #include <Athena-Core/Log/LogManager.h>
+#include <Athena-Core/Utils/StringUtils.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/prettywriter.h>
 
@@ -210,7 +211,8 @@ void Athena::Entities::toJSON(Entities::Entity* pEntity,
 //-----------------------------------------------------------------------
 
 Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& json_entity,
-                                                     Entities::Scene* pScene)
+                                                     Entities::Scene* pScene,
+                                                     Utils::PropertiesList* pCombinedDelayedProperties)
 {
     // Assertions
     assert(pScene);
@@ -244,10 +246,21 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& jso
     const rapidjson::Value& components = json_entity["components"];
     rapidjson::Value::ConstValueIterator iter, iterEnd;
 
+    PropertiesList delayedProperties;
     for (iter = components.Begin(), iterEnd = components.End(); iter != iterEnd; ++iter)
     {
+        PropertiesList componentDelayedProperties;
+        Component* pComponent = fromJSON(*iter, pEntity->getComponentsList(), &componentDelayedProperties);
+
+        PropertiesList::tCategoriesIterator categIter = componentDelayedProperties.getCategoriesIterator();
+        while (categIter.hasMoreElements())
+        {
+            PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+            pCategory->strName = pComponent->getID().toString() + "#" + pCategory->strName;
+            categIter.moveNext();
+        }
         
-        fromJSON(*iter, pEntity->getComponentsList());
+        delayedProperties.append(&componentDelayedProperties);
     }
 
     // Create the children
@@ -262,6 +275,49 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& jso
                 pEntity->addChild(pChild);
         }
     }
+
+    // Attempt to resolve the delayed properties
+    PropertiesList::tCategoriesIterator categIter = delayedProperties.getCategoriesIterator();
+    while (categIter.hasMoreElements())
+    {
+        PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+        categIter.moveNext();
+
+        StringUtils::tStringsList parts = StringUtils::split(pCategory->strName, "#");
+
+        tComponentID id(parts[0]);
+
+        Entity* pEntity2 = pEntity;
+        if (id.strEntity != pEntity->getName())
+        {
+            pEntity2 = pScene->getEntity(id.strEntity);
+            if (!pEntity2)
+                continue;
+        }
+
+        Component* pComponent = pEntity2->getComponent(id);
+        if (!pComponent)
+            continue;
+
+        PropertiesList::tPropertiesList::iterator propIter, current, propIterEnd;
+        for (propIter = pCategory->values.begin(), propIterEnd = pCategory->values.end(); propIter != propIterEnd; )
+        {
+            current = propIter;
+            ++propIter;
+
+            bool bUsed = pComponent->setProperty(parts[1], current->strName, new Variant(*(current->pValue)));
+            if (bUsed)
+            {
+                delete current->pValue;
+                pCategory->values.erase(current);
+            }
+        }
+    }
+
+    delayedProperties.removeEmptyCategories();
+
+    if (pCombinedDelayedProperties && (delayedProperties.nbCategories() > 0))
+        pCombinedDelayedProperties->append(&delayedProperties);
 
     // Disable the entity if needed
     if (json_entity.HasMember("enabled") && json_entity["enabled"].IsBool() &&
@@ -291,4 +347,24 @@ std::string Athena::Entities::toJSON(Entities::Entity* pEntity)
     document.Accept(writer);
 
     return s.GetString();
+}
+
+//-----------------------------------------------------------------------
+
+Athena::Entities::Entity* Athena::Entities::fromJSON(const std::string& json_entity,
+                                                     Entities::Scene* pScene,
+                                                     Utils::PropertiesList* pCombinedDelayedProperties)
+{
+    // Assertions
+    assert(pScene);
+
+    // Convert to a JSON representation
+    Document document;
+	if (document.Parse<0>(json_entity.c_str()).HasParseError())
+    {
+        ATHENA_LOG_ERROR(document.GetParseError());
+        return 0;
+    }
+
+    return fromJSON(document, pScene, pCombinedDelayedProperties);
 }

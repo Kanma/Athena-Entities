@@ -8,6 +8,7 @@
 #define _ATHENA_ENTITIES_SERIALIZATION_H_
 
 #include <Athena-Entities/Prerequisites.h>
+#include <Athena-Core/Utils/Iterators.h>
 #include <rapidjson/document.h>
 #include <rapidjson/rapidjson.h>
 
@@ -80,21 +81,41 @@ namespace Entities {
     //------------------------------------------------------------------------------------
     /// @brief Returns the entity represented by a rapidjson value
     ///
-    /// @param  json_entity         The rapidjson value
-    /// @param  pScene              The scene to use to create the entity
-    /// @retval pDelayedProperties  If provided, the properties that aren't usable yet
-    ///                             (because, for example, another object which isn't
-    ///                             already created is needed) are put into that list by
-    ///                             the describable
-    /// @return                     The component, or 0 in case or failure
+    /// @param  json_entity                 The rapidjson value
+    /// @param  pScene                      The scene to use to create the entity
+    /// @retval pCombinedDelayedProperties  If provided, the properties that aren't usable
+    ///                                     yet (on this entity or any of its children)
+    ///                                     are put into that list. The name of the
+    ///                                     categories is of the form
+    ///                                     <componentID>#<category>.
+    /// @return                             The entity, or 0 in case or failure
     //------------------------------------------------------------------------------------
     ATHENA_ENTITIES_SYMBOL Entities::Entity* fromJSON(const rapidjson::Value& json_entity,
-                                                      Entities::Scene* pScene);
+                                                      Entities::Scene* pScene,
+                                                      Utils::PropertiesList* pCombinedDelayedProperties = 0);
+
 
     //------------------------------------------------------------------------------------
-    /// @brief Returns the JSON representation of a component as a string
+    /// @brief Returns the JSON representation of an entity as a string
     //------------------------------------------------------------------------------------
     ATHENA_ENTITIES_SYMBOL std::string toJSON(Entities::Entity* pEntity);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief Returns the entity represented by a JSON string
+    ///
+    /// @param  json_entity                 The JSON string
+    /// @param  pScene                      The scene to use to create the entity
+    /// @retval pCombinedDelayedProperties  If provided, the properties that aren't usable
+    ///                                     yet (on this entity or any of its children)
+    ///                                     are put into that list. The name of the
+    ///                                     categories is of the form
+    ///                                     <componentID>#<category>.
+    /// @return                             The entity, or 0 in case or failure
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL Entities::Entity* fromJSON(const std::string& json_entity,
+                                                      Entities::Scene* pScene,
+                                                      Utils::PropertiesList* pCombinedDelayedProperties = 0);
 }
 }
 
