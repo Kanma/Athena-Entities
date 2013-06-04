@@ -29,6 +29,53 @@ using namespace rapidjson;
 static const char* __CONTEXT__ = "Serialization";
 
 
+/********************************** PRIVATE FUNCTIONS ***********************************/
+
+namespace Athena {
+namespace Entities {
+
+void processCombinedDelayedProperties(Entities::Scene* pScene, PropertiesList* pDelayedProperties)
+{
+    PropertiesList::tCategoriesIterator categIter = pDelayedProperties->getCategoriesIterator();
+    while (categIter.hasMoreElements())
+    {
+        PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+        categIter.moveNext();
+
+        StringUtils::tStringsList parts = StringUtils::split(pCategory->strName, "#");
+
+        tComponentID id(parts[0]);
+
+        Entity* pEntity = pScene->getEntity(id.strEntity);
+        if (!pEntity)
+            continue;
+
+        Component* pComponent = pEntity->getComponent(id);
+        if (!pComponent)
+            continue;
+
+        PropertiesList::tPropertiesList::iterator propIter, current, propIterEnd;
+        for (propIter = pCategory->values.begin(), propIterEnd = pCategory->values.end(); propIter != propIterEnd; )
+        {
+            current = propIter;
+            ++propIter;
+
+            bool bUsed = pComponent->setProperty(parts[1], current->strName, new Variant(*(current->pValue)));
+            if (bUsed)
+            {
+                delete current->pValue;
+                pCategory->values.erase(current);
+            }
+        }
+    }
+
+    pDelayedProperties->removeEmptyCategories();
+}
+
+}
+}
+
+
 /************************************** FUNCTIONS ***************************************/
 
 void Athena::Entities::toJSON(Entities::Component* pComponent,
@@ -259,7 +306,7 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& jso
             pCategory->strName = pComponent->getID().toString() + "#" + pCategory->strName;
             categIter.moveNext();
         }
-        
+
         delayedProperties.append(&componentDelayedProperties);
     }
 
@@ -268,53 +315,20 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& jso
     {
         const rapidjson::Value& children = json_entity["children"];
 
+        PropertiesList childDelayedProperties;
+
         for (iter = children.Begin(), iterEnd = children.End(); iter != iterEnd; ++iter)
         {
-            Entity* pChild = fromJSON(*iter, pScene);
+            Entity* pChild = fromJSON(*iter, pScene, &childDelayedProperties);
             if (pChild)
                 pEntity->addChild(pChild);
         }
+
+        delayedProperties.append(&childDelayedProperties);
     }
 
     // Attempt to resolve the delayed properties
-    PropertiesList::tCategoriesIterator categIter = delayedProperties.getCategoriesIterator();
-    while (categIter.hasMoreElements())
-    {
-        PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
-        categIter.moveNext();
-
-        StringUtils::tStringsList parts = StringUtils::split(pCategory->strName, "#");
-
-        tComponentID id(parts[0]);
-
-        Entity* pEntity2 = pEntity;
-        if (id.strEntity != pEntity->getName())
-        {
-            pEntity2 = pScene->getEntity(id.strEntity);
-            if (!pEntity2)
-                continue;
-        }
-
-        Component* pComponent = pEntity2->getComponent(id);
-        if (!pComponent)
-            continue;
-
-        PropertiesList::tPropertiesList::iterator propIter, current, propIterEnd;
-        for (propIter = pCategory->values.begin(), propIterEnd = pCategory->values.end(); propIter != propIterEnd; )
-        {
-            current = propIter;
-            ++propIter;
-
-            bool bUsed = pComponent->setProperty(parts[1], current->strName, new Variant(*(current->pValue)));
-            if (bUsed)
-            {
-                delete current->pValue;
-                pCategory->values.erase(current);
-            }
-        }
-    }
-
-    delayedProperties.removeEmptyCategories();
+    processCombinedDelayedProperties(pScene, &delayedProperties);
 
     if (pCombinedDelayedProperties && (delayedProperties.nbCategories() > 0))
         pCombinedDelayedProperties->append(&delayedProperties);
@@ -326,7 +340,7 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const rapidjson::Value& jso
         pEntity->enable(false);
     }
 
-    // Return the component
+    // Return the entity
     return pEntity;
 }
 
@@ -419,4 +433,78 @@ void Athena::Entities::toJSON(Entities::Scene* pScene,
     }
 
     json_scene.AddMember("entities", array, allocator);
+}
+
+//-----------------------------------------------------------------------
+
+Athena::Entities::Scene* Athena::Entities::fromJSON(const rapidjson::Value& json_scene,
+                                                    Utils::PropertiesList* pCombinedDelayedProperties)
+{
+    // Check that the json representation contains all the required infos
+    if (!json_scene.IsObject())
+    {
+        ATHENA_LOG_ERROR("Failed to deserialize the Scene: not an object");
+        return 0;
+    }
+
+    if (!json_scene.HasMember("name") || !json_scene["name"].IsString())
+    {
+        ATHENA_LOG_ERROR("Failed to deserialize the Scene: no name found");
+        return 0;
+    }
+
+    // Create the scene
+    Scene* pScene = new Scene(json_scene["name"].GetString());
+    if (!pScene)
+        return 0;
+
+    // Create the components
+    const rapidjson::Value& components = json_scene["components"];
+    rapidjson::Value::ConstValueIterator iter, iterEnd;
+
+    PropertiesList delayedProperties;
+    for (iter = components.Begin(), iterEnd = components.End(); iter != iterEnd; ++iter)
+    {
+        PropertiesList componentDelayedProperties;
+        Component* pComponent = fromJSON(*iter, pScene->getComponentsList(), &componentDelayedProperties);
+
+        PropertiesList::tCategoriesIterator categIter = componentDelayedProperties.getCategoriesIterator();
+        while (categIter.hasMoreElements())
+        {
+            PropertiesList::tCategory* pCategory = categIter.peekNextPtr();
+            pCategory->strName = pComponent->getID().toString() + "#" + pCategory->strName;
+            categIter.moveNext();
+        }
+
+        delayedProperties.append(&componentDelayedProperties);
+    }
+
+    // Create the entities
+    if (json_scene.HasMember("entities"))
+    {
+        const rapidjson::Value& entities = json_scene["entities"];
+
+        PropertiesList entityDelayedProperties;
+
+        for (iter = entities.Begin(), iterEnd = entities.End(); iter != iterEnd; ++iter)
+            fromJSON(*iter, pScene, &entityDelayedProperties);
+
+        delayedProperties.append(&entityDelayedProperties);
+    }
+
+    // Attempt to resolve the delayed properties
+    processCombinedDelayedProperties(pScene, &delayedProperties);
+
+    if (pCombinedDelayedProperties && (delayedProperties.nbCategories() > 0))
+        pCombinedDelayedProperties->append(&delayedProperties);
+
+    // Disable the scene if needed
+    if (json_scene.HasMember("enabled") && json_scene["enabled"].IsBool() &&
+        !json_scene["enabled"].GetBool())
+    {
+        pScene->enable(false);
+    }
+
+    // Return the scene
+    return pScene;
 }

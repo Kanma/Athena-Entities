@@ -25,8 +25,8 @@ struct EntitiesTestEnvironment
         pLocationManager = new Athena::Data::LocationManager();
         pLocationManager->addLocation("unittests", ATHENA_ENTITIES_UNITTESTS_DATA_PATH);
 
-        pScenesManager = new Athena::Entities::ScenesManager();
         pComponentsManager = new Athena::Entities::ComponentsManager();
+        pScenesManager = new Athena::Entities::ScenesManager();
 
         pScene = new Athena::Entities::Scene("default");
     }
@@ -35,8 +35,8 @@ struct EntitiesTestEnvironment
     {
         delete pScene;
 
-        delete pComponentsManager;
         delete pScenesManager;
+        delete pComponentsManager;
         delete pLocationManager;
         delete pLogManager;
     }

@@ -138,3 +138,92 @@ SUITE(SceneJSONSerialization)
         CHECK_EQUAL(0, entities.Size());
     }
 }
+
+
+SUITE(SceneJSONDeserialization)
+{
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromObject)
+    {
+        rapidjson::Document document;
+        rapidjson::Value array;
+        rapidjson::Value entity;
+        rapidjson::Value component;
+        rapidjson::Value properties;
+        rapidjson::Value entry;
+        rapidjson::Value field;
+
+
+        document.SetObject();
+
+        field.SetString("test");
+        document.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        document.AddMember("enabled", field, document.GetAllocator());
+
+
+        array.SetArray();
+        document.AddMember("components", array, document.GetAllocator());
+
+
+        entity.SetObject();
+
+        field.SetString("entity");
+        entity.AddMember("name", field, document.GetAllocator());
+
+        field.SetBool(true);
+        entity.AddMember("enabled", field, document.GetAllocator());
+
+
+        array.SetArray();
+
+        component.SetObject();
+
+        field.SetString("Transforms://Transforms");
+        component.AddMember("id", field, document.GetAllocator());
+
+        properties.SetArray();
+
+        entry.SetObject();
+
+        field.SetString("Athena/Transforms");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        entry.SetObject();
+
+        field.SetString("Athena/Component");
+        entry.AddMember("__category__", field, document.GetAllocator());
+
+        field.SetNull();
+        entry.AddMember("transforms", field, document.GetAllocator());
+
+        properties.PushBack(entry, document.GetAllocator());
+
+        component.AddMember("properties", properties, document.GetAllocator());
+
+        array.PushBack(component, document.GetAllocator());
+
+        entity.AddMember("components", array, document.GetAllocator());
+
+        array.SetArray();
+        array.PushBack(entity, document.GetAllocator());
+        document.AddMember("entities", array, document.GetAllocator());
+
+
+        Scene* pScene = fromJSON(document);
+        CHECK(pScene);
+        CHECK_EQUAL("test", pScene->getName());
+        CHECK_EQUAL(0, pScene->getNbComponents());
+        CHECK_EQUAL(1, pScene->getNbEntities());
+
+        unsigned int index = 0;
+        Entity* pEntity = pScene->getEntity(index);
+
+        CHECK(pEntity);
+        CHECK_EQUAL("entity", pEntity->getName());
+        CHECK_EQUAL(1, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+    }
+}

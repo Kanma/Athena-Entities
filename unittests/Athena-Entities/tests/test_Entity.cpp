@@ -488,4 +488,42 @@ SUITE(EntityJSONDeserialization)
         CHECK(pComponent->getTransforms());
         CHECK_EQUAL("Transforms", pComponent->getTransforms()->getName());
     }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromStringWithDelayedPropertyInChild)
+    {
+        std::string reference = readFile("delayed_property_in_child.entity");
+
+        Entity* pEntity = fromJSON(reference, pScene);
+
+        CHECK(pEntity);
+        CHECK_EQUAL("parent", pEntity->getName());
+        CHECK_EQUAL(1, pEntity->getNbComponents());
+        CHECK_EQUAL(1, pEntity->getNbChildren());
+
+        unsigned int index = 0;
+        pEntity = pEntity->getChild(index);
+
+        CHECK_EQUAL("child", pEntity->getName());
+        CHECK_EQUAL(3, pEntity->getNbComponents());
+        CHECK_EQUAL(0, pEntity->getNbChildren());
+
+        Component* pComponent = pEntity->getComponent(0);
+        CHECK(pComponent);
+        CHECK_EQUAL("Transforms", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Transforms://parent:Transforms", pComponent->getTransforms()->getID().toString());
+
+        pComponent = pEntity->getComponent(1);
+        CHECK(pComponent);
+        CHECK_EQUAL("Delayed", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Last", pComponent->getTransforms()->getName());
+
+        pComponent = pEntity->getComponent(2);
+        CHECK(pComponent);
+        CHECK_EQUAL("Last", pComponent->getName());
+        CHECK(pComponent->getTransforms());
+        CHECK_EQUAL("Transforms", pComponent->getTransforms()->getName());
+    }
 }
