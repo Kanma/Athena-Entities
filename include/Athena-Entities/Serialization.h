@@ -149,6 +149,21 @@ namespace Entities {
     /// @brief Returns the JSON representation of a scene as a string
     //------------------------------------------------------------------------------------
     ATHENA_ENTITIES_SYMBOL std::string toJSON(Entities::Scene* pScene);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief Returns the scene represented by a JSON string
+    ///
+    /// @param  json_scene                  The JSON string
+    /// @retval pCombinedDelayedProperties  If provided, the properties that aren't usable
+    ///                                     yet (on this entity or any of its children)
+    ///                                     are put into that list. The name of the
+    ///                                     categories is of the form
+    ///                                     <componentID>#<category>.
+    /// @return                             The scene, or 0 in case or failure
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL Entities::Scene* fromJSON(const std::string& json_scene,
+                                                     Utils::PropertiesList* pCombinedDelayedProperties = 0);
 }
 }
 

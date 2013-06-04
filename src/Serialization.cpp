@@ -197,7 +197,7 @@ Athena::Entities::Component* Athena::Entities::fromJSON(const std::string& json_
 
     // Convert to a JSON representation
     Document document;
-	if (document.Parse<0>(json_component.c_str()).HasParseError())
+    if (document.Parse<0>(json_component.c_str()).HasParseError())
     {
         ATHENA_LOG_ERROR(document.GetParseError());
         return 0;
@@ -374,7 +374,7 @@ Athena::Entities::Entity* Athena::Entities::fromJSON(const std::string& json_ent
 
     // Convert to a JSON representation
     Document document;
-	if (document.Parse<0>(json_entity.c_str()).HasParseError())
+    if (document.Parse<0>(json_entity.c_str()).HasParseError())
     {
         ATHENA_LOG_ERROR(document.GetParseError());
         return 0;
@@ -526,4 +526,20 @@ std::string Athena::Entities::toJSON(Entities::Scene* pScene)
     document.Accept(writer);
 
     return s.GetString();
+}
+
+//-----------------------------------------------------------------------
+
+Athena::Entities::Scene* Athena::Entities::fromJSON(const std::string& json_scene,
+                                                    Utils::PropertiesList* pCombinedDelayedProperties)
+{
+    // Convert to a JSON representation
+    Document document;
+    if (document.Parse<0>(json_scene.c_str()).HasParseError())
+    {
+        ATHENA_LOG_ERROR(document.GetParseError());
+        return 0;
+    }
+
+    return fromJSON(document, pCombinedDelayedProperties);
 }

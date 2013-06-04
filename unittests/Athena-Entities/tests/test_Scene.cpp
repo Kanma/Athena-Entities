@@ -242,4 +242,29 @@ SUITE(SceneJSONDeserialization)
         CHECK_EQUAL(1, pEntity->getNbComponents());
         CHECK_EQUAL(0, pEntity->getNbChildren());
     }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, DeserializationFromString)
+    {
+        std::string reference = readFile("simple.scene");
+
+        Scene* pScene = fromJSON(reference);
+
+        CHECK(pScene);
+        CHECK_EQUAL("test", pScene->getName());
+        CHECK_EQUAL(0, pScene->getNbComponents());
+        CHECK_EQUAL(2, pScene->getNbEntities());
+
+        Entity* pParent = pScene->getEntity("parent");
+        CHECK(pParent);
+        CHECK_EQUAL(1, pParent->getNbComponents());
+        CHECK_EQUAL(1, pParent->getNbChildren());
+
+        unsigned int index = 0;
+        Entity* pChild = pParent->getChild(index);
+        CHECK(pChild);
+        CHECK_EQUAL("child", pChild->getName());
+        CHECK_EQUAL(1, pChild->getNbComponents());
+        CHECK_EQUAL(0, pChild->getNbChildren());
+    }
 }
