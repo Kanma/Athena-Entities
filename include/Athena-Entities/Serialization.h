@@ -143,6 +143,12 @@ namespace Entities {
     //------------------------------------------------------------------------------------
     ATHENA_ENTITIES_SYMBOL Entities::Scene* fromJSON(const rapidjson::Value& json_scene,
                                                      Utils::PropertiesList* pCombinedDelayedProperties = 0);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief Returns the JSON representation of a scene as a string
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL std::string toJSON(Entities::Scene* pScene);
 }
 }
 

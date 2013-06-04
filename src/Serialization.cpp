@@ -508,3 +508,22 @@ Athena::Entities::Scene* Athena::Entities::fromJSON(const rapidjson::Value& json
     // Return the scene
     return pScene;
 }
+
+//-----------------------------------------------------------------------
+
+std::string Athena::Entities::toJSON(Entities::Scene* pScene)
+{
+    // Assertions
+    assert(pScene);
+
+    // Retrieve the JSON representation
+    Document document;
+    toJSON(pScene, document, document.GetAllocator());
+
+    // Convert it to string
+    StringBuffer s;
+    PrettyWriter<StringBuffer> writer(s);
+    document.Accept(writer);
+
+    return s.GetString();
+}

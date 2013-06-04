@@ -137,6 +137,22 @@ SUITE(SceneJSONSerialization)
         CHECK(entities.IsArray());
         CHECK_EQUAL(0, entities.Size());
     }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToString)
+    {
+        Scene* pScene = new Scene("test");
+        Entity* pParent = pScene->create("parent");
+        Entity* pChild = pScene->create("child");
+
+        pParent->addChild(pChild);
+
+        std::string json = toJSON(pScene);
+
+        std::string reference = readFile("simple.scene");
+
+        CHECK_EQUAL(reference, json);
+    }
 }
 
 
