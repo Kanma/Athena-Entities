@@ -10,6 +10,7 @@
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Scene.h>
 #include <Athena-Core/Data/Serialization.h>
+#include <Athena-Core/Data/DataStream.h>
 #include <Athena-Core/Log/LogManager.h>
 #include <Athena-Core/Utils/StringUtils.h>
 #include <rapidjson/stringbuffer.h>
@@ -542,4 +543,24 @@ Athena::Entities::Scene* Athena::Entities::fromJSON(const std::string& json_scen
     }
 
     return fromJSON(document, pCombinedDelayedProperties);
+}
+
+//-----------------------------------------------------------------------
+
+void Athena::Entities::toJSON(Entities::Scene* pScene, Data::DataStream* pStream)
+{
+    // Assertions
+    assert(pScene);
+    assert(pStream);
+
+    // Retrieve the JSON representation
+    Document document;
+    toJSON(pScene, document, document.GetAllocator());
+
+    // Convert it to string
+    StringBuffer s;
+    PrettyWriter<StringBuffer> writer(s);
+    document.Accept(writer);
+
+    pStream->write(s.GetString(), s.Size());
 }

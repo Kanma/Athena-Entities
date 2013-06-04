@@ -164,6 +164,12 @@ namespace Entities {
     //------------------------------------------------------------------------------------
     ATHENA_ENTITIES_SYMBOL Entities::Scene* fromJSON(const std::string& json_scene,
                                                      Utils::PropertiesList* pCombinedDelayedProperties = 0);
+
+
+    //------------------------------------------------------------------------------------
+    /// @brief Writes the JSON representation of a scene in a DataStream object
+    //------------------------------------------------------------------------------------
+    ATHENA_ENTITIES_SYMBOL void toJSON(Entities::Scene* pScene, Data::DataStream* pStream);
 }
 }
 

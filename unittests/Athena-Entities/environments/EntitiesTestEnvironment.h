@@ -24,6 +24,7 @@ struct EntitiesTestEnvironment
 
         pLocationManager = new Athena::Data::LocationManager();
         pLocationManager->addLocation("unittests", ATHENA_ENTITIES_UNITTESTS_DATA_PATH);
+        pLocationManager->addLocation("generated", ATHENA_ENTITIES_UNITTESTS_GENERATED_PATH);
 
         pComponentsManager = new Athena::Entities::ComponentsManager();
         pScenesManager = new Athena::Entities::ScenesManager();
@@ -42,11 +43,11 @@ struct EntitiesTestEnvironment
     }
 
 
-    std::string readFile(const std::string& strFilename)
+    std::string readFile(const std::string& strFilename, const std::string& strGroup = "unittests")
     {
         std::string content;
 
-        Athena::Data::DataStream* pStream = pLocationManager->open("unittests", strFilename);
+        Athena::Data::DataStream* pStream = pLocationManager->open(strGroup, strFilename);
         if (pStream)
         {
             char buffer[1025];

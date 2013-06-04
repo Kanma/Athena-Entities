@@ -2,10 +2,12 @@
 #include <Athena-Entities/ScenesManager.h>
 #include <Athena-Entities/Entity.h>
 #include <Athena-Entities/Serialization.h>
+#include <Athena-Core/Data/FileDataStream.h>
 #include "../environments/EntitiesTestEnvironment.h"
 
 
 using namespace Athena::Entities;
+using namespace Athena::Data;
 
 
 SUITE(SceneTests)
@@ -152,6 +154,25 @@ SUITE(SceneJSONSerialization)
         std::string reference = readFile("simple.scene");
 
         CHECK_EQUAL(reference, json);
+    }
+
+
+    TEST_FIXTURE(EntitiesTestEnvironment, SerializationToFile)
+    {
+        Scene* pScene = new Scene("test");
+        Entity* pParent = pScene->create("parent");
+        Entity* pChild = pScene->create("child");
+
+        pParent->addChild(pChild);
+
+        FileDataStream stream(ATHENA_ENTITIES_UNITTESTS_GENERATED_PATH "simple.scene", DataStream::WRITE);
+        toJSON(pScene, &stream);
+        stream.close();
+
+        std::string written = readFile("simple.scene", "generated");
+        std::string reference = readFile("simple.scene");
+
+        CHECK_EQUAL(reference, written);
     }
 }
 
