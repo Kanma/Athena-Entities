@@ -1,7 +1,7 @@
 ********************************************************************************
 *                                                                              *
 *                               Athena-Entities                                *
-*                                Version 1.2.0                                 *
+*                                Version 1.2.1                                 *
 *                    http://github.com/Kanma/Athena-Entities                   *
 *                                                                              *
 ********************************************************************************
@@ -41,7 +41,7 @@ the different kind of components are in the following modules:
   - visual & debug components -> Athena-Graphics
   - physical components -> Athena-Physics
   - audio components -> Athena-Audio
-  
+
 The use of those modules is optional, you can choose to implement your own
 components instead, or to leave out one kind of component.
 
@@ -100,7 +100,7 @@ The class 'Athena::Entities::Transforms' of this module is based on the
 a scene-oriented and flexible 3D engine, released under the MIT License. OGRE is
 the 3D engine used by the Athena Game Framework.
 
-The license of OGRE is contained in the file 'docs/LICENSE-OGRE'. 
+The license of OGRE is contained in the file 'docs/LICENSE-OGRE'.
 
 
 ---------------------------------------
