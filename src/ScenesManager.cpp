@@ -24,8 +24,11 @@ static const char* __CONTEXT__ = "Scenes manager";
 /********************************** STATIC ATTRIBUTES ***********************************/
 
 /// The instance of the singleton
-template<> ScenesManager* Singleton<ScenesManager>::ms_Singleton = 0;
-
+namespace Athena {
+    namespace Utils {
+        template<> ScenesManager* Singleton<ScenesManager>::ms_Singleton = 0;
+    }
+}
 
 
 /****************************** CONSTRUCTION / DESTRUCTION ******************************/

@@ -31,7 +31,11 @@ static const char* __CONTEXT__ = "Components manager";
 /********************************** STATIC ATTRIBUTES ***********************************/
 
 /// The instance of the singleton
-template<> ComponentsManager* Singleton<ComponentsManager>::ms_Singleton = 0;
+namespace Athena {
+    namespace Utils {
+        template<> ComponentsManager* Singleton<ComponentsManager>::ms_Singleton = 0;
+    }
+}
 
 
 /****************************** CONSTRUCTION / DESTRUCTION ******************************/

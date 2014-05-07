@@ -58,6 +58,8 @@ class ATHENA_ENTITIES_SYMBOL ComponentsManager: public Utils::Singleton<Componen
 private:
     struct ComponentCreationInfos
     {
+        virtual ~ComponentCreationInfos() {}
+
         virtual Component* create(const std::string& strName, ComponentsList* pList) = 0;
 
 #if ATHENA_ENTITIES_SCRIPTING
